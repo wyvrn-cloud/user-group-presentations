@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>User Group Presentations</title>
+<meta name="description" content="Slide decks from the DIDComm user group.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Same palette as the decks (wyvrn gold + teal on ink). */
+:root{
+  --ink:#0b1420; --ink-raised:#101d2c; --ink-line:rgba(232,236,239,.12);
+  --paper:#e9ece7; --muted:#8fa3b3;
+  --gold:#f0a83b; --gold-soft:#3a2c16;
+  --teal:#34c0cf; --teal-soft:#0f2f33;
+  --display:'Fraunces',Georgia,serif;
+  --body:'IBM Plex Sans',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,'SF Mono',Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{background:var(--ink)}
+body{
+  margin:0; min-height:100vh; color:var(--paper); font-family:var(--body); line-height:1.5;
+  background:
+    radial-gradient(1200px 500px at 88% -10%, var(--teal-soft) 0%, transparent 55%),
+    radial-gradient(900px 420px at -8% 108%, var(--gold-soft) 0%, transparent 55%),
+    var(--ink);
+}
+main{max-width:52rem;margin:0 auto;padding:clamp(3rem,10vh,7rem) 16px 4rem}
+.brandmark{display:flex;align-items:center;gap:.6rem;margin-bottom:1.4rem}
+.brandmark svg{width:2rem;height:2rem}
+.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;color:var(--teal)}
+h1{font-family:var(--display);font-weight:600;font-size:clamp(2.2rem,6vw,3.4rem);line-height:1.05;margin:0 0 .8rem;text-wrap:balance}
+.sub{color:var(--muted);font-size:1.1rem;max-width:48ch;margin:0 0 2.8rem}
+ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:1rem}
+a.deck{
+  display:block; text-decoration:none; color:inherit;
+  background:var(--ink-raised); border:1px solid var(--ink-line); border-radius:6px;
+  padding:1.3rem 1.5rem; transition:border-color .15s ease, transform .15s ease;
+}
+a.deck:hover,a.deck:focus-visible{border-color:var(--gold);transform:translateY(-1px);outline:none}
+.deck h2{font-family:var(--display);font-weight:600;font-size:1.45rem;margin:0 0 .3rem}
+.deck p{margin:0;color:var(--muted)}
+.deck .go{display:inline-block;margin-top:.8rem;font-family:var(--mono);font-size:.82rem;color:var(--gold)}
+footer{margin-top:3rem;font-family:var(--mono);font-size:.78rem;color:var(--muted);opacity:.7}
+footer a{color:var(--teal)}
+</style>
+</head>
+<body>
+<main>
+  <div class="brandmark">
+    <svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><circle cx="20" cy="18" r="13" stroke="#f0a83b" stroke-width="4"/><circle cx="28" cy="30" r="13" stroke="#34c0cf" stroke-width="4"/></svg>
+    <span class="eyebrow">wyvrn · didcomm user group</span>
+  </div>
+  <h1>User group presentations</h1>
+  <p class="sub">Slide decks from the DIDComm user group. Use the arrow keys or swipe to move between slides; press <kbd>Esc</kbd> for an overview.</p>
+
+  <ul>
+    <li>
+      <a class="deck" href="identity-vs-device-dids/">
+        <h2>Identity DID, Device DID</h2>
+        <p>One way to think about a DIDComm identity that lives on more than one device — and why the "obvious" shortcut doesn't hold up against the spec's own text.</p>
+        <span class="go">view slides →</span>
+      </a>
+    </li>
+  </ul>
+
+  <footer>Source on <a href="https://github.com/wyvrn-cloud/user-group-presentations">GitHub</a></footer>
+</main>
+</body>
+</html>
