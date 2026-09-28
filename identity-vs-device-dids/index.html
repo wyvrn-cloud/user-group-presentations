@@ -1,0 +1,422 @@
+<title>Identity DID, Device DID</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* ===================================================================
+   reveal.js 5.1.0 core (structural/mechanical CSS only, no theme) --
+   inlined because the artifact CSP only allows linked stylesheets from
+   fonts.googleapis.com; everything below the marker is this deck's own
+   theme, layered on top of reveal's positioning/transition mechanics.
+   =================================================================== */
+.reveal .r-stretch,.reveal .stretch{max-width:none;max-height:none}.reveal pre.r-stretch code,.reveal pre.stretch code{height:100%;max-height:100%;box-sizing:border-box}.reveal .r-fit-text{display:inline-block;white-space:nowrap}.reveal .r-stack{display:grid;grid-template-rows:100%}.reveal .r-stack>*{grid-area:1/1;margin:auto}.reveal .r-hstack,.reveal .r-vstack{display:flex;gap:1rem}.reveal .r-hstack{flex-direction:row}.reveal .r-vstack{flex-direction:column}.reveal .r-vstack>*,.reveal .r-hstack>*{margin:0}.reveal .r-frame{border:4px solid #333;box-shadow:0 0 10px rgba(0,0,0,.15)}.reveal a .r-frame{transition:all .15s linear}.reveal a:hover .r-frame,.reveal a:focus .r-frame{background:rgba(255,255,255,.2);box-shadow:0 0 20px rgba(0,0,0,.55)}html.reveal-full-page{width:100%;height:100%;overflow:hidden}.reveal{position:relative;width:100%;height:100%;overflow:hidden;-ms-touch-action:none;touch-action:none;font-family:Georgia,serif;font-weight:400;font-size:40px}.reveal.embedded{position:relative;overflow:hidden}.reveal:not(.embedded).reveal-full-page{position:fixed;top:0;left:0;bottom:0;right:0}.reveal .slides{position:absolute;width:100%;height:100%;top:0;right:0;bottom:0;left:0;margin:auto;overflow:visible;z-index:1;text-align:center;perspective:600px;perspective-origin:50% 40%}.reveal .slides>section{display:none;position:absolute;top:0;left:0;width:100%;z-index:10;text-align:inherit;-webkit-backface-visibility:hidden;backface-visibility:hidden}.reveal .slides>section.stack{padding-top:0;padding-bottom:0;pointer-events:none;height:100%}.reveal .slides>section:not(.stack){height:100%}.reveal .slides>section.present{display:block;z-index:11;opacity:1}html:not(.print-pdf) .reveal .slides>section:empty,html:not(.print-pdf) .reveal .slides>section.stack:not(:has(section.present)){display:none}html:not(.print-pdf) .reveal .slides>section>section:empty,html:not(.print-pdf) .reveal .slides>section>section:not(.present){display:none}.reveal .slides>section.past,.reveal .slides>section.future{pointer-events:none}.reveal.overview .slides>section{display:block!important;opacity:1!important;visibility:visible!important;-webkit-backface-visibility:visible!important;backface-visibility:visible!important;pointer-events:auto}.reveal .slides>section.past.stack,.reveal .slides>section.future.stack{display:block}.reveal .slides>section>section{display:none;position:absolute;z-index:11;top:0;left:0;width:100%;-webkit-backface-visibility:hidden;backface-visibility:hidden}.reveal .slides>section>section.present{display:block;z-index:12}.reveal .slides>section>section.past{z-index:12}.reveal.center,.reveal.center .slides section{min-height:0}.reveal.center .slides>section:not(.past):not(.future){display:flex;flex-direction:column;justify-content:center}.reveal.center .slides>section>section{min-height:0}.reveal[data-navigation-mode=linear] .slides>section>section{display:none!important}.reveal[data-navigation-mode=linear] .slides>section>section.present{display:flex!important;justify-content:center;flex-direction:column}img,svg{max-width:100%}.reveal section img,.reveal section svg{margin:0}.reveal .r-stretch img,.reveal .r-stretch svg{object-fit:contain;max-width:none;max-height:100%}.reveal .slide-background{display:none;position:absolute;width:100%;height:100%;opacity:0;visibility:hidden;overflow:hidden;background-color:transparent;background-position:50% 50%;background-repeat:no-repeat;background-size:cover}.reveal .slide-background.stack{height:100%}.reveal .slide-background.present{opacity:1;visibility:visible}.print-pdf .reveal .slide-background{display:block!important}.reveal .slide-background-content{position:absolute;width:100%;height:100%;background-position:50% 50%;background-repeat:no-repeat;background-size:cover}.reveal .slide-background video{position:absolute;width:100%;height:100%;max-width:none;max-height:none;top:0;left:0;-o-object-fit:cover;object-fit:cover}.reveal .slide-background[data-background-size=contain] video{-o-object-fit:contain;object-fit:contain}.reveal .slides>section[data-background-iframe],.reveal .slides>section>section[data-background-iframe]{background:transparent}.reveal .slide-background iframe{position:absolute;width:100%;height:100%;top:0;left:0;-webkit-transform-origin:0 0;transform-origin:0 0;pointer-events:none}.reveal .slide-background iframe.disable-pointer-events-while-resizing{pointer-events:none}.reveal .slide-background-content.has-shadow-top:before,.reveal .slide-background-content.has-shadow-bottom:after{content:"";position:absolute;left:0;right:0;height:100px;pointer-events:none}.reveal .slide-background-content.has-shadow-top:before{top:0;background:linear-gradient(0deg,transparent,rgba(0,0,0,.15))}.reveal .slide-background-content.has-shadow-bottom:after{bottom:0;background:linear-gradient(180deg,transparent,rgba(0,0,0,.15))}.reveal.has-dark-background{color:#fff}.reveal.has-dark-background h1,.reveal.has-dark-background h2,.reveal.has-dark-background h3,.reveal.has-dark-background h4,.reveal.has-dark-background h5,.reveal.has-dark-background h6{color:#fff}.reveal.has-light-background{color:#222}.reveal.has-light-background h1,.reveal.has-light-background h2,.reveal.has-light-background h3,.reveal.has-light-background h4,.reveal.has-light-background h5,.reveal.has-light-background h6{color:#222}.reveal .slide-number{position:fixed;display:block;right:8px;bottom:8px;z-index:31;font-family:Helvetica,sans-serif;font-size:12px;line-height:1;color:#fff;background-color:rgba(0,0,0,.4);padding:5px}.reveal .slide-number a{color:#fff}.reveal.has-light-background .slide-number{color:#222}.reveal.has-light-background .slide-number a{color:#222}.reveal .slide-number-delimiter{margin:0 3px}.reveal .progress{position:fixed;display:block;height:3px;left:0;bottom:0;z-index:31;width:100%;background-color:rgba(0,0,0,.2);color:#fff}.reveal .progress:after{content:"";display:block;position:absolute;height:19px;width:100%;top:-16px}.reveal .progress span{display:block;height:100%;width:0;background-color:currentColor;transition:width .8s cubic-bezier(.26,.86,.44,.985)}.reveal .controls{display:none;position:fixed;top:auto;bottom:12px;right:12px;left:auto;z-index:31;color:#fff;pointer-events:none;font-size:10px}.reveal .controls button{position:absolute;padding:0;background-color:transparent;border:0;outline:0;cursor:pointer;color:currentColor;-webkit-tap-highlight-color:transparent;z-index:2;transition:color .2s ease,opacity .2s ease;transform:scale(.9999);pointer-events:none;opacity:0;visibility:hidden}.reveal .controls button.enabled{pointer-events:auto;opacity:.9;visibility:visible}.reveal .controls button.enabled:hover,.reveal .controls button:focus-visible{opacity:1}.reveal .controls button.fragmented{opacity:.2;pointer-events:none}.reveal .controls button:focus-visible{transform:scale(1.08)}.reveal .controls button.enabled.fragmented:hover,.reveal .controls button.enabled.fragmented:focus-visible{opacity:.4}.reveal .controls .navigate-left,.reveal .controls .navigate-right,.reveal .controls .navigate-up,.reveal .controls .navigate-down{width:36px;height:36px}.reveal .controls .navigate-left{right:110px;bottom:20px}.reveal .controls .navigate-right{right:20px;bottom:20px}.reveal .controls .navigate-up{right:65px;bottom:65px}.reveal .controls .navigate-down{right:65px;bottom:20px}.reveal .controls[data-controls-layout=bottom-right]{bottom:12px;right:12px;top:auto;left:auto}.reveal .controls[data-controls-layout=edges]{top:0;right:0;bottom:0;left:0;width:100%;height:100%}.reveal .controls[data-controls-layout=edges] .navigate-left,.reveal .controls[data-controls-layout=edges] .navigate-right,.reveal .controls[data-controls-layout=edges] .navigate-up,.reveal .controls[data-controls-layout=edges] .navigate-down{bottom:auto;right:auto}.reveal .controls[data-controls-layout=edges] .navigate-left{top:50%;left:8px;margin-top:-18px}.reveal .controls[data-controls-layout=edges] .navigate-right{top:50%;right:8px;margin-top:-18px}.reveal .controls[data-controls-layout=edges] .navigate-up{top:8px;left:50%;margin-left:-18px}.reveal .controls[data-controls-layout=edges] .navigate-down{bottom:8px;left:50%;margin-left:-18px}.reveal.overview{perspective-origin:50% 50%;perspective:700px}.reveal.overview .slides{-moz-transform-style:preserve-3d}.reveal.overview .slides section{padding:0;pointer-events:auto;-webkit-box-sizing:border-box;box-sizing:border-box;opacity:1!important;overflow:hidden;cursor:pointer}.reveal.overview .slides section:hover,.reveal.overview .slides section.present{outline:10px solid rgba(150,150,150,.4);outline-offset:10px}.reveal.overview .slides section .fragment{opacity:1;transition:none}.reveal.overview .slides section:after,.reveal.overview .slides section:before{display:none!important}.reveal.overview .slides>section.stack{padding:0;top:0!important;viewport-fit:auto}.reveal.overview .backgrounds{-webkit-perspective:inherit;perspective:inherit;-webkit-transform-style:preserve-3d;transform-style:preserve-3d}.reveal.overview .backgrounds .slide-background.stack{overflow:hidden}.reveal.overview .backgrounds .slide-background{opacity:1;visibility:visible;outline:10px solid rgba(150,150,150,.1);outline-offset:10px;cursor:pointer}.reveal .fragment{will-change:opacity,visibility,transform;transition:all .3s ease;visibility:hidden;opacity:0}.reveal .fragment.visible{visibility:inherit}.reveal .fragment.current-fragment{will-change:auto}.reveal .fragment.fade-in,.reveal .fragment.fade-in-then-out,.reveal .fragment.fade-in-then-semi-out{opacity:0;visibility:hidden}.reveal .fragment.fade-in.visible,.reveal .fragment.fade-in-then-out.visible,.reveal .fragment.fade-in-then-semi-out.visible{opacity:1;visibility:inherit}.reveal .fragment.fade-in-then-out.current-fragment,.reveal .fragment.fade-in-then-semi-out.current-fragment{opacity:1;visibility:inherit}.reveal .fragment.fade-in-then-out:not(.current-fragment).visible{opacity:0;visibility:hidden}.reveal .fragment.fade-in-then-semi-out:not(.current-fragment).visible{opacity:.5}.reveal .fragment.fade-out{opacity:1;visibility:inherit}.reveal .fragment.fade-out.visible{opacity:0;visibility:hidden}.reveal .fragment.semi-fade-out{opacity:1;visibility:inherit}.reveal .fragment.semi-fade-out.visible{opacity:.5;visibility:inherit}.reveal .fragment.grow{opacity:1;visibility:inherit}.reveal .fragment.grow.visible{transform:scale(1.3)}.reveal .fragment.shrink{opacity:1;visibility:inherit}.reveal .fragment.shrink.visible{transform:scale(.7)}.reveal .fragment.zoom-in{transform:scale(.1);opacity:0}.reveal .fragment.zoom-in.visible{transform:none;opacity:1}.reveal .fragment.fade-right{transform:translate(-20%);opacity:0}.reveal .fragment.fade-right.visible{transform:translate(0);opacity:1}.reveal .fragment.fade-left{transform:translate(20%);opacity:0}.reveal .fragment.fade-left.visible{transform:translate(0);opacity:1}.reveal .fragment.fade-up{transform:translateY(20%);opacity:0}.reveal .fragment.fade-up.visible{transform:translateY(0);opacity:1}.reveal .fragment.fade-down{transform:translateY(-20%);opacity:0}.reveal .fragment.fade-down.visible{transform:translateY(0);opacity:1}.reveal .fragment.highlight-red,.reveal .fragment.highlight-current-red,.reveal .fragment.highlight-green,.reveal .fragment.highlight-current-green,.reveal .fragment.highlight-blue,.reveal .fragment.highlight-current-blue{opacity:1;visibility:inherit}.reveal .fragment.highlight-red.visible{color:#ff2c2d}.reveal .fragment.highlight-current-red.current-fragment{color:#ff2c2d}.reveal .fragment.highlight-green.visible{color:#17ff2e}.reveal .fragment.highlight-current-green.current-fragment{color:#17ff2e}.reveal .fragment.highlight-blue.visible{color:#1b91ff}.reveal .fragment.highlight-current-blue.current-fragment{color:#1b91ff}.reveal .no-transition,.reveal .no-transition *{transition:none!important}.reveal.slide .slides{-webkit-transform-style:preserve-3d;transform-style:preserve-3d}.reveal.slide .slides>section{-webkit-backface-visibility:hidden;backface-visibility:hidden;-webkit-transition:-webkit-transform-origin .8s ease,-webkit-transform .8s ease,visibility .8s ease,opacity .8s ease;transition:transform-origin .8s ease,transform .8s ease,visibility .8s ease,opacity .8s ease}.reveal.slide .slides>section.past{opacity:0;-webkit-transform:translate(-150%,0);transform:translate(-150%,0)}.reveal.slide .slides>section.future{opacity:0;-webkit-transform:translate(150%,0);transform:translate(150%,0)}.reveal.slide .slides>section>section.past{opacity:0;-webkit-transform:translate(0,-150%);transform:translate(0,-150%)}.reveal.slide .slides>section>section.future{opacity:0;-webkit-transform:translate(0,150%);transform:translate(0,150%)}.reveal .no-transition .slides>section,.reveal.no-transition .slides>section,.reveal .no-transition .slides>section>section,.reveal.no-transition .slides>section>section{-webkit-transition:none!important;transition:none!important}
+/* ===================================================================
+   Deck theme -- "Identity DID, Device DID" -- deliberately single-theme
+   (a live-presentation deck, not a document, so it stays visually
+   consistent regardless of the viewer's OS light/dark setting -- see
+   this artifact's own design notes). Palette pulled from wyvrn's own
+   product mark (gold + teal), not an invented accent.
+   =================================================================== */
+:root{
+  --ink:#0b1420; --ink-raised:#101d2c; --ink-line:rgba(232,236,239,.12);
+  --paper:#e9ece7; --muted:#8fa3b3;
+  --gold:#f0a83b; --gold-soft:#3a2c16;
+  --teal:#34c0cf; --teal-soft:#0f2f33;
+  --danger:#e2604f; --danger-soft:#3a1c17;
+  --display:'Fraunces',Georgia,serif;
+  --body:'IBM Plex Sans',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,'SF Mono',Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{background:var(--ink)}
+body{margin:0;font-family:var(--body);color:var(--paper)}
+.reveal{font-family:var(--body);font-size:26px;color:var(--paper)}
+.reveal .slides{text-align:left}
+.reveal .slides section{
+  padding:5.2vh 6.4vw 5.2vh; height:100%;
+  display:flex!important; flex-direction:column; justify-content:flex-start; gap:1.1rem;
+  background:
+    radial-gradient(1200px 500px at 88% -10%, var(--teal-soft) 0%, transparent 55%),
+    radial-gradient(900px 420px at -8% 108%, var(--gold-soft) 0%, transparent 55%),
+    var(--ink);
+}
+.reveal h1,.reveal h2,.reveal h3{font-family:var(--display);color:var(--paper);margin:0;text-wrap:balance;font-weight:600;line-height:1.06}
+.reveal h1{font-size:3.05rem;letter-spacing:-.01em}
+.reveal h2{font-size:1.9rem;font-weight:600}
+.reveal p{margin:0;line-height:1.5}
+.reveal ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:.7rem}
+.reveal a{color:var(--teal)}
+.eyebrow{
+  font-family:var(--mono); font-size:.72rem; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--teal); display:flex; align-items:center; gap:.6em;
+}
+.eyebrow::before{content:'';width:1.6em;height:1px;background:var(--teal);opacity:.6}
+.eyebrow.gold{color:var(--gold)}
+.eyebrow.gold::before{background:var(--gold)}
+.kicker{color:var(--muted);font-size:1.02rem;max-width:46ch}
+.slide-body{flex:1;display:flex;flex-direction:column;gap:1.4rem;justify-content:center;min-height:0}
+.slide-foot{
+  font-family:var(--mono); font-size:.68rem; color:var(--muted); opacity:.6;
+  display:flex; justify-content:space-between; letter-spacing:.02em;
+}
+.lede{font-size:1.28rem;line-height:1.5;max-width:62ch;color:var(--paper)}
+.lede b{color:var(--gold);font-weight:600}
+.lede .t{color:var(--teal);font-weight:600}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:2.4rem;align-items:center}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem}
+.card{
+  background:var(--ink-raised); border:1px solid var(--ink-line); border-radius:6px;
+  padding:1.3rem 1.5rem;
+}
+.card h3{font-size:1.05rem;font-family:var(--body);font-weight:600;margin-bottom:.4rem}
+.card p{color:var(--muted);font-size:.92rem;line-height:1.45}
+.pill{
+  font-family:var(--mono); font-size:.68rem; letter-spacing:.04em; padding:.18em .7em;
+  border-radius:999px; display:inline-block; border:1px solid currentColor;
+}
+.pill.teal{color:var(--teal)}
+.pill.gold{color:var(--gold)}
+.pill.danger{color:var(--danger)}
+code,.mono{font-family:var(--mono)}
+.codeblock{
+  background:var(--ink-raised); border:1px solid var(--ink-line); border-radius:6px;
+  padding:1.1rem 1.3rem; font-family:var(--mono); font-size:.86rem; line-height:1.55;
+  color:#c9d6de; overflow:auto; max-height:100%;
+}
+.codeblock .k{color:var(--muted)}
+.codeblock .s{color:var(--teal)}
+.codeblock .g{color:var(--gold)}
+.codeblock .ty{color:#e9ece7}
+.numrow{display:flex;gap:1.6rem;counter-reset:step}
+.numrow .step{flex:1;position:relative;padding-top:2.1rem}
+.numrow .step::before{
+  counter-increment:step; content:counter(step);
+  font-family:var(--display); font-size:1.4rem; font-weight:600; color:var(--gold);
+  position:absolute; top:0; left:0;
+}
+.numrow .step h3{font-size:1rem;font-family:var(--body);font-weight:600;margin-bottom:.3rem}
+.numrow .step p{color:var(--muted);font-size:.86rem;line-height:1.4}
+.diagram{width:100%;display:flex;align-items:center;justify-content:center}
+.diagram svg{display:block;width:100%;max-width:560px;height:auto}
+.stat{font-family:var(--display);font-weight:600;color:var(--gold);font-size:2.6rem;line-height:1}
+.title-slide{justify-content:center!important;align-items:flex-start;gap:1.6rem!important}
+.title-slide h1{font-size:4.1rem}
+.title-slide .sub{font-size:1.3rem;color:var(--muted);max-width:50ch}
+.brandmark{display:flex;align-items:center;gap:.6rem}
+.brandmark svg{width:34px;height:34px}
+.closing{align-items:flex-start}
+.linklist{display:flex;flex-direction:column;gap:.5rem;font-family:var(--mono);font-size:.95rem}
+.q{
+  border-left:2px solid var(--gold); padding-left:1.1rem; font-family:var(--display);
+  font-size:1.5rem; font-weight:500; color:var(--paper); max-width:34ch; line-height:1.3;
+}
+::selection{background:var(--gold);color:#1a1305}
+.reveal .progress{color:var(--gold);background:var(--ink-line)}
+.reveal .controls{color:var(--paper)}
+@media(max-width:900px){
+  .reveal .slides section{padding:4vh 5vw}
+  .reveal h1{font-size:2.1rem}
+  .title-slide h1{font-size:2.6rem}
+  .grid2{grid-template-columns:1fr}
+  .grid3{grid-template-columns:1fr}
+  .numrow{flex-direction:column;gap:1rem}
+}
+</style>
+
+<div class="reveal">
+  <div class="slides">
+
+    <!-- 1: TITLE -->
+    <section>
+      <div class="slide-body title-slide">
+        <div class="brandmark">
+          <svg viewBox="0 0 48 48" fill="none"><circle cx="20" cy="18" r="13" stroke="#f0a83b" stroke-width="4"/><circle cx="28" cy="30" r="13" stroke="#34c0cf" stroke-width="4"/></svg>
+          <span class="eyebrow">wyvrn · didcomm user group</span>
+        </div>
+        <h1>Identity&nbsp;DID,<br>Device&nbsp;DID</h1>
+        <p class="sub">Per-device keys for a DIDComm identity that lives on more than one device — and why the "obvious" shortcut doesn't hold up against the spec's own text.</p>
+        <p class="kicker mono" style="margin-top:1rem">protocols/multi-device/1.0 — wyvrn-cloud/protocols</p>
+      </div>
+    </section>
+
+    <!-- 2: THE ASSUMPTION -->
+    <section>
+      <div class="eyebrow">the assumption</div>
+      <div class="slide-body">
+        <h1>DIDComm's tooling quietly assumes<br><span style="color:var(--gold)">one identity, one keypair.</span></h1>
+        <p class="lede">Generate a DID, hold its <span class="t">keyAgreement</span> secret, unpack with it. Almost every quickstart, every tutorial, every sample resolver in the ecosystem — this workspace's own included, until we checked — is built around exactly one device holding exactly one private key per identity.</p>
+      </div>
+      <div class="slide-foot"><span>multi-device/1.0</span><span>1 / 15</span></div>
+    </section>
+
+    <!-- 3: WHAT BREAKS -->
+    <section>
+      <div class="eyebrow">the problem</div>
+      <div class="slide-body">
+        <h2>Real people aren't one device.</h2>
+        <div class="grid3">
+          <div class="card"><h3>📱 Phone</h3><p>Where most messages actually arrive. Not always on, not always the one someone picks up first.</p></div>
+          <div class="card"><h3>💻 Laptop</h3><p>Where they'd rather type a long reply. Should see everything the phone sees.</p></div>
+          <div class="card"><h3>💻 Tablet</h3><p>Added later, by someone who already has an identity and doesn't want a second one.</p></div>
+        </div>
+        <p class="lede" style="margin-top:.4rem">A contact should reach <b>one identity</b> — not have to know which of three devices happens to be reachable right now.</p>
+      </div>
+      <div class="slide-foot"><span>multi-device/1.0</span><span>2 / 15</span></div>
+    </section>
+
+    <!-- 4: NAIVE FIX + COST -->
+    <section>
+      <div class="eyebrow gold">the naive fix</div>
+      <div class="grid2" style="flex:1;align-items:center">
+        <div>
+          <h2>Copy the same keypair<br>to every device.</h2>
+          <p class="lede" style="margin-top:1rem">Simple. Ships fast. It's also what an <b>earlier draft of this protocol</b> actually did — until the cost became obvious:</p>
+          <p class="q" style="margin-top:1.2rem">One compromised device exposes every message ever sent to the identity — for as long as the compromise goes unnoticed.</p>
+        </div>
+        <div class="diagram">
+          <svg viewBox="0 0 420 300" width="420" height="300">
+            <circle cx="210" cy="46" r="26" fill="none" stroke="#e2604f" stroke-width="4"/>
+            <rect x="200" y="60" width="20" height="10" rx="2" fill="none" stroke="#e2604f" stroke-width="4"/>
+            <line x1="210" y1="80" x2="80" y2="200" stroke="#e2604f" stroke-width="2" stroke-dasharray="5 5"/>
+            <line x1="210" y1="80" x2="210" y2="200" stroke="#e2604f" stroke-width="2" stroke-dasharray="5 5"/>
+            <line x1="210" y1="80" x2="340" y2="200" stroke="#e2604f" stroke-width="2" stroke-dasharray="5 5"/>
+            <g font-family="IBM Plex Sans" font-size="13" fill="#8fa3b3">
+              <rect x="45" y="200" width="70" height="46" rx="8" fill="#101d2c" stroke="#e2604f" stroke-width="1.5"/>
+              <text x="80" y="228" text-anchor="middle" fill="#e9ece7">Phone</text>
+              <rect x="175" y="200" width="70" height="46" rx="8" fill="#101d2c" stroke="#e2604f" stroke-width="1.5"/>
+              <text x="210" y="228" text-anchor="middle" fill="#e9ece7">Laptop</text>
+              <rect x="305" y="200" width="70" height="46" rx="8" fill="#101d2c" stroke="#e2604f" stroke-width="1.5"/>
+              <text x="340" y="228" text-anchor="middle" fill="#e9ece7">Tablet</text>
+            </g>
+            <text x="210" y="280" text-anchor="middle" fill="#e2604f" font-family="IBM Plex Mono" font-size="12">same private key, 3 places</text>
+          </svg>
+        </div>
+      </div>
+      <div class="slide-foot"><span>multi-device/1.0 — Motivation</span><span>3 / 15</span></div>
+    </section>
+
+    <!-- 5: CHECKED AGAINST THE SPEC -->
+    <section>
+      <div class="eyebrow">checked, not assumed</div>
+      <div class="slide-body">
+        <h2>Per-device keys aren't blocked by DIDComm.<br>We checked the actual spec text.</h2>
+        <p class="lede">"A sender only uses the first <span class="t">keyAgreement</span> entry it finds" — a claim about how one single-recipient-oriented resolver happens to behave, not something the spec requires.</p>
+        <div class="card" style="max-width:70ch">
+          <p style="color:var(--paper);font-size:1rem;line-height:1.55">DIDComm Messaging v2.1's own recommended default is the opposite: encrypt to <b>every</b> keyAgreement entry a recipient's document lists, so that recipient "can decrypt his messages on any device he controls, without sharing keys across his devices."</p>
+        </div>
+        <p class="pill teal" style="align-self:flex-start">identity.foundation/didcomm-messaging/spec/v2.1</p>
+      </div>
+      <div class="slide-foot"><span>multi-device/1.0 — Motivation</span><span>4 / 15</span></div>
+    </section>
+
+    <!-- 6: THE FIX DIAGRAM -->
+    <section>
+      <div class="eyebrow gold">the design</div>
+      <h2 style="margin-bottom:.2rem">One entry per device.<br>No private key ever leaves it.</h2>
+      <div class="diagram" style="flex:1">
+        <svg viewBox="0 0 620 300" width="620" height="300">
+          <rect x="190" y="16" width="240" height="58" rx="8" fill="#101d2c" stroke="#34c0cf" stroke-width="1.5"/>
+          <text x="310" y="38" text-anchor="middle" fill="#e9ece7" font-family="IBM Plex Sans" font-weight="600" font-size="13">Identity DID document</text>
+          <text x="310" y="58" text-anchor="middle" fill="#8fa3b3" font-family="IBM Plex Mono" font-size="11">keyAgreement × 3</text>
+          <line x1="230" y1="74" x2="90" y2="190" stroke="#34c0cf" stroke-width="2"/>
+          <line x1="310" y1="74" x2="310" y2="190" stroke="#34c0cf" stroke-width="2"/>
+          <line x1="390" y1="74" x2="530" y2="190" stroke="#34c0cf" stroke-width="2"/>
+          <g font-family="IBM Plex Sans" font-size="13">
+            <rect x="55" y="190" width="70" height="46" rx="8" fill="#101d2c" stroke="#34c0cf" stroke-width="1.5"/>
+            <text x="90" y="218" text-anchor="middle" fill="#e9ece7">Phone</text>
+            <circle cx="90" cy="182" r="7" fill="none" stroke="#f0a83b" stroke-width="2.4"/>
+            <rect x="275" y="190" width="70" height="46" rx="8" fill="#101d2c" stroke="#34c0cf" stroke-width="1.5"/>
+            <text x="310" y="218" text-anchor="middle" fill="#e9ece7">Laptop</text>
+            <circle cx="310" cy="182" r="7" fill="none" stroke="#f0a83b" stroke-width="2.4"/>
+            <rect x="495" y="190" width="70" height="46" rx="8" fill="#101d2c" stroke="#34c0cf" stroke-width="1.5"/>
+            <text x="530" y="218" text-anchor="middle" fill="#e9ece7">Tablet</text>
+            <circle cx="530" cy="182" r="7" fill="none" stroke="#f0a83b" stroke-width="2.4"/>
+          </g>
+          <text x="310" y="270" text-anchor="middle" fill="#8fa3b3" font-family="IBM Plex Mono" font-size="12">each key, independently generated · public half only, ever shared</text>
+        </svg>
+      </div>
+      <div class="slide-foot"><span>multi-device/1.0 — Summary</span><span>5 / 15</span></div>
+    </section>
+
+    <!-- 7: TWO DIDS -->
+    <section>
+      <div class="eyebrow">the split</div>
+      <h2>Two DIDs per person — not one.</h2>
+      <div class="grid2" style="flex:1">
+        <div class="card" style="border-color:var(--teal)">
+          <span class="pill teal">content-facing</span>
+          <h3 style="margin-top:.6rem;font-size:1.2rem">Identity DID</h3>
+          <p style="color:var(--paper);font-size:.95rem">One <code>keyAgreement</code> entry per enrolled device. One <code>authentication</code> entry per <b style="color:var(--gold)">trusted</b> device only. This is what contacts encrypt to and address — forever, across every rotation.</p>
+        </div>
+        <div class="card" style="border-color:var(--gold)">
+          <span class="pill gold">device-to-device only</span>
+          <h3 style="margin-top:.6rem;font-size:1.2rem">Device DID <span class="mono" style="color:var(--muted);font-size:.8rem">× N</span></h3>
+          <p style="color:var(--paper);font-size:.95rem">One per device, independently generated, never shared with a contact. Exists so an <i>unenrolled</i> device — no Identity DID key yet — has somewhere to receive its own enrollment reply.</p>
+        </div>
+      </div>
+      <div class="slide-foot"><span>multi-device/1.0 — Summary</span><span>6 / 15</span></div>
+    </section>
+
+    <!-- 8: ROLES -->
+    <section>
+      <div class="eyebrow">roles</div>
+      <h2>Two roles. One boolean: has an <code>authentication</code> key.</h2>
+      <div class="grid2" style="flex:1;align-items:center">
+        <div class="card">
+          <h3>device</h3>
+          <p>Holds its own <code>keyAgreement</code> key — can send and receive as the identity immediately. Cannot enroll, revoke, or change trust; it has nothing to sign a rotation with.</p>
+        </div>
+        <div class="card" style="border-color:var(--gold)">
+          <h3 style="color:var(--gold)">trusted device</h3>
+          <p>Also holds an <code>authentication</code> key. Can single-handedly enroll, revoke, promote, or demote — every one of those is the same operation underneath (see Key Rotation).</p>
+        </div>
+      </div>
+      <p class="kicker">The founding device starts trusted. A newly enrolled device starts <b style="color:var(--paper)">untrusted, always</b> — promotion is a separate, explicit step, never automatic.</p>
+      <div class="slide-foot"><span>multi-device/1.0 — Roles</span><span>7 / 15</span></div>
+    </section>
+
+    <!-- 9: WALKTHROUGH INTRO -->
+    <section>
+      <div class="eyebrow gold">walkthrough</div>
+      <div class="slide-body">
+        <h1>Alice adds a laptop<br>to her phone's identity.</h1>
+        <p class="lede">No account server. No shared secret transmitted at any point — the single most sensitive value an earlier draft of this protocol ever sent no longer needs to be sent at all.</p>
+      </div>
+      <div class="slide-foot"><span>multi-device/1.0 — Basic Walkthrough</span><span>8 / 15</span></div>
+    </section>
+
+    <!-- 10: WALKTHROUGH STEPS -->
+    <section>
+      <div class="eyebrow">enrollment, step by step</div>
+      <div class="numrow" style="flex:1;align-items:center">
+        <div class="step"><h3>Laptop prepares</h3><p>Generates its own Device DID + its own <code>keyAgreement</code> keypair, offline. Never receives anyone else's private key.</p></div>
+        <div class="step"><h3>QR scan</h3><p>Real <code>out-of-band/2.0</code> invitation from the phone's Device DID. No key material in it — just a route.</p></div>
+        <div class="step"><h3>enroll-request</h3><p>Laptop sends its new public key over that route. Physical possession of the QR is the whole trust basis — same as Signal, WhatsApp.</p></div>
+        <div class="step"><h3>enroll-response</h3><p>Phone mints a <b style="color:var(--gold)">new</b> Identity DID document, signs <code>from_prior</code>, replies with the full roster.</p></div>
+        <div class="step"><h3>Fan-out</h3><p>Phone rotates every <i>other</i> sibling and every contact onto the new DID. Both devices now independently receive as the identity.</p></div>
+      </div>
+      <div class="slide-foot"><span>multi-device/1.0 — Basic Walkthrough</span><span>9 / 15</span></div>
+    </section>
+
+    <!-- 11: REAL MESSAGE JSON -->
+    <section>
+      <div class="eyebrow">on the wire</div>
+      <h2 style="margin-bottom:.2rem">The actual <code>device-enroll-response</code></h2>
+      <div class="grid2" style="flex:1">
+        <pre class="codeblock"><code>{
+  <span class="k">"type"</span>: <span class="s">".../device-enroll-request"</span>,
+  <span class="k">"body"</span>: {
+    <span class="k">"device_id"</span>: <span class="s">"laptop"</span>,
+    <span class="k">"device_did"</span>: <span class="s">"did:peer:4...laptop"</span>,
+    <span class="k">"key_agreement_public"</span>: <span class="s">"z6LSb..."</span>
+  }
+}</code></pre>
+        <pre class="codeblock"><code>{
+  <span class="k">"type"</span>: <span class="s">".../device-enroll-response"</span>,
+  <span class="k">"body"</span>: {
+    <span class="k">"identity_did"</span>: <span class="s">"did:peer:4...v2"</span>,
+    <span class="k">"from_prior"</span>: <span class="g">"eyJhbGci..."</span>,
+    <span class="k">"roster"</span>: [ <span class="k">…</span> ],
+    <span class="k">"rotates"</span>: <span class="ty">false</span>,
+    <span class="k">"rotation_seq"</span>: <span class="ty">1</span>
+  }
+}</code></pre>
+      </div>
+      <p class="kicker">No field in either message is ever a private key. <span class="mono">rotation_seq</span> exists purely so an out-of-order fan-out can't resurrect a state a newer rotation already superseded.</p>
+      <div class="slide-foot"><span>multi-device/1.0 — Message Reference</span><span>10 / 15</span></div>
+    </section>
+
+    <!-- 12: THE ACCEPTED COST -->
+    <section>
+      <div class="eyebrow danger">a cost we accept on purpose</div>
+      <div class="slide-body">
+        <h2><code>did:peer</code>'s value is a hash of its own document.</h2>
+        <p class="lede">Enroll a device. Revoke one. Promote, demote — any of those changes the document, which changes the <b>Identity DID's own value</b>. Every roster change means a <code class="t">from_prior</code> rotation broadcast to every contact.</p>
+        <p class="q">Not an oversight. A trade-off, made explicitly, in exchange for never sharing a private key between devices.</p>
+      </div>
+      <div class="slide-foot"><span>multi-device/1.0 — Motivation</span><span>11 / 15</span></div>
+    </section>
+
+    <!-- 13: ONE MECHANISM -->
+    <section>
+      <div class="eyebrow gold">key rotation</div>
+      <div class="slide-body">
+        <h2>One mechanism. Four use cases.</h2>
+        <div class="grid3" style="grid-template-columns:repeat(4,1fr)">
+          <div class="card"><h3>Enroll</h3><p>New <code>keyAgreement</code> entry added to a fresh document.</p></div>
+          <div class="card"><h3>Revoke</h3><p>Departing device's entries dropped — cut off the instant the new document ships.</p></div>
+          <div class="card"><h3>Promote</h3><p>Device supplies its own <code>authentication</code> public key; a trusted sibling adds it.</p></div>
+          <div class="card"><h3>Demote</h3><p>Any trusted device can drop another's <code>authentication</code> entry, unilaterally.</p></div>
+        </div>
+        <p class="kicker">Every case: mint a new document, sign <code>from_prior</code> with an <code>authentication</code> key the <i>old</i> document already lists, fan it out. No private key ever moves between devices, in any of the four.</p>
+      </div>
+      <div class="slide-foot"><span>multi-device/1.0 — Key Rotation</span><span>12 / 15</span></div>
+    </section>
+
+    <!-- 14: SECURITY + OPEN LIMITATION -->
+    <section>
+      <div class="eyebrow">security properties — and one we haven't solved</div>
+      <div class="grid2" style="flex:1;align-items:center">
+        <div>
+          <h2 style="font-size:1.5rem">What holds</h2>
+          <ul style="margin-top:.9rem">
+            <li class="card"><p style="color:var(--paper)">A revoked device is cut off from <b>both</b> content and rotation authority the instant the new document publishes.</p></li>
+            <li class="card"><p style="color:var(--paper)">A compromised <i>untrusted</i> device can read content — but can never forge a rotation. It has no <code>authentication</code> key to sign with.</p></li>
+          </ul>
+        </div>
+        <div>
+          <h2 style="font-size:1.5rem;color:var(--danger)">What doesn't, yet</h2>
+          <div class="card" style="border-color:var(--danger);margin-top:.9rem">
+            <p style="color:var(--paper)">Lose your <b>last trusted device</b> and this protocol has no recovery — nothing left that can sign a rotation. Today's mitigation is entirely UX: promote a second device early.</p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>multi-device/1.0 — Security, Future Considerations</span><span>13 / 15</span></div>
+    </section>
+
+    <!-- 15: STATUS -->
+    <section>
+      <div class="eyebrow gold">status</div>
+      <div class="slide-body">
+        <h2>Shipping today, not a paper design.</h2>
+        <div class="grid3">
+          <div class="card"><div class="stat">2</div><p>DIDs per identity — Identity + one Device DID per device</p></div>
+          <div class="card"><div class="stat">1</div><p>rotation mechanism covering enroll / revoke / promote / demote</p></div>
+          <div class="card"><div class="stat">0</div><p>private keys ever transmitted, in any message this protocol defines</p></div>
+        </div>
+        <p class="lede">Implemented end-to-end in <span class="t">wyvrn-chat</span>, mediated through <span class="t">wyvrn-mediator</span>. Written in the same format the real <a href="https://didcomm.org">didcomm.org</a> registry uses, specifically so it can be proposed there.</p>
+      </div>
+      <div class="slide-foot"><span>multi-device/1.0</span><span>14 / 15</span></div>
+    </section>
+
+    <!-- 16: DISCUSSION / CLOSE -->
+    <section>
+      <div class="eyebrow">for the group</div>
+      <div class="slide-body closing">
+        <h1 style="font-size:2.6rem">What we'd like feedback on</h1>
+        <ul style="margin-top:.6rem">
+          <li class="q">Is per-device-key multi-device worth a shared registry entry, or does everyone route around it differently today?</li>
+          <li class="q">Does the from_prior-per-roster-change cost match other groups' own experience, or is there a cheaper pattern we're missing?</li>
+        </ul>
+        <div class="linklist" style="margin-top:1.4rem">
+          <a href="https://github.com/wyvrn-cloud/protocols/blob/main/protocols/multi-device/1.0/readme.md">github.com/wyvrn-cloud/protocols — multi-device/1.0</a>
+          <a href="https://github.com/wyvrn-cloud/protocols/blob/main/protocols/history-sync/1.0/readme.md">↳ history-sync/1.0 — replicating history to a newly enrolled device</a>
+        </div>
+      </div>
+      <div class="slide-foot"><span>thank you</span><span>15 / 15</span></div>
+    </section>
+
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    center: false,
+    controls: true,
+    progress: true,
+    transition: 'fade',
+    width: 1280,
+    height: 720,
+    margin: 0,
+  });
+</script>

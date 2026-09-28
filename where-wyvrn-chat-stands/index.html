@@ -1,0 +1,359 @@
+<title>Where wyvrn-chat Stands</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&family=Source+Code+Pro:wght@400;500;600&display=swap">
+<style>
+/* reveal.js 5.1.0 core (structural CSS only, inlined -- CSP allows linked
+   stylesheets only from fonts.googleapis.com) -- theme below is this deck's own. */
+.reveal .r-stretch,.reveal .stretch{max-width:none;max-height:none}.reveal pre.r-stretch code,.reveal pre.stretch code{height:100%;max-height:100%;box-sizing:border-box}.reveal .r-fit-text{display:inline-block;white-space:nowrap}.reveal .r-stack{display:grid;grid-template-rows:100%}.reveal .r-stack>*{grid-area:1/1;margin:auto}.reveal .r-hstack,.reveal .r-vstack{display:flex;gap:1rem}.reveal .r-hstack{flex-direction:row}.reveal .r-vstack{flex-direction:column}.reveal .r-vstack>*,.reveal .r-hstack>*{margin:0}.reveal .r-frame{border:4px solid #333;box-shadow:0 0 10px rgba(0,0,0,.15)}.reveal a .r-frame{transition:all .15s linear}.reveal a:hover .r-frame,.reveal a:focus .r-frame{background:rgba(255,255,255,.2);box-shadow:0 0 20px rgba(0,0,0,.55)}html.reveal-full-page{width:100%;height:100%;overflow:hidden}.reveal{position:relative;width:100%;height:100%;overflow:hidden;-ms-touch-action:none;touch-action:none;font-family:Georgia,serif;font-weight:400;font-size:40px}.reveal.embedded{position:relative;overflow:hidden}.reveal:not(.embedded).reveal-full-page{position:fixed;top:0;left:0;bottom:0;right:0}.reveal .slides{position:absolute;width:100%;height:100%;top:0;right:0;bottom:0;left:0;margin:auto;overflow:visible;z-index:1;text-align:center;perspective:600px;perspective-origin:50% 40%}.reveal .slides>section{display:none;position:absolute;top:0;left:0;width:100%;z-index:10;text-align:inherit;-webkit-backface-visibility:hidden;backface-visibility:hidden}.reveal .slides>section.stack{padding-top:0;padding-bottom:0;pointer-events:none;height:100%}.reveal .slides>section:not(.stack){height:100%}.reveal .slides>section.present{display:block;z-index:11;opacity:1}html:not(.print-pdf) .reveal .slides>section:empty,html:not(.print-pdf) .reveal .slides>section.stack:not(:has(section.present)){display:none}html:not(.print-pdf) .reveal .slides>section>section:empty,html:not(.print-pdf) .reveal .slides>section>section:not(.present){display:none}.reveal .slides>section.past,.reveal .slides>section.future{pointer-events:none}.reveal.overview .slides>section{display:block!important;opacity:1!important;visibility:visible!important;-webkit-backface-visibility:visible!important;backface-visibility:visible!important;pointer-events:auto}.reveal .slides>section.past.stack,.reveal .slides>section.future.stack{display:block}.reveal .slides>section>section{display:none;position:absolute;z-index:11;top:0;left:0;width:100%;-webkit-backface-visibility:hidden;backface-visibility:hidden}.reveal .slides>section>section.present{display:block;z-index:12}.reveal .slides>section>section.past{z-index:12}.reveal.center,.reveal.center .slides section{min-height:0}.reveal.center .slides>section:not(.past):not(.future){display:flex;flex-direction:column;justify-content:center}.reveal.center .slides>section>section{min-height:0}.reveal[data-navigation-mode=linear] .slides>section>section{display:none!important}.reveal[data-navigation-mode=linear] .slides>section>section.present{display:flex!important;justify-content:center;flex-direction:column}img,svg{max-width:100%}.reveal section img,.reveal section svg{margin:0}.reveal .r-stretch img,.reveal .r-stretch svg{object-fit:contain;max-width:none;max-height:100%}.reveal .slide-background{display:none;position:absolute;width:100%;height:100%;opacity:0;visibility:hidden;overflow:hidden;background-color:transparent;background-position:50% 50%;background-repeat:no-repeat;background-size:cover}.reveal .slide-background.stack{height:100%}.reveal .slide-background.present{opacity:1;visibility:visible}.print-pdf .reveal .slide-background{display:block!important}.reveal .slide-background-content{position:absolute;width:100%;height:100%;background-position:50% 50%;background-repeat:no-repeat;background-size:cover}.reveal .slide-background video{position:absolute;width:100%;height:100%;max-width:none;max-height:none;top:0;left:0;-o-object-fit:cover;object-fit:cover}.reveal .slide-background[data-background-size=contain] video{-o-object-fit:contain;object-fit:contain}.reveal .slides>section[data-background-iframe],.reveal .slides>section>section[data-background-iframe]{background:transparent}.reveal .slide-background iframe{position:absolute;width:100%;height:100%;top:0;left:0;-webkit-transform-origin:0 0;transform-origin:0 0;pointer-events:none}.reveal .slide-background iframe.disable-pointer-events-while-resizing{pointer-events:none}.reveal .slide-background-content.has-shadow-top:before,.reveal .slide-background-content.has-shadow-bottom:after{content:"";position:absolute;left:0;right:0;height:100px;pointer-events:none}.reveal .slide-background-content.has-shadow-top:before{top:0;background:linear-gradient(0deg,transparent,rgba(0,0,0,.15))}.reveal .slide-background-content.has-shadow-bottom:after{bottom:0;background:linear-gradient(180deg,transparent,rgba(0,0,0,.15))}.reveal.has-dark-background{color:#fff}.reveal.has-dark-background h1,.reveal.has-dark-background h2,.reveal.has-dark-background h3,.reveal.has-dark-background h4,.reveal.has-dark-background h5,.reveal.has-dark-background h6{color:#fff}.reveal.has-light-background{color:#222}.reveal.has-light-background h1,.reveal.has-light-background h2,.reveal.has-light-background h3,.reveal.has-light-background h4,.reveal.has-light-background h5,.reveal.has-light-background h6{color:#222}.reveal .slide-number{position:fixed;display:block;right:8px;bottom:8px;z-index:31;font-family:Helvetica,sans-serif;font-size:12px;line-height:1;color:#fff;background-color:rgba(0,0,0,.4);padding:5px}.reveal .slide-number a{color:#fff}.reveal.has-light-background .slide-number{color:#222}.reveal.has-light-background .slide-number a{color:#222}.reveal .slide-number-delimiter{margin:0 3px}.reveal .progress{position:fixed;display:block;height:3px;left:0;bottom:0;z-index:31;width:100%;background-color:rgba(0,0,0,.2);color:#fff}.reveal .progress:after{content:"";display:block;position:absolute;height:19px;width:100%;top:-16px}.reveal .progress span{display:block;height:100%;width:0;background-color:currentColor;transition:width .8s cubic-bezier(.26,.86,.44,.985)}.reveal .controls{display:none;position:fixed;top:auto;bottom:12px;right:12px;left:auto;z-index:31;color:#fff;pointer-events:none;font-size:10px}.reveal .controls button{position:absolute;padding:0;background-color:transparent;border:0;outline:0;cursor:pointer;color:currentColor;-webkit-tap-highlight-color:transparent;z-index:2;transition:color .2s ease,opacity .2s ease;transform:scale(.9999);pointer-events:none;opacity:0;visibility:hidden}.reveal .controls button.enabled{pointer-events:auto;opacity:.9;visibility:visible}.reveal .controls button.enabled:hover,.reveal .controls button:focus-visible{opacity:1}.reveal .controls button.fragmented{opacity:.2;pointer-events:none}.reveal .controls button:focus-visible{transform:scale(1.08)}.reveal .controls button.enabled.fragmented:hover,.reveal .controls button.enabled.fragmented:focus-visible{opacity:.4}.reveal .controls .navigate-left,.reveal .controls .navigate-right,.reveal .controls .navigate-up,.reveal .controls .navigate-down{width:36px;height:36px}.reveal .controls .navigate-left{right:110px;bottom:20px}.reveal .controls .navigate-right{right:20px;bottom:20px}.reveal .controls .navigate-up{right:65px;bottom:65px}.reveal .controls .navigate-down{right:65px;bottom:20px}.reveal .controls[data-controls-layout=bottom-right]{bottom:12px;right:12px;top:auto;left:auto}.reveal .controls[data-controls-layout=edges]{top:0;right:0;bottom:0;left:0;width:100%;height:100%}.reveal .controls[data-controls-layout=edges] .navigate-left,.reveal .controls[data-controls-layout=edges] .navigate-right,.reveal .controls[data-controls-layout=edges] .navigate-up,.reveal .controls[data-controls-layout=edges] .navigate-down{bottom:auto;right:auto}.reveal .controls[data-controls-layout=edges] .navigate-left{top:50%;left:8px;margin-top:-18px}.reveal .controls[data-controls-layout=edges] .navigate-right{top:50%;right:8px;margin-top:-18px}.reveal .controls[data-controls-layout=edges] .navigate-up{top:8px;left:50%;margin-left:-18px}.reveal .controls[data-controls-layout=edges] .navigate-down{bottom:8px;left:50%;margin-left:-18px}.reveal.overview{perspective-origin:50% 50%;perspective:700px}.reveal.overview .slides{-moz-transform-style:preserve-3d}.reveal.overview .slides section{padding:0;pointer-events:auto;-webkit-box-sizing:border-box;box-sizing:border-box;opacity:1!important;overflow:hidden;cursor:pointer}.reveal.overview .slides section:hover,.reveal.overview .slides section.present{outline:10px solid rgba(150,150,150,.4);outline-offset:10px}.reveal.overview .slides section .fragment{opacity:1;transition:none}.reveal.overview .slides section:after,.reveal.overview .slides section:before{display:none!important}.reveal.overview .slides>section.stack{padding:0;top:0!important;viewport-fit:auto}.reveal.overview .backgrounds{-webkit-perspective:inherit;perspective:inherit;-webkit-transform-style:preserve-3d;transform-style:preserve-3d}.reveal.overview .backgrounds .slide-background.stack{overflow:hidden}.reveal.overview .backgrounds .slide-background{opacity:1;visibility:visible;outline:10px solid rgba(150,150,150,.1);outline-offset:10px;cursor:pointer}.reveal .fragment{will-change:opacity,visibility,transform;transition:all .3s ease;visibility:hidden;opacity:0}.reveal .fragment.visible{visibility:inherit}.reveal .fragment.current-fragment{will-change:auto}.reveal .fragment.fade-in,.reveal .fragment.fade-in-then-out,.reveal .fragment.fade-in-then-semi-out{opacity:0;visibility:hidden}.reveal .fragment.fade-in.visible,.reveal .fragment.fade-in-then-out.visible,.reveal .fragment.fade-in-then-semi-out.visible{opacity:1;visibility:inherit}.reveal .fragment.fade-in-then-out.current-fragment,.reveal .fragment.fade-in-then-semi-out.current-fragment{opacity:1;visibility:inherit}.reveal .fragment.fade-in-then-out:not(.current-fragment).visible{opacity:0;visibility:hidden}.reveal .fragment.fade-in-then-semi-out:not(.current-fragment).visible{opacity:.5}.reveal .fragment.fade-out{opacity:1;visibility:inherit}.reveal .fragment.fade-out.visible{opacity:0;visibility:hidden}.reveal .fragment.semi-fade-out{opacity:1;visibility:inherit}.reveal .fragment.semi-fade-out.visible{opacity:.5;visibility:inherit}.reveal .fragment.grow{opacity:1;visibility:inherit}.reveal .fragment.grow.visible{transform:scale(1.3)}.reveal .fragment.shrink{opacity:1;visibility:inherit}.reveal .fragment.shrink.visible{transform:scale(.7)}.reveal .fragment.zoom-in{transform:scale(.1);opacity:0}.reveal .fragment.zoom-in.visible{transform:none;opacity:1}.reveal .fragment.fade-right{transform:translate(-20%);opacity:0}.reveal .fragment.fade-right.visible{transform:translate(0);opacity:1}.reveal .fragment.fade-left{transform:translate(20%);opacity:0}.reveal .fragment.fade-left.visible{transform:translate(0);opacity:1}.reveal .fragment.fade-up{transform:translateY(20%);opacity:0}.reveal .fragment.fade-up.visible{transform:translateY(0);opacity:1}.reveal .fragment.fade-down{transform:translateY(-20%);opacity:0}.reveal .fragment.fade-down.visible{transform:translateY(0);opacity:1}.reveal .fragment.highlight-red,.reveal .fragment.highlight-current-red,.reveal .fragment.highlight-green,.reveal .fragment.highlight-current-green,.reveal .fragment.highlight-blue,.reveal .fragment.highlight-current-blue{opacity:1;visibility:inherit}.reveal .fragment.highlight-red.visible{color:#ff2c2d}.reveal .fragment.highlight-current-red.current-fragment{color:#ff2c2d}.reveal .fragment.highlight-green.visible{color:#17ff2e}.reveal .fragment.highlight-current-green.current-fragment{color:#17ff2e}.reveal .fragment.highlight-blue.visible{color:#1b91ff}.reveal .fragment.highlight-current-blue.current-fragment{color:#1b91ff}.reveal .no-transition,.reveal .no-transition *{transition:none!important}.reveal.slide .slides{-webkit-transform-style:preserve-3d;transform-style:preserve-3d}.reveal.slide .slides>section{-webkit-backface-visibility:hidden;backface-visibility:hidden;-webkit-transition:-webkit-transform-origin .8s ease,-webkit-transform .8s ease,visibility .8s ease,opacity .8s ease;transition:transform-origin .8s ease,transform .8s ease,visibility .8s ease,opacity .8s ease}.reveal.slide .slides>section.past{opacity:0;-webkit-transform:translate(-150%,0);transform:translate(-150%,0)}.reveal.slide .slides>section.future{opacity:0;-webkit-transform:translate(150%,0);transform:translate(150%,0)}.reveal.slide .slides>section>section.past{opacity:0;-webkit-transform:translate(0,-150%);transform:translate(0,-150%)}.reveal.slide .slides>section>section.future{opacity:0;-webkit-transform:translate(0,150%);transform:translate(0,150%)}.reveal .no-transition .slides>section,.reveal.no-transition .slides>section,.reveal .no-transition .slides>section>section,.reveal.no-transition .slides>section>section{-webkit-transition:none!important;transition:none!important}
+/* =====================================================================
+   Deck theme -- "Where wyvrn-chat Stands" -- a scorecard/ledger register,
+   distinct from the multi-device talk's diagram-led theme: slab display
+   face, a literal comparison matrix as the signature device, and a warmer
+   charcoal ground (still wyvrn's own gold/teal, different balance/role).
+   ===================================================================== */
+:root{
+  --ink:#14100c; --panel:#1c1710; --panel-2:#241d14; --line:rgba(240,232,214,.14);
+  --paper:#f1ece1; --muted:#a89b84;
+  --gold:#e9a23b; --gold-dim:#3c2c14;
+  --teal:#3cbfae; --teal-dim:#12332e;
+  --bad:#e2604f; --bad-dim:#3a1c17;
+  --display:'Zilla Slab',Georgia,serif;
+  --body:'Source Sans 3',system-ui,sans-serif;
+  --mono:'Source Code Pro',ui-monospace,'SF Mono',Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{background:var(--ink)}
+body{margin:0;font-family:var(--body);color:var(--paper)}
+.reveal{font-family:var(--body);font-size:26px;color:var(--paper)}
+.reveal .slides{text-align:left}
+.reveal .slides section{
+  padding:5.4vh 6.2vw 5.2vh; height:100%;
+  display:flex!important; flex-direction:column; justify-content:flex-start; gap:1rem;
+  background:
+    linear-gradient(180deg, rgba(233,162,59,.06) 0%, transparent 22%),
+    radial-gradient(1000px 460px at 92% 112%, var(--teal-dim) 0%, transparent 58%),
+    var(--ink);
+}
+.reveal h1,.reveal h2,.reveal h3{font-family:var(--display);color:var(--paper);margin:0;text-wrap:balance;font-weight:600;line-height:1.08}
+.reveal h1{font-size:2.95rem;letter-spacing:-.005em}
+.reveal h2{font-size:1.85rem}
+.reveal p{margin:0;line-height:1.5}
+.reveal a{color:var(--teal)}
+.eyebrow{
+  font-family:var(--mono); font-size:.7rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--gold); display:flex; align-items:center; gap:.6em;
+}
+.eyebrow::before{content:'§';font-family:var(--display);font-size:1em;color:var(--gold);opacity:.8}
+.eyebrow.bad::before,.eyebrow.bad{color:var(--bad)}
+.eyebrow.teal::before,.eyebrow.teal{color:var(--teal)}
+.kicker{color:var(--muted);font-size:1.02rem;max-width:52ch}
+.slide-body{flex:1;display:flex;flex-direction:column;gap:1.3rem;justify-content:center;min-height:0}
+.slide-foot{
+  font-family:var(--mono); font-size:.66rem; color:var(--muted); opacity:.65;
+  display:flex; justify-content:space-between; letter-spacing:.02em;
+}
+.lede{font-size:1.24rem;line-height:1.5;max-width:64ch;color:var(--paper)}
+.lede b{color:var(--gold);font-weight:600}
+.lede .t{color:var(--teal);font-weight:600}
+.lede .x{color:var(--bad);font-weight:600}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:2.2rem;align-items:center}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.3rem;align-items:center}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:1.2rem 1.4rem}
+.card h3{font-size:1rem;font-family:var(--body);font-weight:600;margin-bottom:.35rem}
+.card p{color:var(--muted);font-size:.9rem;line-height:1.45}
+.card.good{border-color:var(--teal)}
+.card.bad{border-left:3px solid var(--bad)}
+code,.mono{font-family:var(--mono)}
+.pill{font-family:var(--mono);font-size:.66rem;letter-spacing:.04em;padding:.16em .65em;border-radius:2px;display:inline-block;border:1px solid currentColor}
+.pill.teal{color:var(--teal)}
+.pill.gold{color:var(--gold)}
+.pill.bad{color:var(--bad)}
+.source{font-family:var(--mono);font-size:.7rem;color:var(--muted);opacity:.85}
+.q{border-left:2px solid var(--gold);padding-left:1.1rem;font-family:var(--display);font-size:1.4rem;font-weight:500;color:var(--paper);max-width:38ch;line-height:1.32}
+.q.bad{border-color:var(--bad)}
+.stat{font-family:var(--display);font-weight:700;color:var(--gold);font-size:2.4rem;line-height:1}
+.title-slide{justify-content:center!important;align-items:flex-start;gap:1.5rem!important}
+.title-slide h1{font-size:3.7rem}
+.title-slide .sub{font-size:1.25rem;color:var(--muted);max-width:52ch}
+.brandmark{display:flex;align-items:center;gap:.6rem}
+.brandmark svg{width:32px;height:32px}
+.closing{align-items:flex-start}
+.linklist{display:flex;flex-direction:column;gap:.45rem;font-family:var(--mono);font-size:.92rem}
+::selection{background:var(--gold);color:#1a1305}
+.reveal .progress{color:var(--gold);background:var(--line)}
+.reveal .controls{color:var(--paper)}
+
+/* the comparison matrix -- the deck's signature device */
+.matrix{width:100%;border-collapse:collapse;font-size:.92rem}
+.matrix th,.matrix td{padding:.62rem .8rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.matrix thead th{
+  font-family:var(--mono); font-size:.66rem; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--muted); border-bottom:1px solid var(--gold); padding-bottom:.7rem;
+}
+.matrix tbody th{font-weight:600;color:var(--paper);white-space:nowrap;font-size:.9rem}
+.matrix td{color:var(--muted)}
+.matrix td.self{color:var(--paper);background:rgba(60,191,174,.07);border-left:2px solid var(--teal)}
+.matrix td.yes{color:var(--teal);font-weight:700}
+.matrix td.no{color:var(--bad);font-weight:700}
+.matrix td.part{color:var(--gold);font-weight:700}
+.matrix td.self.yes{color:var(--teal)}
+@media(max-width:900px){
+  .reveal .slides section{padding:4vh 5vw}
+  .reveal h1{font-size:2rem}
+  .title-slide h1{font-size:2.3rem}
+  .grid2,.grid3{grid-template-columns:1fr}
+  .matrix{font-size:.72rem}
+}
+</style>
+
+<div class="reveal">
+  <div class="slides">
+
+    <!-- 1: TITLE -->
+    <section>
+      <div class="slide-body title-slide">
+        <div class="brandmark">
+          <svg viewBox="0 0 48 48" fill="none"><circle cx="20" cy="18" r="13" stroke="#e9a23b" stroke-width="4"/><circle cx="28" cy="30" r="13" stroke="#3cbfae" stroke-width="4"/></svg>
+          <span class="eyebrow">wyvrn-chat — positioning notes</span>
+        </div>
+        <h1>Where wyvrn&#8209;chat<br>Stands</h1>
+        <p class="sub">Strengths, weaknesses, and a plain look at what the rest of the DIDComm ecosystem has — and hasn't — already solved.</p>
+        <p class="kicker mono" style="margin-top:.8rem">a peer-to-peer DIDComm v2 chat app · wyvrn-cloud</p>
+      </div>
+    </section>
+
+    <!-- 2: WHAT IT IS -->
+    <section>
+      <div class="eyebrow">what it is</div>
+      <div class="slide-body">
+        <h1>A chat app.<br>Not a wallet with messaging bolted on.</h1>
+        <p class="lede">Contacts on the left, messages on the right — <span class="t">basicmessage/2.0</span>, real read receipts, group chats, profiles. DIDComm v2 as the transport, not as a means to issue a credential.</p>
+        <div class="grid3">
+          <div class="card"><h3>No central server</h3><p>Identity, storage, and delivery all live at the edges — a mediator relays, it never holds a copy of the conversation.</p></div>
+          <div class="card"><h3>Native + web</h3><p>One Rust core. Browser (wasm), desktop, and Android from the same codebase — see the other deck for how.</p></div>
+          <div class="card"><h3>Encrypted at rest</h3><p>PIN or passkey-gated vault key; SQLCipher on native. Never regenerates an existing identity.</p></div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>positioning</span><span>1 / 15</span></div>
+    </section>
+
+    <!-- 3: THE GAP -->
+    <section>
+      <div class="eyebrow gold">the gap</div>
+      <div class="slide-body">
+        <h2>Most of the DIDComm ecosystem builds<br><span style="color:var(--gold)">credential wallets</span>, not chat apps.</h2>
+        <p class="lede">Bifold — the OpenWallet Foundation's own reference wallet, built on Credo — lists peer-to-peer messaging as a capability. A real chat UI is on its <b>roadmap</b>, not shipped.</p>
+        <p class="q">We didn't find a consumer DIDComm chat app comparable to wyvrn-chat anywhere in the Aries/Credo ecosystem. Most DIDComm traffic today issues and presents credentials — it doesn't carry a conversation.</p>
+        <p class="source">source: github.com/openwallet-foundation/bifold-wallet</p>
+      </div>
+      <div class="slide-foot"><span>positioning</span><span>2 / 15</span></div>
+    </section>
+
+    <!-- 4: THE MATRIX -->
+    <section>
+      <div class="eyebrow">the scorecard</div>
+      <h2 style="margin-bottom:.3rem">Six capabilities, three real projects.</h2>
+      <table class="matrix" style="margin-top:.3rem">
+        <thead>
+          <tr><th>Capability</th><th>wyvrn-chat</th><th>ACA-Py</th><th>Credo-TS / Bifold</th></tr>
+        </thead>
+        <tbody>
+          <tr><th>Shipped consumer chat UI</th><td class="self yes">Yes</td><td class="no">No</td><td class="part">Roadmap only</td></tr>
+          <tr><th>Multi-device, per-device keys</th><td class="self yes">Yes</td><td class="no">No — 1 DID / wallet</td><td class="no">No</td></tr>
+          <tr><th>Mobile push wake (FCM)</th><td class="self yes">Yes</td><td class="no">No</td><td class="part">Via separate mediator</td></tr>
+          <tr><th>Encrypted local storage</th><td class="self yes">Yes</td><td class="yes">Yes (Askar)</td><td class="yes">Yes (Askar)</td></tr>
+          <tr><th>Legacy v1 + v2/v3/v4, one mediator</th><td class="self yes">Yes</td><td class="part">v1-centric</td><td class="part">v2-centric</td></tr>
+          <tr><th>Binary (CBOR) wire option</th><td class="self yes">Yes</td><td class="no">No</td><td class="no">No</td></tr>
+        </tbody>
+      </table>
+      <p class="source">ACA-Py: aca-py.org/latest/features/Multitenancy (one public DID per wallet — multi-<i>tenant</i>, not multi-device). Credo/Bifold: github.com/openwallet-foundation/{credo-ts,bifold-wallet}.</p>
+      <div class="slide-foot"><span>positioning</span><span>3 / 15</span></div>
+    </section>
+
+    <!-- 5: STRENGTH — MULTI-DEVICE -->
+    <section>
+      <div class="eyebrow teal">strength — multi-device identity</div>
+      <div class="slide-body">
+        <h2>One identity, several devices,<br>independent keys. Nobody else ships this.</h2>
+        <div class="grid2">
+          <div class="card bad">
+            <h3 style="color:var(--bad)">ACA-Py</h3>
+            <p>Explicitly one public DID per wallet. Its own "multi-device" story is multi-<b style="color:var(--paper)">tenant</b> — separate wallets on one server, not one identity across a person's own devices.</p>
+          </div>
+          <div class="card bad">
+            <h3 style="color:var(--bad)">Veramo</h3>
+            <p>Its "multi-device" pattern splits <b style="color:var(--paper)">one agent</b> into backend microservices — key custody, data, frontend. Orthogonal to a person actually holding two phones.</p>
+          </div>
+        </div>
+        <p class="lede">wyvrn-chat's <span class="t">multi-device/1.0</span>: an Identity DID with one <code>keyAgreement</code> per device, a Device DID per device for coordination, no private key ever leaves the device that generated it.</p>
+      </div>
+      <div class="slide-foot"><span>positioning — see also: Identity DID, Device DID</span><span>4 / 15</span></div>
+    </section>
+
+    <!-- 6: STRENGTH — CBOR -->
+    <section>
+      <div class="eyebrow teal">strength — didcomm/v2+cbor</div>
+      <div class="slide-body">
+        <h2>The spec has debated this since 2021.<br>We shipped it.</h2>
+        <p class="lede">DIDComm Messaging v2.1 <i>names</i> <code>+cbor</code>/<code>+msgpack</code>/<code>+protobuf</code> as future possibilities. A real 2021 spec-repo issue — <span class="mono" style="font-size:.85em">"Should we flip to CBOR?"</span> — argued JSON creates real overhead. It was never resolved.</p>
+        <div class="grid2">
+          <div class="card good">
+            <h3 style="color:var(--teal)">What it actually is</h3>
+            <p>The same JWE general-form structure. <code>iv</code>/<code>ciphertext</code>/<code>tag</code>/<code>encrypted_key</code> as real CBOR byte strings instead of base64url text.</p>
+          </div>
+          <div class="card good">
+            <h3 style="color:var(--teal)">What it buys</h3>
+            <p>No ~33% base64 blowup on top of the ciphertext and every other binary field. Negotiated per-recipient, off their advertised <code>accept</code>.</p>
+          </div>
+        </div>
+        <p class="source">decentralized-identity/didcomm-messaging issue #207 (2021) — no shipped Aries/Credo/DIDComm-rs/Veramo implementation of a CBOR envelope was found.</p>
+      </div>
+      <div class="slide-foot"><span>positioning</span><span>5 / 15</span></div>
+    </section>
+
+    <!-- 7: STRENGTH — MEDIATOR -->
+    <section>
+      <div class="eyebrow teal">strength — the mediator itself</div>
+      <div class="slide-body">
+        <h2>One mediator. Both eras.<br>Built to run more than one copy.</h2>
+        <div class="grid3">
+          <div class="card"><h3>v1 <i>and</i> v2/v3/v4</h3><p>The full legacy AIP1/AIP2 envelope family, same service, same storage — not a separate deployment.</p></div>
+          <div class="card"><h3>SQLite, MySQL, or Postgres</h3><p>One SQL schema across three backends — not a single-instance demo store.</p></div>
+          <div class="card"><h3>Horizontally scalable</h3><p>Live delivery decoupled through a WS↔HTTP relay; any replica can deliver to a DID connected on a different one.</p></div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>positioning</span><span>6 / 15</span></div>
+    </section>
+
+    <!-- 8: STRENGTH — PUSH + MULTI-DEVICE COMBINED -->
+    <section>
+      <div class="eyebrow teal">strength — combined, not isolated</div>
+      <div class="slide-body">
+        <h2>Credo's mediator can push. It has nothing to combine that with.</h2>
+        <p class="lede">didcomm-mediator-credo implements Aries RFC 0734 — real, functional, FCM only, no APNs mentioned anywhere in its own repo. wyvrn adopted the exact same protocol.</p>
+        <p class="q">The difference isn't the push protocol. It's that <span class="t">any</span> of a person's enrolled devices — not just the one that happened to register — can be woken, because multi-device/1.0 already knows about all of them.</p>
+        <p class="source">github.com/openwallet-foundation/didcomm-mediator-credo — ~98 commits, 18 stars, 37 forks: real and functional, not a widely-deployed production mediator.</p>
+      </div>
+      <div class="slide-foot"><span>positioning</span><span>7 / 15</span></div>
+    </section>
+
+    <!-- 9: TURN -->
+    <section>
+      <div class="eyebrow bad">now, the honest part</div>
+      <div class="slide-body title-slide" style="justify-content:center!important">
+        <h1 style="font-size:3rem">The weaknesses we'd tell you about<br>even if you didn't ask.</h1>
+        <p class="sub">A scorecard that only lists wins isn't a scorecard.</p>
+      </div>
+      <div class="slide-foot"><span>positioning</span><span>8 / 15</span></div>
+    </section>
+
+    <!-- 10: WEAKNESS — HARDWARE KEYS -->
+    <section>
+      <div class="eyebrow bad">weakness — key storage</div>
+      <div class="slide-body">
+        <h2>Software-derived, not hardware-backed.</h2>
+        <p class="lede">The vault key comes from a PIN (PBKDF2) or a passkey's <code>prf</code> output. SQLCipher protects the file at rest. Real, but it's <b style="color:var(--paper)">not</b> the same guarantee as a hardware secure element.</p>
+        <div class="card bad">
+          <p style="color:var(--paper)">Aries' own storage layer, <b>Askar</b>, already does encrypted-at-rest SQLite/Postgres — parity with wyvrn, not an advantage either way. But Askar-based wallets have a path to Android StrongBox / iOS Secure Enclave. wyvrn-chat doesn't use either yet.</p>
+        </div>
+        <p class="source">github.com/openwallet-foundation/askar; OWASP MASTG on hardware-backed key storage.</p>
+      </div>
+      <div class="slide-foot"><span>positioning</span><span>9 / 15</span></div>
+    </section>
+
+    <!-- 11: WEAKNESS — CBOR INTEROP COST -->
+    <section>
+      <div class="eyebrow bad">weakness — the same cbor, cuts both ways</div>
+      <div class="slide-body">
+        <h2>Only two wyvrn endpoints ever see the saving.</h2>
+        <p class="lede">Every real Aries, Credo, or other DIDComm peer today only understands <code>+json</code>. <code>didcomm/v2+cbor</code> negotiates down to plain JSON automatically when the other side doesn't advertise it —</p>
+        <p class="q bad">— which means, in practice, almost every message wyvrn-chat sends to the wider ecosystem today gets none of the benefit slide 5 described.</p>
+      </div>
+      <div class="slide-foot"><span>positioning</span><span>10 / 15</span></div>
+    </section>
+
+    <!-- 12: WEAKNESS — ROTATION STORM -->
+    <section>
+      <div class="eyebrow bad">weakness — the accepted cost, revisited</div>
+      <div class="slide-body">
+        <h2>Every roster change is a broadcast.</h2>
+        <p class="lede">Enroll a device, revoke one, promote, demote — each mints a new Identity DID and rotates <b style="color:var(--paper)">every contact</b> onto it. A person who churns devices often means real, recurring chatter no single-key architecture pays.</p>
+      </div>
+      <div class="slide-foot"><span>positioning — see also: multi-device/1.0, Motivation</span><span>11 / 15</span></div>
+    </section>
+
+    <!-- 13: WEAKNESS — MATURITY -->
+    <section>
+      <div class="eyebrow bad">weakness — a young project vs. a mature one</div>
+      <div class="grid2" style="flex:1;align-items:center">
+        <div class="card bad">
+          <h3 style="color:var(--bad)">ACA-Py</h3>
+          <p>Years of production credential-network deployments, a large community, plugins, third-party tooling. Battle-tested at a scale wyvrn-chat hasn't approached.</p>
+        </div>
+        <div class="card bad">
+          <h3 style="color:var(--bad)">wyvrn-chat</h3>
+          <p>A single-team project. No iOS build exists yet — needs a real Mac. <code>group-chat/1.0</code> is still "Proposed," not hardened by outside use.</p>
+        </div>
+      </div>
+      <div class="slide-foot"><span>positioning</span><span>12 / 15</span></div>
+    </section>
+
+    <!-- 14: WEAKNESS — LICENSE -->
+    <section>
+      <div class="eyebrow bad">weakness — the mediator isn't fully open</div>
+      <div class="slide-body">
+        <h2>ACA-Py and Credo-TS: Apache 2.0, no gate.<br>wyvrn-mediator: a real license check at startup.</h2>
+        <p class="lede">Not a technical limitation — a plain business-model difference worth naming rather than glossing over. Anyone standing up their own mediator instance needs a valid <code>wyvrn-license</code> first.</p>
+      </div>
+      <div class="slide-foot"><span>positioning</span><span>13 / 15</span></div>
+    </section>
+
+    <!-- 15: SYNTHESIS -->
+    <section>
+      <div class="eyebrow">where this leaves us</div>
+      <div class="slide-body">
+        <h2>Two real gaps closed. Two real costs still open.</h2>
+        <div class="grid2">
+          <div class="card good">
+            <h3 style="color:var(--teal)">Closed</h3>
+            <p style="color:var(--paper)">A real chat app on DIDComm, not a wallet. Multi-device identity with no shared key — something we could not find shipped anywhere else in the ecosystem.</p>
+          </div>
+          <div class="card bad">
+            <h3 style="color:var(--bad)">Still open</h3>
+            <p style="color:var(--paper)">Hardware-backed key storage. Real-world benefit from the CBOR profile, which today helps almost nothing it talks to.</p>
+          </div>
+        </div>
+        <p class="kicker" style="margin-top:.2rem">Neither list is closed. This is a snapshot, not a verdict.</p>
+      </div>
+      <div class="slide-foot"><span>positioning</span><span>14 / 15</span></div>
+    </section>
+
+    <!-- 16: CLOSE -->
+    <section>
+      <div class="eyebrow">thank you</div>
+      <div class="slide-body closing">
+        <h1 style="font-size:2.5rem">Questions, corrections,<br>counter-examples welcome.</h1>
+        <p class="lede">If your project already solves per-device keys, hardware-backed mobile storage, or a shipped CBOR profile — we'd genuinely like to know. This deck is easier to falsify than to defend.</p>
+        <div class="linklist" style="margin-top:1.2rem">
+          <a href="https://github.com/wyvrn-cloud/protocols">github.com/wyvrn-cloud/protocols</a>
+          <a href="https://github.com/wyvrn-cloud/wyvrn-chat">github.com/wyvrn-cloud/wyvrn-chat</a>
+        </div>
+      </div>
+      <div class="slide-foot"><span>wyvrn-chat</span><span>15 / 15</span></div>
+    </section>
+
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    center: false,
+    controls: true,
+    progress: true,
+    transition: 'fade',
+    width: 1280,
+    height: 720,
+    margin: 0,
+  });
+</script>
