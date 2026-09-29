@@ -146,8 +146,8 @@ code,.mono{font-family:var(--mono)}
           <span class="eyebrow">wyvrn-chat — positioning notes</span>
         </div>
         <h1>Where wyvrn&#8209;chat<br>Stands</h1>
-        <p class="sub">Strengths, weaknesses, and a plain look at what the rest of the DIDComm ecosystem has — and hasn't — already solved.</p>
-        <p class="kicker mono" style="margin-top:.8rem">a peer-to-peer DIDComm v2 chat app · wyvrn-cloud</p>
+        <p class="sub">What an experimental chat app on DIDComm has tried so far, its strengths and weaknesses, and a plain look at what the rest of the ecosystem has — and hasn't — already solved.</p>
+        <p class="kicker mono" style="margin-top:.8rem">an experimental peer-to-peer DIDComm v2 chat app · wyvrn-cloud</p>
       </div>
     </section>
 
@@ -168,7 +168,7 @@ code,.mono{font-family:var(--mono)}
         <p class="lede">Contacts on the left, messages on the right — <span class="t">basicmessage/2.0</span>, real read receipts, group chats, profiles. DIDComm v2 as the transport, not as a means to issue a credential.</p>
         <div class="grid3">
           <div class="card"><h3>No central server</h3><p>Identity, storage, and delivery all live at the edges — a mediator relays, it never holds a copy of the conversation.</p></div>
-          <div class="card"><h3>Native + web</h3><p>One Rust core. Browser (wasm), desktop, and Android from the same codebase — see the other deck for how.</p></div>
+          <div class="card"><h3>Native + web</h3><p>One Rust core. Browser (wasm), desktop, and Android from the same codebase.</p></div>
           <div class="card"><h3>Encrypted at rest</h3><p>PIN or passkey-gated vault key; SQLCipher on native. Never regenerates an existing identity.</p></div>
         </div>
       </div>
@@ -181,8 +181,8 @@ code,.mono{font-family:var(--mono)}
       <div class="slide-body">
         <h2>Most of the DIDComm ecosystem builds<br><span style="color:var(--gold)">credential wallets</span>, not chat apps.</h2>
         <p class="lede">Bifold — the OpenWallet Foundation's own reference wallet, built on Credo — lists peer-to-peer messaging as a capability. A real chat UI is on its <b>roadmap</b>, not shipped.</p>
-        <p class="q">We didn't find a consumer DIDComm chat app comparable to wyvrn-chat anywhere in the Aries/Credo ecosystem. Most DIDComm traffic today issues and presents credentials — it doesn't carry a conversation.</p>
-        <p class="source">source: github.com/openwallet-foundation/bifold-wallet</p>
+        <p class="q">The didcomm.org registry does have group messaging protocols (<code>group-chat/1.0</code> and <code>rooms/1.0</code>, both Demonstrated), but we haven't found a consumer chat app built on DIDComm in the Aries/Credo ecosystem. Most DIDComm traffic today issues and presents credentials; it doesn't carry a conversation.</p>
+        <p class="source">sources: github.com/openwallet-foundation/bifold-wallet · didcomm.org/group-chat/1.0 · didcomm.org/rooms/1.0</p>
       </div>
       <div class="slide-foot"><span>positioning</span><span>3 / 18</span></div>
     </section>
@@ -190,21 +190,21 @@ code,.mono{font-family:var(--mono)}
     <!-- 4: THE MATRIX -->
     <section>
       <div class="eyebrow"><span class="sec">Where it fits ·</span> the scorecard</div>
-      <h2 style="margin-bottom:.3rem">Six capabilities, three real projects.</h2>
+      <h2 style="margin-bottom:.3rem">Six capabilities, three projects.</h2>
       <table class="matrix" style="margin-top:.3rem">
         <thead>
           <tr><th>Capability</th><th>wyvrn-chat</th><th>ACA-Py</th><th>Credo-TS / Bifold</th></tr>
         </thead>
         <tbody>
-          <tr><th>Shipped consumer chat UI</th><td class="self yes">Yes</td><td class="no">No</td><td class="part">Roadmap only</td></tr>
+          <tr><th>Consumer chat UI</th><td class="self yes">Yes (experimental)</td><td class="no">No</td><td class="part">Roadmap only</td></tr>
           <tr><th>Multi-device, per-device keys</th><td class="self yes">Yes</td><td class="no">No — 1 DID / wallet</td><td class="no">No</td></tr>
           <tr><th>Mobile push wake (FCM)</th><td class="self yes">Yes</td><td class="no">No</td><td class="part">Via separate mediator</td></tr>
           <tr><th>Encrypted local storage</th><td class="self yes">Yes</td><td class="yes">Yes (Askar)</td><td class="yes">Yes (Askar)</td></tr>
-          <tr><th>Legacy v1 + v2/v3/v4, one mediator</th><td class="self yes">Yes</td><td class="part">v1-centric</td><td class="part">v2-centric</td></tr>
+          <tr><th>All four spec profiles (aip1, aip2 ×2, v2) on one mediator</th><td class="self yes">Yes</td><td class="part">v1-centric</td><td class="part">v2-centric</td></tr>
           <tr><th>Binary (CBOR) wire option</th><td class="self yes">Yes</td><td class="no">No</td><td class="no">No</td></tr>
         </tbody>
       </table>
-      <p class="source">ACA-Py: aca-py.org/latest/features/Multitenancy (one public DID per wallet — multi-<i>tenant</i>, not multi-device). Credo/Bifold: github.com/openwallet-foundation/{credo-ts,bifold-wallet}.</p>
+      <p class="source">ACA-Py: aca-py.org/latest/features/Multitenancy (one public DID per wallet — multi-<i>tenant</i>, not multi-device). Credo/Bifold: github.com/openwallet-foundation/{credo-ts,bifold-wallet}. Profiles: DIDComm Messaging v2.1, Defined Profiles. Binary encodings: the registry's <code>mesh/1.0</code> (Proposed) defines its own compact binary envelope for BLE/LoRa, separate from a CBOR profile.</p>
       <div class="slide-foot"><span>positioning</span><span>4 / 18</span></div>
     </section>
 
@@ -221,7 +221,7 @@ code,.mono{font-family:var(--mono)}
     <section>
       <div class="eyebrow teal"><span class="sec">Strengths ·</span> multi-device identity</div>
       <div class="slide-body">
-        <h2>One identity, several devices,<br>independent keys. Nobody else ships this.</h2>
+        <h2>One identity, several devices,<br>independent keys. We haven't found it shipped elsewhere.</h2>
         <div class="grid2">
           <div class="card bad">
             <h3 style="color:var(--bad)">ACA-Py</h3>
@@ -232,17 +232,17 @@ code,.mono{font-family:var(--mono)}
             <p>Its "multi-device" pattern splits <b style="color:var(--paper)">one agent</b> into backend microservices — key custody, data, frontend. Orthogonal to a person actually holding two phones.</p>
           </div>
         </div>
-        <p class="lede">wyvrn-chat's <span class="t">multi-device/1.0</span>: an Identity DID with one <code>keyAgreement</code> per device, a Device DID per device for coordination, no private key ever leaves the device that generated it.</p>
+        <p class="lede">The spec already recommends it: encrypt to <b>every</b> <code>keyAgreement</code> key, so a recipient "can decrypt his messages on any device he controls, without sharing keys". The experiment's <span class="t">multi-device/1.0</span> notes put that into practice: one <code>keyAgreement</code> per device, a Device DID per device for coordination, and no private key ever leaving the device that generated it.</p>
       </div>
-      <div class="slide-foot"><span>positioning — see also: Identity DID, Device DID</span><span>6 / 18</span></div>
+      <div class="slide-foot"><span>positioning — see also: the Identity DID, Device DID deck</span><span>6 / 18</span></div>
     </section>
 
     <!-- 6: STRENGTH — CBOR -->
     <section>
       <div class="eyebrow teal"><span class="sec">Strengths ·</span> didcomm/v2+cbor</div>
       <div class="slide-body">
-        <h2>The spec has debated this since 2021.<br>We shipped it.</h2>
-        <p class="lede">DIDComm Messaging v2.1 <i>names</i> <code>+cbor</code>/<code>+msgpack</code>/<code>+protobuf</code> as future possibilities. A real 2021 spec-repo issue — <span class="mono" style="font-size:.85em">"Should we flip to CBOR?"</span> — argued JSON creates real overhead. It was never resolved.</p>
+        <h2>The spec discussed it and deferred it.<br>The experiment tries it.</h2>
+        <p class="lede">DIDComm Messaging v2.1 <i>names</i> <code>+cbor</code>/<code>+msgpack</code>/<code>+protobuf</code> as future possibilities, and says the community "discussed switching to CBOR" more than once. Two reasons stopped it: the maturity of JSON standards compared with CBOR ones, and the cost of switching late in spec development.</p>
         <div class="grid2">
           <div class="card good">
             <h3 style="color:var(--teal)">What it actually is</h3>
@@ -253,7 +253,7 @@ code,.mono{font-family:var(--mono)}
             <p>No ~33% base64 blowup on top of the ciphertext and every other binary field. Negotiated per-recipient, off their advertised <code>accept</code>.</p>
           </div>
         </div>
-        <p class="source">decentralized-identity/didcomm-messaging issue #207 (2021) — no shipped Aries/Credo/DIDComm-rs/Veramo implementation of a CBOR envelope was found.</p>
+        <p class="source">DIDComm Messaging v2.1 — Future Work, Additional Encodings. We didn't find an Aries/Credo/DIDComm-rs/Veramo implementation of a CBOR envelope. See also the "DIDComm in CBOR?" deck.</p>
       </div>
       <div class="slide-foot"><span>positioning</span><span>7 / 18</span></div>
     </section>
@@ -262,9 +262,9 @@ code,.mono{font-family:var(--mono)}
     <section>
       <div class="eyebrow teal"><span class="sec">Strengths ·</span> the mediator itself</div>
       <div class="slide-body">
-        <h2>One mediator. Both eras.<br>Built to run more than one copy.</h2>
+        <h2>One mediator. DIDComm v1 and v2.<br>Built to run more than one copy.</h2>
         <div class="grid3">
-          <div class="card"><h3>v1 <i>and</i> v2/v3/v4</h3><p>The full legacy AIP1/AIP2 envelope family, same service, same storage — not a separate deployment.</p></div>
+          <div class="card"><h3>Every spec profile</h3><p><code>didcomm/aip1</code>, <code>aip2;env=rfc19</code>, <code>aip2;env=rfc587</code> and <code>didcomm/v2</code>: one service, one storage, not a separate deployment per era.</p></div>
           <div class="card"><h3>SQLite, MySQL, or Postgres</h3><p>One SQL schema across three backends — not a single-instance demo store.</p></div>
           <div class="card"><h3>Horizontally scalable</h3><p>Live delivery decoupled through a WS↔HTTP relay; any replica can deliver to a DID connected on a different one.</p></div>
         </div>
@@ -313,7 +313,7 @@ code,.mono{font-family:var(--mono)}
       <div class="slide-body">
         <h2>Only two wyvrn endpoints ever see the saving.</h2>
         <p class="lede">Every real Aries, Credo, or other DIDComm peer today only understands <code>+json</code>. <code>didcomm/v2+cbor</code> negotiates down to plain JSON automatically when the other side doesn't advertise it —</p>
-        <p class="q bad">— which means, in practice, almost every message wyvrn-chat sends to the wider ecosystem today gets none of the benefit slide 5 described.</p>
+        <p class="q bad">— which means, in practice, almost every message wyvrn-chat sends to the wider ecosystem today gets none of the benefit described under Strengths.</p>
       </div>
       <div class="slide-foot"><span>positioning</span><span>12 / 18</span></div>
     </section>
@@ -325,7 +325,7 @@ code,.mono{font-family:var(--mono)}
         <h2>Every roster change is a broadcast.</h2>
         <p class="lede">Enroll a device, revoke one, promote, demote — each mints a new Identity DID and rotates <b style="color:var(--paper)">every contact</b> onto it. A person who churns devices often means real, recurring chatter no single-key architecture pays.</p>
       </div>
-      <div class="slide-foot"><span>positioning — see also: multi-device/1.0, Motivation</span><span>13 / 18</span></div>
+      <div class="slide-foot"><span>positioning — see also: the Identity DID, Device DID deck</span><span>13 / 18</span></div>
     </section>
 
     <!-- 13: WEAKNESS — MATURITY -->
@@ -338,7 +338,7 @@ code,.mono{font-family:var(--mono)}
         </div>
         <div class="card bad">
           <h3 style="color:var(--bad)">wyvrn-chat</h3>
-          <p>A single-team project. No iOS build exists yet — needs a real Mac. <code>group-chat/1.0</code> is still "Proposed," not hardened by outside use.</p>
+          <p>A single-team experiment. No iOS build exists yet — needs a real Mac. Its own group-chat notes are a different design from the registry's <code>group-chat/1.0</code>, and haven't been hardened by outside use.</p>
         </div>
       </div>
       <div class="slide-foot"><span>positioning</span><span>14 / 18</span></div>
@@ -367,11 +367,11 @@ code,.mono{font-family:var(--mono)}
     <section>
       <div class="eyebrow"><span class="sec">Wrapping up ·</span> where this leaves us</div>
       <div class="slide-body">
-        <h2>Two real gaps closed. Two real costs still open.</h2>
+        <h2>What the experiment shows so far.</h2>
         <div class="grid2">
           <div class="card good">
-            <h3 style="color:var(--teal)">Closed</h3>
-            <p style="color:var(--paper)">A real chat app on DIDComm, not a wallet. Multi-device identity with no shared key — something we could not find shipped anywhere else in the ecosystem.</p>
+            <h3 style="color:var(--teal)">Working</h3>
+            <p style="color:var(--paper)">A chat app on DIDComm, not a wallet. Multi-device identity with no shared key, which we haven't found shipped elsewhere in the ecosystem.</p>
           </div>
           <div class="card bad">
             <h3 style="color:var(--bad)">Still open</h3>
