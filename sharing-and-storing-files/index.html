@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sharing and Storing Files</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@6.0.2/dist/reveal.css">
+<link rel="stylesheet" href="../assets/deck.css">
+
+<div class="reveal">
+  <div class="slides">
+
+    <!-- TITLE -->
+    <section>
+      <div class="slide-body title-slide">
+        <div class="brandmark">
+          <svg viewBox="0 0 48 48" fill="none"><circle cx="20" cy="18" r="13" stroke="#f0a83b" stroke-width="4"/><circle cx="28" cy="30" r="13" stroke="#34c0cf" stroke-width="4"/></svg>
+          <span class="eyebrow">didcomm user group</span>
+        </div>
+        <h1>Sharing and<br>Storing Files</h1>
+        <p class="sub">Photos, documents and large files over DIDComm: when to put bytes in the message, when to point at them, and who keeps them afterwards.</p>
+        <span class="pill gold">draft</span>
+      </div>
+    </section>
+
+    <!-- INLINE LIMITS -->
+    <section>
+      <div class="eyebrow">the problem with inline</div>
+      <div class="slide-body">
+        <h2>Big messages hurt everyone on the route</h2>
+        <p class="lede">An attachment can ride inside the message as <code>base64</code>. Fine for a thumbnail. For a video it means every mediator <b>queues, stores and forwards</b> the whole thing, base64'd, possibly once per recipient.</p>
+        <div class="grid3">
+          <div class="card"><h3>Size limits</h3><p>Receivers can declare <code>max_receive_bytes</code> and discard anything larger.</p></div>
+          <div class="card"><h3>Mediator load</h3><p>A relay built to forward small messages now holds large blobs until pickup.</p></div>
+          <div class="card"><h3>All or nothing</h3><p>No resuming: a dropped transfer starts again from the first byte.</p></div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>sharing and storing files</span><span>1 / 11</span></div>
+    </section>
+
+    <!-- SPEC ATTACHMENTS -->
+    <section>
+      <div class="eyebrow gold">the spec already allows references</div>
+      <h2 style="margin-bottom:.2rem">Attachments by value or by reference</h2>
+      <div class="grid2" style="flex:1">
+        <ul class="bullets">
+          <li><code>base64</code> / <code>json</code>: content inline.</li>
+          <li><code>links</code>: where to fetch it. When used, a <code>hash</code> is <b>required</b> so the receiver can check what it downloaded.</li>
+          <li><code>byte_count</code>: how big, so the receiver can decide when (or whether) to fetch.</li>
+          <li><code>jws</code>: a detached signature over the content, from anyone.</li>
+        </ul>
+        <div class="quote">The attachment(s) in the <code>attachments</code> field are able to use the full power of DIDComm attachments, including features like instructing the receiver to download the payload content from a CDN.<cite>Routing Protocol 2.0 — Messages</cite></div>
+      </div>
+      <div class="slide-foot"><span>sharing and storing files</span><span>2 / 11</span></div>
+      <aside class="notes">Spec: Message Formats, Attachments ("MUST be used if the data is referenced via the links data attribute").</aside>
+    </section>
+
+    <!-- MEDIA SHARING -->
+    <section>
+      <div class="eyebrow gold">the registry's pattern</div>
+      <h2>Encrypt, upload, share the key: <code>media-sharing/1.0</code></h2>
+      <div class="numrow" style="flex:1;align-items:center">
+        <div class="step"><h3>New key</h3><p>The sender generates a content encryption key per file.</p></div>
+        <div class="step"><h3>Encrypt &amp; upload</h3><p>The encrypted file goes to any server the recipient can reach. The server only ever sees ciphertext.</p></div>
+        <div class="step"><h3><code>share-media</code></h3><p>A normal DIDComm message carries the link, the hash and the key, end-to-end encrypted.</p></div>
+        <div class="step"><h3>Fetch &amp; decrypt</h3><p>The receiver downloads, checks the hash, and decrypts locally.</p></div>
+      </div>
+      <p class="kicker">If the file is gone later, <code>request-media</code> (with the original thread as <code>pthid</code>) asks the sender to share it again.</p>
+      <div class="slide-foot"><span>sharing and storing files</span><span>3 / 11</span></div>
+      <aside class="notes">Source: didcomm.org registry, media-sharing/1.0 (status: Demonstrated), Basic Walkthrough.</aside>
+    </section>
+
+    <!-- WHERE BYTES LIVE -->
+    <section>
+      <div class="eyebrow">where do the bytes live?</div>
+      <table class="compare" style="margin-top:.4rem">
+        <thead><tr><th>Host</th><th>Good</th><th>Watch out for</th></tr></thead>
+        <tbody>
+          <tr><th>Your mediator's blob store</th><td>Already trusted-ish; always online</td><td>Turns a relay into storage; quotas; retention</td></tr>
+          <tr><th>A cloud bucket or CDN</th><td>Cheap, fast, scales</td><td>Sees sizes, timing and who downloads</td></tr>
+          <tr><th>The sender's own device</th><td>No third party</td><td>Only works while the sender is online</td></tr>
+          <tr><th>Nearby, directly</th><td>Bluetooth, local network, USB: no internet at all</td><td>Needs proximity. See "DIDComm over Bluetooth" and "DIDComm Without a Network"</td></tr>
+        </tbody>
+      </table>
+      <div class="slide-foot"><span>sharing and storing files</span><span>4 / 11</span></div>
+    </section>
+
+    <!-- LARGE FILES -->
+    <section>
+      <div class="eyebrow">large files</div>
+      <div class="slide-body">
+        <h2>What changes when the file is gigabytes</h2>
+        <div class="grid2">
+          <ul class="bullets">
+            <li><b>Chunk it</b>, with a hash per chunk, so a download can resume and corruption is caught early.</li>
+            <li>Encrypt per chunk too, so the receiver can decrypt as it goes instead of holding everything.</li>
+          </ul>
+          <ul class="bullets">
+            <li><code>expires_time</code> on the share message, matching how long the upload will be kept.</li>
+            <li><code>byte_count</code> up front, so a phone on mobile data can wait for Wi-Fi.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="slide-foot"><span>sharing and storing files</span><span>5 / 11</span></div>
+    </section>
+
+    <!-- FAN-OUT -->
+    <section>
+      <div class="eyebrow gold">a nice property</div>
+      <div class="slide-body">
+        <h2>One upload, many recipients</h2>
+        <p class="lede">The file is encrypted once, with its own key. Sharing with a group or with several devices means sending the <b>small key</b> in each recipient's DIDComm message, not re-uploading the file.</p>
+        <p class="kicker">This fits nicely with multi-device (each device gets the key) and with fan-out group messaging (each member gets the key).</p>
+      </div>
+      <div class="slide-foot"><span>sharing and storing files</span><span>6 / 11</span></div>
+    </section>
+
+    <!-- TRANSFER VS STORAGE -->
+    <section>
+      <div class="eyebrow">two different problems</div>
+      <div class="slide-body">
+        <h2>Transfer is not storage</h2>
+        <div class="grid2">
+          <div class="card"><h3>Transfer</h3><p>Get this file from me to you, then the copy in the middle can go. That's what <code>media-sharing/1.0</code> is for.</p></div>
+          <div class="card gold"><h3>Storage</h3><p>Keep this safe for years, let me grant and revoke access, survive a lost device. A much bigger design space.</p></div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>sharing and storing files</span><span>7 / 11</span></div>
+    </section>
+
+    <!-- VAULTS AND SWARM -->
+    <section>
+      <div class="eyebrow gold">storage in the registry</div>
+      <div class="slide-body">
+        <h2>Two proposals for the storage side</h2>
+        <div class="grid2">
+          <div class="card"><h3><code>vaults/1.0</code> <span class="mono" style="color:var(--muted);font-size:.75rem">· Proposed</span></h3><p>DIDComm <b>coordinates</b> access to end-to-end encrypted data vaults on backends like S3 or Arweave: who gets access, to which objects, for how long. The bytes move over the vault's own HTTP API. Optional N-of-M threshold decryption.</p></div>
+          <div class="card"><h3><code>swarm/1.0</code> <span class="mono" style="color:var(--muted);font-size:.75rem">· Proposed</span></h3><p>Mediators and willing agents pledge to hold <b>encrypted shards</b> for a time, answer proof-of-storage challenges, and serve authorized retrievals. Aimed at durability: lost devices, crashed mediators, deleted CDN files.</p></div>
+        </div>
+        <p class="kicker">Both keep DIDComm for coordination and keys, and move bulk data some other way.</p>
+      </div>
+      <div class="slide-foot"><span>sharing and storing files</span><span>8 / 11</span></div>
+      <aside class="notes">Source: didcomm.org registry, vaults/1.0 and swarm/1.0 summaries. Both are Proposed; check their current text before presenting.</aside>
+    </section>
+
+    <!-- ACCESS -->
+    <section>
+      <div class="eyebrow danger">the hard part</div>
+      <div class="slide-body">
+        <h2>Sharing a key is forever</h2>
+        <p class="lede">Once someone has a file's key and has downloaded the ciphertext, <b>you can't un-share it</b>. Revocation only works for future access.</p>
+        <ul class="bullets">
+          <li>Deleting the upload stops people who haven't fetched it yet.</li>
+          <li>Rotating to a new key means re-encrypting and re-uploading.</li>
+          <li>Access that expires needs something online to enforce it: a vault, a storage host, or a threshold of approvers.</li>
+        </ul>
+      </div>
+      <div class="slide-foot"><span>sharing and storing files</span><span>9 / 11</span></div>
+    </section>
+
+    <!-- PRIVACY -->
+    <section>
+      <div class="eyebrow">metadata</div>
+      <div class="slide-body">
+        <h2>What the storage host learns</h2>
+        <div class="grid3">
+          <div class="card"><h3>Sizes</h3><p>Exact ciphertext sizes can hint at what a file is. Padding helps.</p></div>
+          <div class="card"><h3>Who and when</h3><p>Upload and download times and IP addresses, i.e. who shared with whom.</p></div>
+          <div class="card"><h3>Sameness</h3><p>With content-derived names, identical files look identical. A fresh key per share avoids that.</p></div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>sharing and storing files</span><span>10 / 11</span></div>
+    </section>
+
+    <!-- QUESTIONS -->
+    <section>
+      <div class="eyebrow">for the group</div>
+      <div class="slide-body closing">
+        <h1 style="font-size:2.6rem">Open questions</h1>
+        <ul style="margin-top:.6rem">
+          <li class="q">Should mediators offer blob storage for <code>media-sharing</code>, or stay pure relays?</li>
+          <li class="q">Is anyone using <code>vaults</code> or <code>swarm</code>, or something else, for long-term storage?</li>
+          <li class="q">What's the right default retention for a shared file nobody downloaded?</li>
+        </ul>
+      </div>
+      <div class="slide-foot"><span>thank you</span><span>11 / 11</span></div>
+    </section>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@6.0.2/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@6.0.2/dist/plugin/notes.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    center: false,
+    controls: true,
+    progress: true,
+    transition: 'slide',
+    // No fixed canvas: slides fill the viewport and ../assets/deck.css
+    // sizes everything off it.
+    disableLayout: true,
+    plugins: [RevealNotes],
+  });
+</script>
