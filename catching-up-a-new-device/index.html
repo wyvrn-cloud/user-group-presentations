@@ -29,10 +29,10 @@
       <div class="eyebrow">the gap</div>
       <div class="slide-body">
         <h2>A mediator is a relay, not an archive.</h2>
-        <p class="lede">The routing protocol has a mediator unpack a <span class="t">forward</span> message and <b>pass the payload on</b>. Pickup protocols clear a message once the recipient acknowledges it. Nothing in the path is meant to remember.</p>
+        <p class="lede">The <a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#routing-protocol-20">routing protocol</a> has a mediator unpack a <span class="t">forward</span> message and <b>pass the payload on</b>. <a href="https://didcomm.org/messagepickup/3.0/">Message Pickup 3.0</a> has the recipient acknowledge which messages "are safe to clear from the queue". Nothing in the path is meant to remember.</p>
         <p class="q">So a device added after the conversation started, or one that was offline for too long, can only recover history from somewhere else.</p>
       </div>
-      <div class="slide-foot"><span>catching up a new device</span><span>1 / 10</span></div>
+      <div class="slide-foot"><span>catching up a new device</span><span>1 / 11</span></div>
       <aside class="notes">Spec: Routing Protocol 2.0, Roles ("The mediator unpacks (decrypts) the payload of an encrypted forward message and passes on the result"). Message Pickup 3.0 on didcomm.org: messages-received lets the recipient tell the mediator to delete delivered messages.</aside>
     </section>
 
@@ -42,10 +42,10 @@
       <h2>Three places history could come from</h2>
       <div class="grid3" style="flex:1;align-items:center">
         <div class="card"><h3>Ask contacts to re-send</h3><p>Every contact would have to keep and re-encrypt their side of the conversation. Leaks the fact that you added a device, and depends on them being online.</p></div>
-        <div class="card"><h3>An encrypted backup service</h3><p>Works when every other device is gone. But it reintroduces an archive, with its own key-management and trust questions. The registry's <code>vaults/1.0</code> and <code>swarm/1.0</code> (both Proposed) explore encrypted storage and durability.</p></div>
+        <div class="card"><h3>An encrypted backup service</h3><p>Works when every other device is gone. But it reintroduces an archive, with its own key-management and trust questions. The registry's <a href="https://didcomm.org/vaults/1.0/"><code>vaults/1.0</code></a> and <a href="https://didcomm.org/swarm/1.0/"><code>swarm/1.0</code></a> (both Proposed) explore encrypted storage and durability.</p></div>
         <div class="card teal"><h3>Your other devices</h3><p>They already hold the history and already trust the new device. The question becomes: how do they reconcile efficiently?</p></div>
       </div>
-      <div class="slide-foot"><span>catching up a new device</span><span>2 / 10</span></div>
+      <div class="slide-foot"><span>catching up a new device</span><span>2 / 11</span></div>
     </section>
 
     <!-- RETENTION -->
@@ -59,7 +59,7 @@
         </div>
         <p class="lede">Treat retention as a <b>per-device local policy</b>. Two devices with different policies aren't "out of sync"; one has just chosen to forget more.</p>
       </div>
-      <div class="slide-foot"><span>catching up a new device</span><span>3 / 10</span></div>
+      <div class="slide-foot"><span>catching up a new device</span><span>3 / 11</span></div>
     </section>
 
     <!-- RSYNC -->
@@ -72,7 +72,7 @@
         <div class="step"><h3>Diff inside the chunk</h3><p>Exchange item ids or hashes for the mismatched chunk only, then transfer just the missing items.</p></div>
       </div>
       <p class="kicker">Nothing is re-sent that both sides already hold, and each side's retention window is respected.</p>
-      <div class="slide-foot"><span>catching up a new device</span><span>4 / 10</span></div>
+      <div class="slide-foot"><span>catching up a new device</span><span>4 / 11</span></div>
       <aside class="notes">This is the approach sketched in the history-sync notes in wyvrn-cloud/protocols, an experiment rather than a standard.</aside>
     </section>
 
@@ -100,7 +100,7 @@
           <li>Pairwise encryption between the two devices; the mediator relays ciphertext as usual.</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>catching up a new device</span><span>5 / 10</span></div>
+      <div class="slide-foot"><span>catching up a new device</span><span>5 / 11</span></div>
     </section>
 
     <!-- BACKFILL -->
@@ -115,7 +115,7 @@
           <li>Open question: keep fetched items, or show them just for this session?</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>catching up a new device</span><span>6 / 10</span></div>
+      <div class="slide-foot"><span>catching up a new device</span><span>6 / 11</span></div>
     </section>
 
     <!-- WHAT DIDCOMM GIVES -->
@@ -126,10 +126,10 @@
         <div class="grid3">
           <div class="card"><h3>Confidentiality</h3><p>Authcrypt between two devices of the same identity. The mediator sees only ciphertext, exactly as for any other message.</p></div>
           <div class="card"><h3>Correlation</h3><p><code>id</code> / <code>thid</code> threading ties requests to responses, and message ids give natural dedup keys.</p></div>
-          <div class="card"><h3>Size limits</h3><p>A device can publish <code>max_receive_bytes</code>, so batches can be sized to what the receiver accepts.</p></div>
+          <div class="card"><h3>Size limits</h3><p>A device can publish <a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#agent-constraint-disclosure"><code>max_receive_bytes</code></a>, so batches can be sized to what the receiver accepts.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>catching up a new device</span><span>7 / 10</span></div>
+      <div class="slide-foot"><span>catching up a new device</span><span>7 / 11</span></div>
       <aside class="notes">Spec: Threading (id, thid); Transports, Agent Constraint Disclosure (max_receive_bytes, discoverable via Discover Features 2.0).</aside>
     </section>
 
@@ -145,7 +145,7 @@
           <li>If the only device holding history is lost, nothing here helps. That's the backup-service trade-off again.</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>catching up a new device</span><span>8 / 10</span></div>
+      <div class="slide-foot"><span>catching up a new device</span><span>8 / 11</span></div>
     </section>
 
     <!-- PRIOR ART -->
@@ -160,7 +160,7 @@
         </div>
         <p class="kicker">Ongoing, peer-to-peer reconciliation with per-device retention sits somewhere between the first two.</p>
       </div>
-      <div class="slide-foot"><span>catching up a new device</span><span>9 / 10</span></div>
+      <div class="slide-foot"><span>catching up a new device</span><span>9 / 11</span></div>
     </section>
 
     <!-- QUESTIONS -->
@@ -174,7 +174,23 @@
           <li class="q">How should a new device prove it may receive old history, not just new messages?</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>thank you</span><span>10 / 10</span></div>
+      <div class="slide-foot"><span>thank you</span><span>10 / 11</span></div>
+    </section>
+
+    <!-- REFERENCES -->
+    <section>
+      <div class="eyebrow">references</div>
+      <h2 style="margin-bottom:.4rem">Sources</h2>
+      <ul class="refs">
+        <li><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#routing-protocol-20">DIDComm Messaging v2.1 — Routing Protocol 2.0</a></li>
+        <li><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#threads">DIDComm Messaging v2.1 — Threads</a> · <a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#message-ids">Message IDs</a></li>
+        <li><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#agent-constraint-disclosure">DIDComm Messaging v2.1 — Agent Constraint Disclosure</a></li>
+        <li><a href="https://didcomm.org/messagepickup/3.0/">messagepickup/3.0</a> <span class="st">Production</span></li>
+        <li><a href="https://didcomm.org/discover-features/2.0/">discover-features/2.0</a> <span class="st">Production</span></li>
+        <li><a href="https://didcomm.org/vaults/1.0/">vaults/1.0</a> <span class="st">Proposed</span> · <a href="https://didcomm.org/swarm/1.0/">swarm/1.0</a> <span class="st">Proposed</span></li>
+        <li>rsync-style reconciliation: history-sync notes from the wyvrn experiments <span class="st">not public</span></li>
+      </ul>
+      <div class="slide-foot"><span>catching up a new device · checked September 2026</span><span>11 / 11</span></div>
     </section>
 
   </div>
