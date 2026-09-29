@@ -33,7 +33,8 @@ Draft decks arrive as their own pull requests, and their links above work
 once each one is merged.
 
 The landing page lists only the first deck. The rest are there too, but
-hidden: tap an empty part of the page 8 times in quick succession, or enter
+hidden: on a touchscreen, tap an empty part of the page 8 times in quick
+succession (mouse clicks don't count), or enter
 the Konami code (↑ ↑ ↓ ↓ ← → ← → B A). Do the same again to hide them. Only
 decks that are actually published appear, so drafts whose PRs aren't merged
 yet stay out of the list.
