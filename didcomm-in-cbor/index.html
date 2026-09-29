@@ -28,10 +28,10 @@
       <div class="eyebrow">the spec's own history</div>
       <div class="slide-body">
         <h2>CBOR was discussed, and deferred.</h2>
-        <div class="quote">At multiple points in the creation of this spec the community discussed switching to CBOR as a primary encoding format to replace JSON. Two reasons prevented that switch: The maturity of the JSON related standards as compared to CBOR related standards, and the cost of switching so late in spec development.<cite>DIDComm Messaging v2.1 — Future Work, Additional Encodings</cite></div>
+        <div class="quote">At multiple points in the creation of this spec the community discussed switching to CBOR as a primary encoding format to replace JSON. Two reasons prevented that switch: The maturity of the JSON related standards as compared to CBOR related standards, and the cost of switching so late in spec development.<cite><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#additional-encodings">DIDComm Messaging v2.1 — Future Work, Additional Encodings</a></cite></div>
         <div class="quote">Future encodings might introduce binary serializations. Each innovation like this MUST specify a deterministic and reliable method for indicating the alternative encoding used.<cite>same section</cite></div>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>1 / 11</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>1 / 12</span></div>
     </section>
 
     <!-- WHERE BYTES GO -->
@@ -47,7 +47,7 @@
         </div>
         <p class="kicker">Plus JSON key names like <code>"protected"</code> and <code>"recipients"</code> repeated in every message. CBOR carries raw bytes and can use small integer keys.</p>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>2 / 11</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>2 / 12</span></div>
       <aside class="notes">4/3 per base64url layer is exact up to padding; two nested layers give 16/9 ≈ 1.78. Worth measuring real messages before presenting, including per-recipient header overhead.</aside>
     </section>
 
@@ -58,15 +58,15 @@
       <table class="compare" style="margin-top:.4rem">
         <thead><tr><th>Purpose</th><th>JSON (used by DIDComm today)</th><th>CBOR</th></tr></thead>
         <tbody>
-          <tr><th>Encoding</th><td>JSON</td><td>CBOR — RFC 8949</td></tr>
-          <tr><th>Signing</th><td>JWS</td><td>COSE_Sign / COSE_Sign1 — RFC 9052</td></tr>
-          <tr><th>Encryption, many recipients</th><td>JWE (General JSON)</td><td>COSE_Encrypt — RFC 9052</td></tr>
+          <tr><th>Encoding</th><td>JSON</td><td>CBOR — <a href="https://www.rfc-editor.org/rfc/rfc8949.html">RFC 8949</a></td></tr>
+          <tr><th>Signing</th><td>JWS</td><td>COSE_Sign / COSE_Sign1 — <a href="https://www.rfc-editor.org/rfc/rfc9052.html">RFC 9052</a></td></tr>
+          <tr><th>Encryption, many recipients</th><td>JWE (General JSON)</td><td>COSE_Encrypt — <a href="https://www.rfc-editor.org/rfc/rfc9052.html">RFC 9052</a></td></tr>
           <tr><th>Keys</th><td>JWK</td><td>COSE_Key</td></tr>
-          <tr><th>Tokens (e.g. <code>from_prior</code>)</th><td>JWT</td><td>CWT — RFC 8392</td></tr>
+          <tr><th>Tokens (e.g. <code>from_prior</code>)</th><td>JWT</td><td>CWT — <a href="https://www.rfc-editor.org/rfc/rfc8392.html">RFC 8392</a></td></tr>
         </tbody>
       </table>
-      <p class="kicker" style="margin-top:.6rem">Algorithms for COSE are registered in RFC 9053, including ECDH-ES key agreement with key wrap.</p>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>3 / 11</span></div>
+      <p class="kicker" style="margin-top:.6rem">Algorithms for COSE are defined in <a href="https://www.rfc-editor.org/rfc/rfc9053.html">RFC 9053</a> and listed in the <a href="https://www.iana.org/assignments/cose/cose.xhtml">IANA COSE registry</a>, including ECDH-ES and ECDH-SS key agreement with key wrap.</p>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>3 / 12</span></div>
       <aside class="notes">The spec's note cites CBOR RFC 7049, since obsoleted by RFC 8949.</aside>
     </section>
 
@@ -75,14 +75,14 @@
       <div class="eyebrow danger">the hard part</div>
       <div class="slide-body">
         <h2>Authcrypt doesn't map across directly</h2>
-        <p class="lede">DIDComm's default envelope, <span class="t">authcrypt</span>, uses <b>ECDH-1PU</b>: a JOSE draft that mixes the sender's static key into key agreement so the recipient knows who sent it.</p>
+        <p class="lede">DIDComm's default envelope, <span class="t">authcrypt</span>, uses <b>ECDH-1PU</b>, which mixes the sender's static key into key agreement so the recipient knows who sent it. It's an <a href="https://datatracker.ietf.org/doc/draft-madden-jose-ecdh-1pu/">individual IETF draft</a> that <b>expired in 2021</b>, and it's in neither the JOSE nor the COSE registry.</p>
         <div class="grid2">
-          <div class="card"><h3>What COSE has</h3><p>ECDH-ES (ephemeral–static), which matches anoncrypt, and ECDH-SS (static–static). Neither is ECDH-1PU.</p></div>
+          <div class="card"><h3>What COSE has</h3><p>ECDH-ES (ephemeral–static), which matches anoncrypt, and ECDH-SS (static–static). Neither is ECDH-1PU. The <a href="https://datatracker.ietf.org/doc/draft-ietf-cose-hpke/">COSE-HPKE draft</a> uses HPKE's base and PSK modes only, not the sender-authenticated mode <a href="https://www.rfc-editor.org/rfc/rfc9180.html">RFC 9180</a> defines.</p></div>
           <div class="card gold"><h3>So a CBOR profile must…</h3><p>…define or register an ECDH-1PU equivalent for COSE, or change how sender authentication works in that profile.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>4 / 11</span></div>
-      <aside class="notes">Spec: Security, Sender Authenticated Encryption ("the JWA of ECDH-1PU MUST be used"). Verify the current COSE algorithm registry before presenting; the claim here is that we couldn't find an ECDH-1PU registration.</aside>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>4 / 12</span></div>
+      <aside class="notes">Spec: Security, Sender Authenticated Encryption ("the JWA of ECDH-1PU MUST be used"). Checked against the IANA COSE and JOSE registries in September 2026: no ECDH-1PU registration.</aside>
     </section>
 
     <!-- SIGNALLING -->
@@ -91,7 +91,7 @@
       <h2 style="margin-bottom:.2rem">The spec already sketched the media type</h2>
       <div class="grid2" style="flex:1">
         <div class="slide-body" style="gap:1rem">
-          <div class="quote">If future versions of this spec allow binary encodings, variations like <code>application/didcomm-encrypted+cbor</code> … may become reasonable.<cite>Message Formats — DIDComm Encrypted Messages</cite></div>
+          <div class="quote">If future versions of this spec allow binary encodings, variations like <code>application/didcomm-encrypted+cbor</code> … may become reasonable.<cite><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#didcomm-encrypted-messages">Message Formats — DIDComm Encrypted Messages</a></cite></div>
           <p class="lede" style="font-size:1.05rem">A receiver lists what it accepts, in preference order, in its service endpoint. A sender that can't produce CBOR just uses the next entry.</p>
         </div>
         <pre class="codeblock"><code><span class="k">"serviceEndpoint"</span>: {
@@ -102,7 +102,7 @@
   ]
 }</code></pre>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>5 / 11</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>5 / 12</span></div>
       <aside class="notes">The profile string is made up for illustration. Profiles in the spec are IANA-media-type-like strings with parameters, e.g. didcomm/aip2;env=rfc587.</aside>
     </section>
 
@@ -117,7 +117,7 @@
           <li>A <code>forward</code> attachment can carry any bytes, so in principle yes. But the attachment's media type would need to say so.</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>6 / 11</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>6 / 12</span></div>
       <aside class="notes">Spec: Negotiating Compatibility — "When Alice declares that she accepts didcomm/v2, she is making a declaration about more than her own endpoint..."</aside>
     </section>
 
@@ -138,7 +138,7 @@
           </ul>
         </div>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>7 / 11</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>7 / 12</span></div>
     </section>
 
     <!-- COSTS -->
@@ -153,7 +153,7 @@
           <div class="card danger"><h3>Compression exists</h3><p>Ciphertext doesn't compress, but for many links, HTTP compression of the JSON framing may be enough.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>8 / 11</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>8 / 12</span></div>
     </section>
 
     <!-- WHEN IT PAYS -->
@@ -167,7 +167,7 @@
           <div class="card teal"><h3>QR codes</h3><p>Out-of-band invitations are size-limited by what a camera can read.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>9 / 11</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>9 / 12</span></div>
     </section>
 
     <!-- EXPERIMENT -->
@@ -176,10 +176,10 @@
       <div class="slide-body">
         <h2>Worth measuring before deciding</h2>
         <p class="lede">An experimental CBOR profile has been tried in wyvrn. So far it helps almost nothing it talks to, because <b>almost nothing on the other end speaks it</b>. Interop, not encoding, is the real hurdle.</p>
-        <p class="kicker">A different route in the registry: <code>mesh/1.0</code> doesn't CBOR-encode the standard envelope at all. It defines its own binary packet format and a compact session-key envelope for BLE and LoRa, with JSON kept for debugging and the internet.</p>
+        <p class="kicker">A different route in the registry: <a href="https://didcomm.org/mesh/1.0/"><code>mesh/1.0</code></a> doesn't CBOR-encode the standard envelope at all. It defines its own binary packet format and a compact session-key envelope for BLE and LoRa, with JSON kept for debugging and the internet.</p>
         <p class="kicker">Useful next step for the group: agree on a few reference messages and measure JSON vs. CBOR sizes for each.</p>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>10 / 11</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>10 / 12</span></div>
       <aside class="notes">Keep this framed as an experiment. Replace with measured numbers once there are any.</aside>
     </section>
 
@@ -194,7 +194,25 @@
           <li class="q">"CBOR only on the last hop", or a separate compact envelope like <code>mesh/1.0</code>'s?</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>thank you</span><span>11 / 11</span></div>
+      <div class="slide-foot"><span>thank you</span><span>11 / 12</span></div>
+    </section>
+
+    <!-- REFERENCES -->
+    <section>
+      <div class="eyebrow">references</div>
+      <h2 style="margin-bottom:.4rem">Sources</h2>
+      <ul class="refs">
+        <li><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#additional-encodings">DIDComm Messaging v2.1 — Additional Encodings</a></li>
+        <li><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#didcomm-encrypted-messages">Encrypted messages</a> · <a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#message-encryption">Message encryption</a> · <a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#negotiating-compatibility">Profiles</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc8949.html">RFC 8949 — CBOR</a> <span class="st">obsoletes RFC 7049</span></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9052.html">RFC 9052 — COSE structures</a> · <a href="https://www.rfc-editor.org/rfc/rfc9053.html">RFC 9053 — COSE algorithms</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc8392.html">RFC 8392 — CBOR Web Token (CWT)</a></li>
+        <li><a href="https://www.iana.org/assignments/cose/cose.xhtml">IANA COSE registry</a> · <a href="https://www.iana.org/assignments/jose/jose.xhtml">IANA JOSE registry</a></li>
+        <li><a href="https://datatracker.ietf.org/doc/draft-madden-jose-ecdh-1pu/">draft-madden-jose-ecdh-1pu</a> <span class="st">individual draft, expired 2021</span></li>
+        <li><a href="https://datatracker.ietf.org/doc/draft-ietf-cose-hpke/">draft-ietf-cose-hpke</a> <span class="st">draft</span> · <a href="https://www.rfc-editor.org/rfc/rfc9180.html">RFC 9180 — HPKE</a></li>
+        <li><a href="https://didcomm.org/mesh/1.0/">mesh/1.0</a> <span class="st">Proposed</span></li>
+      </ul>
+      <div class="slide-foot"><span>didcomm in cbor · checked September 2026</span><span>12 / 12</span></div>
     </section>
 
   </div>
