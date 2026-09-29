@@ -161,10 +161,12 @@ footer a{color:var(--teal)}
   try { if (sessionStorage.getItem(KEY) === '1') reveal(false); } catch (e) {}
 
   // 8 taps in quick succession, anywhere that isn't a link or control.
+  // Touchscreens only: mouse and pen clicks don't count.
   var TAPS = 8, GAP_MS = 450;
   var taps = 0, last = 0;
   document.addEventListener('pointerdown', function (e) {
-    if (e.button !== 0 || e.target.closest('a, button, input, textarea, select, kbd')) { taps = 0; return; }
+    if (e.pointerType !== 'touch') return;
+    if (e.target.closest('a, button, input, textarea, select, kbd')) { taps = 0; return; }
     var now = Date.now();
     taps = (now - last <= GAP_MS) ? taps + 1 : 1;
     last = now;
