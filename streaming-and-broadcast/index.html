@@ -28,10 +28,10 @@
       <div class="eyebrow gold">the invitation</div>
       <div class="slide-body">
         <h2>The spec leaves the door open on purpose</h2>
-        <div class="quote">This is a DIDComm <i>messaging</i> spec. Security, privacy, routing, and metadata concepts from this spec could be adapted to other communication styles, including multicast/broadcast and streaming. This will create sister specs to DIDComm Messaging, rather than evolving DIDComm Messaging itself.<cite>DIDComm Messaging v2.1 — Future Work, Beyond Messaging</cite></div>
-        <div class="quote">In the future, specifications that encompass communications patterns other than messaging — DIDComm Multicast or DIDComm Streaming, for example — might use a suffix: <code>application/didcomm-encrypted-multicast</code> or similar.<cite>Message Formats — DIDComm Encrypted Messages</cite></div>
+        <div class="quote">This is a DIDComm <i>messaging</i> spec. Security, privacy, routing, and metadata concepts from this spec could be adapted to other communication styles, including multicast/broadcast and streaming. This will create sister specs to DIDComm Messaging, rather than evolving DIDComm Messaging itself.<cite><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#beyond-messaging">DIDComm Messaging v2.1 — Future Work, Beyond Messaging</a></cite></div>
+        <div class="quote">In the future, specifications that encompass communications patterns other than messaging — DIDComm Multicast or DIDComm Streaming, for example — might use a suffix: <code>application/didcomm-encrypted-multicast</code> or similar.<cite><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#didcomm-encrypted-messages">Message Formats — DIDComm Encrypted Messages</a></cite></div>
       </div>
-      <div class="slide-foot"><span>streaming and broadcast</span><span>1 / 12</span></div>
+      <div class="slide-foot"><span>streaming and broadcast</span><span>1 / 13</span></div>
     </section>
 
     <!-- WHY MESSAGES DON'T STREAM -->
@@ -39,14 +39,14 @@
       <div class="eyebrow">why messaging isn't streaming</div>
       <div class="slide-body">
         <h2>Every message stands alone</h2>
-        <div class="quote">Each message MUST be transmitted individually; if encryption or signing are used, the unit of encryption or signing is one message only.<cite>Transports — WebSockets</cite></div>
+        <div class="quote">Each message MUST be transmitted individually; if encryption or signing are used, the unit of encryption or signing is one message only.<cite><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#websockets">Transports — WebSockets</a></cite></div>
         <ul class="bullets">
           <li>Each message does its own key agreement and carries its own headers.</li>
-          <li>The libp2p transport extension runs DIDComm <i>over</i> a stream, but only as a pipe for separate messages.</li>
+          <li>The <a href="https://github.com/decentralized-identity/didcomm-messaging/blob/main/extensions/libp2p_transport/main.md">libp2p transport extension</a> runs DIDComm <i>over</i> a stream, but only as a pipe for separate messages.</li>
           <li>Fine for chat. Too heavy for audio, video or high-rate telemetry.</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>streaming and broadcast</span><span>2 / 12</span></div>
+      <div class="slide-foot"><span>streaming and broadcast</span><span>2 / 13</span></div>
     </section>
 
     <!-- WHAT STREAMING NEEDS -->
@@ -60,7 +60,7 @@
           <div class="card"><h3>Bounded memory</h3><p>Encrypt and decrypt without holding the whole stream.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>streaming and broadcast</span><span>3 / 12</span></div>
+      <div class="slide-foot"><span>streaming and broadcast</span><span>3 / 13</span></div>
     </section>
 
     <!-- APPROACH A -->
@@ -74,7 +74,7 @@
           <div class="card danger"><h3>Costs</h3><p>The stream no longer goes through mediators, so both ends must be reachable, and its security is only as good as how the key was handed over.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>streaming and broadcast</span><span>4 / 12</span></div>
+      <div class="slide-foot"><span>streaming and broadcast</span><span>4 / 13</span></div>
       <aside class="notes">Similar in spirit to how call signalling sets up an encrypted media session.</aside>
     </section>
 
@@ -82,16 +82,16 @@
     <section>
       <div class="eyebrow gold">approach A, already proposed</div>
       <div class="slide-body">
-        <h2><code>webrtc/1.0</code> does this for calls</h2>
+        <h2><a href="https://didcomm.org/webrtc/1.0/"><code>webrtc/1.0</code></a> does this for calls</h2>
         <p class="lede">A registry protocol (status: Proposed) that uses <b>DIDComm v2 as the signalling channel</b> for WebRTC audio and video.</p>
         <div class="grid3">
           <div class="card"><h3>Identity-bound media</h3><p>WebRTC's DTLS certificate fingerprints are bound to DID keys, against man-in-the-middle attacks.</p></div>
           <div class="card"><h3>Two topologies</h3><p>Peer-to-peer mesh for small calls (2–8); an SFU for larger ones (10–100+).</p></div>
-          <div class="card"><h3>End-to-end through an SFU</h3><p>SFrame keeps media encrypted even when a server forwards it.</p></div>
+          <div class="card"><h3>End-to-end through an SFU</h3><p><a href="https://www.rfc-editor.org/rfc/rfc9605.html">SFrame (RFC 9605)</a> keeps media encrypted even when a server forwards it.</p></div>
         </div>
         <p class="kicker">So for real-time media, the open question is less "how" and more "does this fit your use case". Non-media streams are still open.</p>
       </div>
-      <div class="slide-foot"><span>streaming and broadcast</span><span>5 / 12</span></div>
+      <div class="slide-foot"><span>streaming and broadcast</span><span>5 / 13</span></div>
       <aside class="notes">Source: didcomm.org registry, site/content/protocols/webrtc/1.0. It also defines out-of-band join links.</aside>
     </section>
 
@@ -100,14 +100,14 @@
       <div class="eyebrow gold">approach B</div>
       <div class="slide-body">
         <h2>Chunks as messages, with sequencing</h2>
-        <p class="lede">Keep everything in DIDComm: each chunk is a message in one thread, with <code>sender_order</code> from the Advanced Sequencing extension so the receiver can reassemble and spot gaps.</p>
+        <p class="lede">Keep everything in DIDComm: each chunk is a message in one thread, with <code>sender_order</code> from the <a href="https://github.com/decentralized-identity/didcomm-messaging/blob/main/extensions/advanced_sequencing/main.md">Advanced Sequencing extension</a> so the receiver can reassemble and spot gaps.</p>
         <div class="grid2">
           <div class="card teal"><h3>Good</h3><p>Works through mediators and offline transports. No new crypto.</p></div>
           <div class="card danger"><h3>Costs</h3><p>Full envelope overhead on every chunk. Fine for "a large file, eventually"; poor for live media.</p></div>
         </div>
         <p class="kicker">For large files specifically, attachments by reference (<code>links</code> + <code>hash</code>) avoid chunking altogether.</p>
       </div>
-      <div class="slide-foot"><span>streaming and broadcast</span><span>6 / 12</span></div>
+      <div class="slide-foot"><span>streaming and broadcast</span><span>6 / 13</span></div>
     </section>
 
     <!-- BROADCAST -->
@@ -116,12 +116,12 @@
       <div class="slide-body">
         <h2>One sender, many receivers</h2>
         <div class="grid3">
-          <div class="card"><h3>Public</h3><p>Signed but not encrypted. Anyone can read; everyone can verify. The filesystem extension already describes a shared folder used this way.</p></div>
+          <div class="card"><h3>Public</h3><p>Signed but not encrypted. Anyone can read; everyone can verify. The <a href="https://github.com/decentralized-identity/didcomm-messaging/blob/main/extensions/filesystem_transport/main.md">filesystem extension</a> already describes a shared folder used this way.</p></div>
           <div class="card"><h3>Known audience</h3><p>Encrypt for each recipient DID. Correct today, but the cost grows with the audience.</p></div>
           <div class="card gold"><h3>Large audience</h3><p>A group key, rotated as members join and leave. The subject of a real multicast spec.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>streaming and broadcast</span><span>7 / 12</span></div>
+      <div class="slide-foot"><span>streaming and broadcast</span><span>7 / 13</span></div>
     </section>
 
     <!-- PFS -->
@@ -129,10 +129,10 @@
       <div class="eyebrow">sessions</div>
       <div class="slide-body">
         <h2>Streaming would add something messaging lacks</h2>
-        <p class="lede">DIDComm messaging has <b>no session construct</b>, so the spec points to the DIDComm Guidebook for how forward secrecy maps onto it. A stream is a session by nature.</p>
+        <p class="lede">DIDComm messaging has <b>no session construct</b>, so <a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#perfect-forward-secrecy">the spec</a> points to the <a href="https://didcomm.org/book/v2/pfs/">DIDComm Guidebook</a> for how forward secrecy maps onto it. A stream is a session by nature.</p>
         <p class="q small">A sister spec could give streams forward secrecy by ratcheting the session key as the stream goes on. That's something one-shot messages can't easily do.</p>
       </div>
-      <div class="slide-foot"><span>streaming and broadcast</span><span>8 / 12</span></div>
+      <div class="slide-foot"><span>streaming and broadcast</span><span>8 / 13</span></div>
       <aside class="notes">Spec: Security, Perfect Forward Secrecy — "The mapping of the Perfect Forward Secrecy concepts to DIDComm requires some discussion, due to the lack of a session construct."</aside>
     </section>
 
@@ -149,7 +149,7 @@
           <tr><th>Transports</th><td>Which carriers are suitable, and whether mediators take part at all</td></tr>
         </tbody>
       </table>
-      <div class="slide-foot"><span>streaming and broadcast</span><span>9 / 12</span></div>
+      <div class="slide-foot"><span>streaming and broadcast</span><span>9 / 13</span></div>
     </section>
 
     <!-- USE CASES -->
@@ -163,7 +163,7 @@
           <div class="card"><h3>Announcements</h3><p>An organisation broadcasting signed updates to everyone who follows it.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>streaming and broadcast</span><span>10 / 12</span></div>
+      <div class="slide-foot"><span>streaming and broadcast</span><span>10 / 13</span></div>
     </section>
 
     <!-- RISK -->
@@ -173,7 +173,7 @@
         <h2>Don't reinvent media security</h2>
         <p class="lede">Real-time media encryption is a mature field with its own hard-won protocols. The most useful thing DIDComm can probably contribute is the part those protocols <b>don't</b> solve well: <span class="t">who you're talking to</span>, and how to reach them. That's the split <code>webrtc/1.0</code> makes.</p>
       </div>
-      <div class="slide-foot"><span>streaming and broadcast</span><span>11 / 12</span></div>
+      <div class="slide-foot"><span>streaming and broadcast</span><span>11 / 13</span></div>
     </section>
 
     <!-- QUESTIONS -->
@@ -187,7 +187,24 @@
           <li class="q">Should multicast and group messaging share one design?</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>thank you</span><span>12 / 12</span></div>
+      <div class="slide-foot"><span>thank you</span><span>12 / 13</span></div>
+    </section>
+
+    <!-- REFERENCES -->
+    <section>
+      <div class="eyebrow">references</div>
+      <h2 style="margin-bottom:.4rem">Sources</h2>
+      <ul class="refs">
+        <li><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#beyond-messaging">DIDComm Messaging v2.1 — Beyond Messaging</a></li>
+        <li><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#didcomm-encrypted-messages">Encrypted messages (multicast media-type note)</a></li>
+        <li><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#websockets">WebSockets</a> · <a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#perfect-forward-secrecy">Perfect forward secrecy</a> · <a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#attachments">Attachments</a></li>
+        <li><a href="https://didcomm.org/book/v2/pfs/">DIDComm Guidebook — Perfect Forward Secrecy</a></li>
+        <li><a href="https://github.com/decentralized-identity/didcomm-messaging/blob/main/extensions/libp2p_transport/main.md">libp2p transport extension</a> · <a href="https://github.com/decentralized-identity/didcomm-messaging/blob/main/extensions/filesystem_transport/main.md">Filesystem transport extension</a></li>
+        <li><a href="https://github.com/decentralized-identity/didcomm-messaging/blob/main/extensions/advanced_sequencing/main.md">Advanced Sequencing extension</a></li>
+        <li><a href="https://didcomm.org/webrtc/1.0/">webrtc/1.0</a> <span class="st">Proposed</span></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9605.html">RFC 9605 — Secure Frame (SFrame)</a></li>
+      </ul>
+      <div class="slide-foot"><span>streaming and broadcast · checked September 2026</span><span>13 / 13</span></div>
     </section>
 
   </div>
