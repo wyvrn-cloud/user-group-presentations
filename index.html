@@ -21,6 +21,8 @@
 html{background:var(--ink)}
 body{
   margin:0; min-height:100vh; color:var(--paper); font-family:var(--body); line-height:1.5;
+  /* no double-tap-to-zoom delay, so quick taps register as taps */
+  touch-action:manipulation;
   background:
     radial-gradient(1200px 500px at 88% -10%, var(--teal-soft) 0%, transparent 55%),
     radial-gradient(900px 420px at -8% 108%, var(--gold-soft) 0%, transparent 55%),
@@ -42,8 +44,27 @@ a.deck:hover,a.deck:focus-visible{border-color:var(--gold);transform:translateY(
 .deck h2{font-family:var(--display);font-weight:600;font-size:1.45rem;margin:0 0 .3rem}
 .deck p{margin:0;color:var(--muted)}
 .deck .go{display:inline-block;margin-top:.8rem;font-family:var(--mono);font-size:.82rem;color:var(--gold)}
+
+/* the hidden drafts */
+#drafts{margin-top:3rem}
+#drafts[hidden]{display:none}
+#drafts.revealed{animation:reveal .45s ease-out}
+@keyframes reveal{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){#drafts.revealed{animation:none}}
+#drafts h2.section{font-family:var(--mono);font-size:.78rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin:0 0 .4rem}
+#drafts .note{color:var(--muted);font-size:.95rem;margin:0 0 1.2rem}
+#drafts ul{gap:.7rem}
+#drafts a.deck{padding:1rem 1.2rem;display:grid;grid-template-columns:2.2rem 1fr;gap:0 .6rem}
+#drafts .num{font-family:var(--display);font-weight:600;font-size:1.25rem;color:var(--gold);line-height:1.3}
+#drafts .deck h3{font-family:var(--display);font-weight:600;font-size:1.15rem;margin:0 0 .15rem}
+#drafts .deck p{font-size:.92rem}
+#drafts li[data-missing]{display:none}
+#drafts .empty{color:var(--muted);font-size:.95rem}
+#drafts .empty[hidden]{display:none}
+
 footer{margin-top:3rem;font-family:var(--mono);font-size:.78rem;color:var(--muted);opacity:.7}
 footer a{color:var(--teal)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 </style>
 </head>
 <body>
@@ -65,7 +86,108 @@ footer a{color:var(--teal)}
     </li>
   </ul>
 
+  <!-- Hidden until someone taps the page 8 times quickly or enters the
+       Konami code. Entries whose deck isn't published yet stay hidden. -->
+  <section id="drafts" hidden aria-labelledby="drafts-heading">
+    <h2 class="section" id="drafts-heading">Coming up · drafts</h2>
+    <p class="note">Works in progress, in the order they're planned. Expect rough edges.</p>
+    <ul>
+      <li><a class="deck" href="catching-up-a-new-device/"><span class="num">2</span><span><h3>Catching Up a New Device</h3><p>Where a newly added device gets the history it missed.</p></span></a></li>
+      <li><a class="deck" href="group-conversations/"><span class="num">3</span><span><h3>Group Conversations on a Pairwise Protocol</h3><p>Fan-out, a relay member, or a shared MLS key.</p></span></a></li>
+      <li><a class="deck" href="rich-messages/"><span class="num">4</span><span><h3>Rich Messages</h3><p>Replies, reactions, stickers, edits and formatting.</p></span></a></li>
+      <li><a class="deck" href="what-a-mediator-does/"><span class="num">5</span><span><h3>What a Mediator Actually Does</h3><p>A walk through DIDComm's routing protocol.</p></span></a></li>
+      <li><a class="deck" href="sharing-and-storing-files/"><span class="num">6</span><span><h3>Sharing and Storing Files</h3><p>Attachments by reference, media sharing, and who keeps the bytes.</p></span></a></li>
+      <li><a class="deck" href="didcomm-over-bluetooth/"><span class="num">7</span><span><h3>DIDComm over Bluetooth</h3><p>Local first; a mediator when devices aren't close.</p></span></a></li>
+      <li><a class="deck" href="didcomm-in-cbor/"><span class="num">8</span><span><h3>DIDComm in CBOR?</h3><p>What a binary encoding would buy, and cost.</p></span></a></li>
+      <li><a class="deck" href="didcomm-on-small-devices/"><span class="num">9</span><span><h3>DIDComm on Small Devices</h3><p>Sensors, gateways and sleeping devices.</p></span></a></li>
+      <li><a class="deck" href="didcomm-without-a-network/"><span class="num">10</span><span><h3>DIDComm Without a Network</h3><p>Supply chains, sneakernets and email.</p></span></a></li>
+      <li><a class="deck" href="streaming-and-broadcast/"><span class="num">11</span><span><h3>Beyond Messages: Streaming and Broadcast</h3><p>The sister specs the spec invites.</p></span></a></li>
+      <li><a class="deck" href="post-quantum-didcomm/"><span class="num">12</span><span><h3>DIDComm and Post-Quantum Crypto</h3><p>What breaks, and what the new algorithms change.</p></span></a></li>
+    </ul>
+    <p class="empty" hidden>None of the drafts are published yet. Check back soon.</p>
+  </section>
+  <p class="sr-only" aria-live="polite" id="drafts-status"></p>
+
   <footer>Source on <a href="https://github.com/wyvrn-cloud/user-group-presentations">GitHub</a></footer>
 </main>
+
+<script>
+(function () {
+  var drafts = document.getElementById('drafts');
+  var status = document.getElementById('drafts-status');
+  var KEY = 'drafts-revealed';
+  var checked = false;
+
+  // Only show drafts that are actually published (their PR may not be merged yet).
+  function checkPublished() {
+    if (checked) return;
+    checked = true;
+    var items = drafts.querySelectorAll('li');
+    var pending = items.length;
+    var shown = 0;
+    items.forEach(function (li) {
+      var href = li.querySelector('a').getAttribute('href');
+      fetch(href, { method: 'HEAD', cache: 'no-store' })
+        .then(function (r) { return r.ok; }, function () { return false; })
+        .then(function (ok) {
+          if (ok) shown++; else li.setAttribute('data-missing', '');
+          if (--pending === 0) drafts.querySelector('.empty').hidden = shown > 0;
+        });
+    });
+  }
+
+  function reveal(animate) {
+    checkPublished();
+    drafts.hidden = false;
+    if (animate) {
+      drafts.classList.remove('revealed');
+      void drafts.offsetWidth; // restart the animation
+      drafts.classList.add('revealed');
+      drafts.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      status.textContent = 'Draft presentations revealed.';
+    }
+    try { sessionStorage.setItem(KEY, '1'); } catch (e) {}
+  }
+
+  function hide() {
+    drafts.hidden = true;
+    status.textContent = 'Draft presentations hidden.';
+    try { sessionStorage.removeItem(KEY); } catch (e) {}
+  }
+
+  function toggle() { if (drafts.hidden) reveal(true); else hide(); }
+
+  // Keep them visible when coming back from a deck in the same tab.
+  try { if (sessionStorage.getItem(KEY) === '1') reveal(false); } catch (e) {}
+
+  // 8 taps in quick succession, anywhere that isn't a link or control.
+  var TAPS = 8, GAP_MS = 450;
+  var taps = 0, last = 0;
+  document.addEventListener('pointerdown', function (e) {
+    if (e.button !== 0 || e.target.closest('a, button, input, textarea, select, kbd')) { taps = 0; return; }
+    var now = Date.now();
+    taps = (now - last <= GAP_MS) ? taps + 1 : 1;
+    last = now;
+    if (taps >= TAPS) {
+      taps = 0;
+      // The reveal shifts the layout, so this tap's click could land on a
+      // newly revealed link. Swallow that one click.
+      var swallow = function (ev) { ev.preventDefault(); ev.stopPropagation(); };
+      document.addEventListener('click', swallow, { capture: true, once: true });
+      setTimeout(function () { document.removeEventListener('click', swallow, true); }, 600);
+      toggle();
+    }
+  });
+
+  // The Konami code: up up down down left right left right B A.
+  var CODE = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+  var recent = [];
+  document.addEventListener('keydown', function (e) {
+    recent.push(e.key.length === 1 ? e.key.toLowerCase() : e.key);
+    if (recent.length > CODE.length) recent.shift();
+    if (recent.join() === CODE.join()) { recent = []; toggle(); }
+  });
+})();
+</script>
 </body>
 </html>
