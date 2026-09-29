@@ -28,10 +28,10 @@
       <div class="eyebrow">the starting point</div>
       <div class="slide-body">
         <h2>Encryption is per recipient DID, by rule.</h2>
-        <div class="quote">A message being sent to multiple DIDs MUST be encrypted for each DID independently.<cite>DIDComm Messaging v2.1 — Message Encryption</cite></div>
+        <div class="quote">A message being sent to multiple DIDs MUST be encrypted for each DID independently.<cite><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#message-encryption">DIDComm Messaging v2.1 — Message Encryption</a></cite></div>
         <p class="lede">One DID can have many keys (that's how multi-device works), but the core spec has no notion of a <b>group</b> as a recipient. Groups are left to protocols built on top, and the didcomm.org registry already has two quite different ones.</p>
       </div>
-      <div class="slide-foot"><span>group conversations</span><span>1 / 12</span></div>
+      <div class="slide-foot"><span>group conversations</span><span>1 / 13</span></div>
     </section>
 
     <!-- THREE SHAPES -->
@@ -43,7 +43,7 @@
         <div class="card"><h3>A relay member</h3><p>One party (a member or a service) receives and re-sends to everyone. Fewer sends from phones; one party sees who talks to whom.</p><p style="margin-top:.6rem"><span class="pill gold">group-chat/1.0</span></p></div>
         <div class="card gold"><h3>A shared group key</h3><p>Encrypt once for the group, e.g. with an MLS tree. Cheap sends; membership changes need careful coordination.</p><p style="margin-top:.6rem"><span class="pill gold">rooms/1.0</span></p></div>
       </div>
-      <div class="slide-foot"><span>group conversations</span><span>2 / 12</span></div>
+      <div class="slide-foot"><span>group conversations</span><span>2 / 13</span></div>
     </section>
 
     <!-- FAN-OUT DIAGRAM -->
@@ -68,7 +68,7 @@
         </svg>
       </div>
       <p class="kicker">Message content can reuse an existing protocol such as <code>basicmessage/2.0</code>, with one extra body field saying which group it belongs to.</p>
-      <div class="slide-foot"><span>group conversations</span><span>3 / 12</span></div>
+      <div class="slide-foot"><span>group conversations</span><span>3 / 13</span></div>
       <aside class="notes">This is the shape explored in the group-chat notes in wyvrn-cloud/protocols, an experiment rather than a standard.</aside>
     </section>
 
@@ -78,12 +78,12 @@
       <div class="slide-body">
         <h2>Two existing takes, at opposite ends</h2>
         <div class="grid2">
-          <div class="card"><h3><code>group-chat/1.0</code> <span class="mono" style="color:var(--muted);font-size:.75rem">· Demonstrated</span></h3><p>An <b>administrator</b>'s <b>controller</b> agent invites participants and forwards each group message to every active participant. Participants only need a connection to the controller, not to each other, and see each other by pseudonymous alias.</p></div>
-          <div class="card"><h3><code>rooms/1.0</code> <span class="mono" style="color:var(--muted);font-size:.75rem">· Demonstrated</span></h3><p><b>MLS</b> (RFC 9420) for group keys, a <b>Host</b> that orders handshakes and fans out, optional routers for mesh relay. DIDComm supplies addressing, routing, threading and mediation.</p></div>
+          <div class="card"><h3><a href="https://didcomm.org/group-chat/1.0/"><code>group-chat/1.0</code></a> <span class="mono" style="color:var(--muted);font-size:.75rem">· Demonstrated</span></h3><p>An <b>administrator</b>'s <b>controller</b> agent invites participants and forwards each group message to every active participant. Participants only need a connection to the controller, not to each other, and see each other by pseudonymous alias.</p></div>
+          <div class="card"><h3><a href="https://didcomm.org/rooms/1.0/"><code>rooms/1.0</code></a> <span class="mono" style="color:var(--muted);font-size:.75rem">· Demonstrated</span></h3><p><b>MLS</b> (<a href="https://www.rfc-editor.org/rfc/rfc9420.html">RFC 9420</a>) for group keys, a <b>Host</b> that orders handshakes and fans out, optional routers for mesh relay. DIDComm supplies addressing, routing, threading and mediation.</p></div>
         </div>
         <p class="kicker">Neither is the fully serverless, every-member-talks-to-every-member shape. That's the gap the fan-out approach explores.</p>
       </div>
-      <div class="slide-foot"><span>group conversations</span><span>4 / 12</span></div>
+      <div class="slide-foot"><span>group conversations</span><span>4 / 13</span></div>
       <aside class="notes">Sources: didcomm.org registry, site/content/protocols/group-chat/1.0 and rooms/1.0. Statuses as listed in the registry at time of writing.</aside>
     </section>
 
@@ -101,7 +101,7 @@
           <div class="card danger"><h3>The hard parts</h3><p>Who may add members? Is there consent to join? How does someone leave, or get removed? What if two members' lists disagree? A minimal design can leave all of these open, but a real deployment can't.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>group conversations</span><span>5 / 12</span></div>
+      <div class="slide-foot"><span>group conversations</span><span>5 / 13</span></div>
     </section>
 
     <!-- ORDERING -->
@@ -110,7 +110,7 @@
       <h2>More than two parties means ordering gets ambiguous</h2>
       <div class="grid2" style="flex:1">
         <div class="slide-body" style="gap:1rem">
-          <p class="lede" style="font-size:1.1rem">The spec's <b>Advanced Sequencing</b> extension exists for exactly this. It detects gaps and reordering; it deliberately doesn't say how to fix them.</p>
+          <p class="lede" style="font-size:1.1rem">The spec's <a href="https://github.com/decentralized-identity/didcomm-messaging/blob/main/extensions/advanced_sequencing/main.md"><b>Advanced Sequencing</b></a> extension exists for exactly this. It detects gaps and reordering; it deliberately doesn't say how to fix them.</p>
           <ul class="bullets">
             <li><code>sender_order</code>: my 1st, 2nd, 3rd message in this thread.</li>
             <li><code>sent_count</code>: how many I've sent, including resends.</li>
@@ -124,7 +124,7 @@
     <span class="k">"last"</span>: <span class="ty">4</span>, <span class="k">"gaps"</span>: [<span class="g">2</span>,<span class="g">3</span>] }
 ]</code></pre>
       </div>
-      <div class="slide-foot"><span>group conversations</span><span>6 / 12</span></div>
+      <div class="slide-foot"><span>group conversations</span><span>6 / 13</span></div>
       <aside class="notes">Spec: extensions/advanced_sequencing. Example taken from its auction scenario. "Protocol definitions MUST declare whether they use any of these headers."</aside>
     </section>
 
@@ -138,7 +138,7 @@
           <div class="card"><h3><code>pthid</code></h3><p>For side interactions spawned from the group, like a poll or a file transfer. With more than two parties, the spec requires each party to learn the parent from the first child message <i>they</i> see.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>group conversations</span><span>7 / 12</span></div>
+      <div class="slide-foot"><span>group conversations</span><span>7 / 13</span></div>
       <aside class="notes">Spec: Threading, Parent Threads — "in protocols involving more than two parties ... each party in a child protocol MUST learn the identity of the parent thread via the first child protocol message they see."</aside>
     </section>
 
@@ -147,13 +147,13 @@
       <div class="eyebrow gold">the other end of the spectrum</div>
       <div class="slide-body">
         <h2>A shared group key, MLS-style</h2>
-        <p class="lede"><span class="t">MLS</span> (RFC 9420) keeps a tree of keys so a group can agree on a shared secret, with membership changes costing roughly <b>log N</b> rather than N. <code>rooms/1.0</code> layers exactly this on DIDComm.</p>
+        <p class="lede"><a href="https://www.rfc-editor.org/rfc/rfc9420.html"><span class="t">MLS</span> (RFC 9420)</a> keeps a tree of keys so a group can agree on a shared secret. Its tree lets a member encrypt to everyone but one "with a number of ciphertexts that is <b>logarithmic</b> in the number of group members", which is what makes removals and key updates cheap. <code>rooms/1.0</code> layers exactly this on DIDComm.</p>
         <div class="grid2">
           <div class="card teal"><h3>What it buys</h3><p>One encryption per message, however big the group. Forward secrecy and recovery after a member's device is compromised.</p></div>
           <div class="card danger"><h3>What it asks for</h3><p>Membership changes must be applied in the same order by everyone, so something has to order them. In <code>rooms/1.0</code> that's the Host, acting as the MLS delivery service.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>group conversations</span><span>8 / 12</span></div>
+      <div class="slide-foot"><span>group conversations</span><span>8 / 13</span></div>
     </section>
 
     <!-- COMPARISON -->
@@ -171,7 +171,7 @@
         </tbody>
       </table>
       <p class="kicker" style="margin-top:.6rem">Fan-out is probably fine for small groups; a shared key starts paying off as groups grow.</p>
-      <div class="slide-foot"><span>group conversations</span><span>9 / 12</span></div>
+      <div class="slide-foot"><span>group conversations</span><span>9 / 13</span></div>
     </section>
 
     <!-- OPEN PROBLEMS -->
@@ -192,7 +192,7 @@
           </ul>
         </div>
       </div>
-      <div class="slide-foot"><span>group conversations</span><span>10 / 12</span></div>
+      <div class="slide-foot"><span>group conversations</span><span>10 / 13</span></div>
     </section>
 
     <!-- MULTI-DEVICE INTERACTION -->
@@ -203,7 +203,7 @@
         <p class="lede">With per-device keys, a message to a 5-person group where everyone has 3 devices is <b>4 envelopes</b> (one per other member's DID) with <b>3 key wraps</b> in each. Content is encrypted once per envelope; only the small content key is wrapped per device.</p>
         <p class="kicker">The spec calls this "multiplexed encryption": encrypt the content once, then wrap the ephemeral content key for each recipient key.</p>
       </div>
-      <div class="slide-foot"><span>group conversations</span><span>11 / 12</span></div>
+      <div class="slide-foot"><span>group conversations</span><span>11 / 13</span></div>
       <aside class="notes">Spec: Routing, DID Document Keys — "DIDComm encrypts the main message content only once, using an ephemeral content encryption key, and then encrypts the relatively tiny ephemeral key once per recipient key." Holds when all of a recipient's keys are the same type.</aside>
     </section>
 
@@ -218,7 +218,24 @@
           <li class="q">How well does an MLS Host fit offline-first, mediator-routed delivery?</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>thank you</span><span>12 / 12</span></div>
+      <div class="slide-foot"><span>thank you</span><span>12 / 13</span></div>
+    </section>
+
+    <!-- REFERENCES -->
+    <section>
+      <div class="eyebrow">references</div>
+      <h2 style="margin-bottom:.4rem">Sources</h2>
+      <ul class="refs">
+        <li><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#message-encryption">DIDComm Messaging v2.1 — Message Encryption</a> · <a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#did-document-keys">DID Document Keys</a></li>
+        <li><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#parent-threads">DIDComm Messaging v2.1 — Parent Threads</a></li>
+        <li><a href="https://github.com/decentralized-identity/didcomm-messaging/blob/main/extensions/advanced_sequencing/main.md">DIDComm Advanced Sequencing extension</a></li>
+        <li><a href="https://didcomm.org/group-chat/1.0/">group-chat/1.0</a> <span class="st">Demonstrated</span></li>
+        <li><a href="https://didcomm.org/rooms/1.0/">rooms/1.0</a> <span class="st">Demonstrated</span></li>
+        <li><a href="https://didcomm.org/basicmessage/2.0/">basicmessage/2.0</a> <span class="st">Production</span> · <a href="https://didcomm.org/receipts/1.0/">receipts/1.0</a></li>
+        <li><a href="https://www.rfc-editor.org/rfc/rfc9420.html">RFC 9420 — The Messaging Layer Security (MLS) Protocol</a></li>
+        <li>Fan-out approach: group-chat notes from the wyvrn experiments <span class="st">not public</span></li>
+      </ul>
+      <div class="slide-foot"><span>group conversations · checked September 2026</span><span>13 / 13</span></div>
     </section>
 
   </div>
