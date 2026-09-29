@@ -23,20 +23,29 @@
       </div>
     </section>
 
+    <!-- SECTION: THE CASE FOR CBOR -->
+    <section>
+      <div class="slide-body section-slide">
+        <h1>The case for CBOR</h1>
+        <p class="sub">Why it came up, and where JSON spends its bytes.</p>
+      </div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>1 / 15</span></div>
+    </section>
+
     <!-- THE SPEC'S OWN HISTORY -->
     <section>
-      <div class="eyebrow">the spec's own history</div>
+      <div class="eyebrow"><span class="sec">The case for CBOR ·</span> the spec's own history</div>
       <div class="slide-body">
         <h2>CBOR was discussed, and deferred.</h2>
         <div class="quote">At multiple points in the creation of this spec the community discussed switching to CBOR as a primary encoding format to replace JSON. Two reasons prevented that switch: The maturity of the JSON related standards as compared to CBOR related standards, and the cost of switching so late in spec development.<cite><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#additional-encodings">DIDComm Messaging v2.1 — Future Work, Additional Encodings</a></cite></div>
         <div class="quote">Future encodings might introduce binary serializations. Each innovation like this MUST specify a deterministic and reliable method for indicating the alternative encoding used.<cite>same section</cite></div>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>1 / 12</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>2 / 15</span></div>
     </section>
 
     <!-- WHERE BYTES GO -->
     <section>
-      <div class="eyebrow gold">where the bytes go</div>
+      <div class="eyebrow gold"><span class="sec">The case for CBOR ·</span> where the bytes go</div>
       <div class="slide-body">
         <h2>Base64 inside JSON, inside base64</h2>
         <p class="lede">A DIDComm encrypted message is a JWE in General JSON format: ciphertext, IV, tag and protected header are all <b>base64url strings</b>, each about <b>4/3</b> the size of the bytes they carry.</p>
@@ -47,13 +56,13 @@
         </div>
         <p class="kicker">Plus JSON key names like <code>"protected"</code> and <code>"recipients"</code> repeated in every message. CBOR carries raw bytes and can use small integer keys.</p>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>2 / 12</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>3 / 15</span></div>
       <aside class="notes">4/3 per base64url layer is exact up to padding; two nested layers give 16/9 ≈ 1.78. Worth measuring real messages before presenting, including per-recipient header overhead.</aside>
     </section>
 
     <!-- JOSE vs COSE -->
     <section>
-      <div class="eyebrow">the counterpart stack</div>
+      <div class="eyebrow"><span class="sec">The case for CBOR ·</span> the counterpart stack</div>
       <h2>JOSE has a CBOR twin: COSE</h2>
       <table class="compare" style="margin-top:.4rem">
         <thead><tr><th>Purpose</th><th>JSON (used by DIDComm today)</th><th>CBOR</th></tr></thead>
@@ -66,13 +75,22 @@
         </tbody>
       </table>
       <p class="kicker" style="margin-top:.6rem">Algorithms for COSE are defined in <a href="https://www.rfc-editor.org/rfc/rfc9053.html">RFC 9053</a> and listed in the <a href="https://www.iana.org/assignments/cose/cose.xhtml">IANA COSE registry</a>, including ECDH-ES and ECDH-SS key agreement with key wrap.</p>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>3 / 12</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>4 / 15</span></div>
       <aside class="notes">The spec's note cites CBOR RFC 7049, since obsoleted by RFC 8949.</aside>
+    </section>
+
+    <!-- SECTION: THE HARD PARTS -->
+    <section>
+      <div class="slide-body section-slide">
+        <h1>The hard parts</h1>
+        <p class="sub">Authcrypt, signalling, and every hop agreeing.</p>
+      </div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>5 / 15</span></div>
     </section>
 
     <!-- THE HARD PART -->
     <section>
-      <div class="eyebrow danger">the hard part</div>
+      <div class="eyebrow danger"><span class="sec">The hard parts ·</span> authcrypt</div>
       <div class="slide-body">
         <h2>Authcrypt doesn't map across directly</h2>
         <p class="lede">DIDComm's default envelope, <span class="t">authcrypt</span>, uses <b>ECDH-1PU</b>, which mixes the sender's static key into key agreement so the recipient knows who sent it. It's an <a href="https://datatracker.ietf.org/doc/draft-madden-jose-ecdh-1pu/">individual IETF draft</a> that <b>expired in 2021</b>, and it's in neither the JOSE nor the COSE registry.</p>
@@ -81,13 +99,13 @@
           <div class="card gold"><h3>So a CBOR profile must…</h3><p>…define or register an ECDH-1PU equivalent for COSE, or change how sender authentication works in that profile.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>4 / 12</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>6 / 15</span></div>
       <aside class="notes">Spec: Security, Sender Authenticated Encryption ("the JWA of ECDH-1PU MUST be used"). Checked against the IANA COSE and JOSE registries in September 2026: no ECDH-1PU registration.</aside>
     </section>
 
     <!-- SIGNALLING -->
     <section>
-      <div class="eyebrow gold">signalling it</div>
+      <div class="eyebrow gold"><span class="sec">The hard parts ·</span> signalling it</div>
       <h2 style="margin-bottom:.2rem">The spec already sketched the media type</h2>
       <div class="grid2" style="flex:1">
         <div class="slide-body" style="gap:1rem">
@@ -102,13 +120,13 @@
   ]
 }</code></pre>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>5 / 12</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>7 / 15</span></div>
       <aside class="notes">The profile string is made up for illustration. Profiles in the spec are IANA-media-type-like strings with parameters, e.g. didcomm/aip2;env=rfc587.</aside>
     </section>
 
     <!-- ROUTES -->
     <section>
-      <div class="eyebrow">routes complicate it</div>
+      <div class="eyebrow"><span class="sec">The hard parts ·</span> routes complicate it</div>
       <div class="slide-body">
         <h2>Every hop has to agree</h2>
         <p class="lede">Declaring a profile is a promise about <b>every publicly visible hop</b> of the inbound route, not only the final endpoint. A CBOR recipient behind a JSON-only mediator can't advertise CBOR end to end.</p>
@@ -117,13 +135,13 @@
           <li>A <code>forward</code> attachment can carry any bytes, so in principle yes. But the attachment's media type would need to say so.</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>6 / 12</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>8 / 15</span></div>
       <aside class="notes">Spec: Negotiating Compatibility — "When Alice declares that she accepts didcomm/v2, she is making a declaration about more than her own endpoint..."</aside>
     </section>
 
     <!-- WHAT TO PIN DOWN -->
     <section>
-      <div class="eyebrow gold">a CBOR profile would need to pin down</div>
+      <div class="eyebrow gold"><span class="sec">The hard parts ·</span> a CBOR profile would need to pin down</div>
       <div class="slide-body">
         <div class="grid2">
           <ul class="bullets">
@@ -138,12 +156,21 @@
           </ul>
         </div>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>7 / 12</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>9 / 15</span></div>
+    </section>
+
+    <!-- SECTION: IS IT WORTH IT? -->
+    <section>
+      <div class="slide-body section-slide">
+        <h1>Is it worth it?</h1>
+        <p class="sub">The costs, where it pays off, and what to measure.</p>
+      </div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>10 / 15</span></div>
     </section>
 
     <!-- COSTS -->
     <section>
-      <div class="eyebrow danger">the costs</div>
+      <div class="eyebrow danger"><span class="sec">Is it worth it? ·</span> the costs</div>
       <div class="slide-body">
         <h2>Why it might not be worth it</h2>
         <div class="grid2">
@@ -153,12 +180,12 @@
           <div class="card danger"><h3>Compression exists</h3><p>Ciphertext doesn't compress, but for many links, HTTP compression of the JSON framing may be enough.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>8 / 12</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>11 / 15</span></div>
     </section>
 
     <!-- WHEN IT PAYS -->
     <section>
-      <div class="eyebrow gold">when it pays off</div>
+      <div class="eyebrow gold"><span class="sec">Is it worth it? ·</span> when it pays off</div>
       <div class="slide-body">
         <h2>Constrained links, not web servers</h2>
         <div class="grid3">
@@ -167,25 +194,25 @@
           <div class="card teal"><h3>QR codes</h3><p>Out-of-band invitations are size-limited by what a camera can read.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>9 / 12</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>12 / 15</span></div>
     </section>
 
     <!-- EXPERIMENT -->
     <section>
-      <div class="eyebrow">an experiment</div>
+      <div class="eyebrow"><span class="sec">Is it worth it? ·</span> an experiment</div>
       <div class="slide-body">
         <h2>Worth measuring before deciding</h2>
         <p class="lede">An experimental CBOR profile has been tried in wyvrn. So far it helps almost nothing it talks to, because <b>almost nothing on the other end speaks it</b>. Interop, not encoding, is the real hurdle.</p>
         <p class="kicker">A different route in the registry: <a href="https://didcomm.org/mesh/1.0/"><code>mesh/1.0</code></a> doesn't CBOR-encode the standard envelope at all. It defines its own binary packet format and a compact session-key envelope for BLE and LoRa, with JSON kept for debugging and the internet.</p>
         <p class="kicker">Useful next step for the group: agree on a few reference messages and measure JSON vs. CBOR sizes for each.</p>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>10 / 12</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>13 / 15</span></div>
       <aside class="notes">Keep this framed as an experiment. Replace with measured numbers once there are any.</aside>
     </section>
 
     <!-- QUESTIONS -->
     <section>
-      <div class="eyebrow">for the group</div>
+      <div class="eyebrow"><span class="sec">Is it worth it? ·</span> for the group</div>
       <div class="slide-body closing">
         <h1 style="font-size:2.6rem">Open questions</h1>
         <ul style="margin-top:.6rem">
@@ -194,7 +221,7 @@
           <li class="q">"CBOR only on the last hop", or a separate compact envelope like <code>mesh/1.0</code>'s?</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>thank you</span><span>11 / 12</span></div>
+      <div class="slide-foot"><span>thank you</span><span>14 / 15</span></div>
     </section>
 
     <!-- REFERENCES -->
@@ -212,7 +239,7 @@
         <li><a href="https://datatracker.ietf.org/doc/draft-ietf-cose-hpke/">draft-ietf-cose-hpke</a> <span class="st">draft</span> · <a href="https://www.rfc-editor.org/rfc/rfc9180.html">RFC 9180 — HPKE</a></li>
         <li><a href="https://didcomm.org/mesh/1.0/">mesh/1.0</a> <span class="st">Proposed</span></li>
       </ul>
-      <div class="slide-foot"><span>didcomm in cbor · checked September 2026</span><span>12 / 12</span></div>
+      <div class="slide-foot"><span>didcomm in cbor · checked September 2026</span><span>15 / 15</span></div>
     </section>
 
   </div>
