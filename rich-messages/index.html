@@ -18,7 +18,7 @@
           <span class="eyebrow">didcomm user group</span>
         </div>
         <h1>Rich Messages</h1>
-        <p class="sub">Replies, threads, reactions, edits, formatting, links and embeds. What people expect from a chat app, what DIDComm has today, and ways to fill the gap.</p>
+        <p class="sub">Replies, threads, reactions, stickers, edits, formatting, links and embeds. What people expect from a chat app, what DIDComm has today, and ways to fill the gap.</p>
         <span class="pill gold">draft</span>
       </div>
     </section>
@@ -46,10 +46,10 @@
             <li>message replies (threading)</li>
             <li>multi-party (group) messages</li>
           </ul>
-          <p class="kicker">"We anticipate the development of more advanced and full-featured message protocols to fill these needs."</p>
+          <p class="kicker">"We anticipate the development of more advanced and full-featured message protocols to fill these needs." — <a href="https://didcomm.org/basicmessage/2.0/">basicmessage/2.0</a></p>
         </div>
       </div>
-      <div class="slide-foot"><span>rich messages</span><span>1 / 12</span></div>
+      <div class="slide-foot"><span>rich messages</span><span>1 / 15</span></div>
       <aside class="notes">Source: didcomm.org registry, basicmessage/2.0 (status: Production), Message Reference and Endnotes "Out of Scope". Example copied from it.</aside>
     </section>
 
@@ -60,12 +60,12 @@
         <h2>The feature list of any modern chat app</h2>
         <div class="grid4">
           <div class="card"><h3>Structure</h3><p>Replies, quoted messages, threads within a conversation.</p></div>
-          <div class="card"><h3>Reactions</h3><p>An emoji on someone else's message, added and removed.</p></div>
+          <div class="card"><h3>Reactions &amp; stickers</h3><p>An emoji on someone else's message; a sticker sent as a message of its own.</p></div>
           <div class="card"><h3>Changes</h3><p>Edit a sent message. Delete it, for yourself or for everyone.</p></div>
           <div class="card"><h3>Presentation</h3><p>Bold, italics, underline, code, links, mentions, embedded media and previews.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>rich messages</span><span>2 / 12</span></div>
+      <div class="slide-foot"><span>rich messages</span><span>2 / 15</span></div>
     </section>
 
     <!-- WHAT EXISTS -->
@@ -75,11 +75,11 @@
         <div class="grid2">
           <div class="card teal"><h3>Unique message ids</h3><p>Every message has an <code>id</code> unique across the parties' interactions: a stable handle for replying to, reacting to, editing or deleting it.</p></div>
           <div class="card teal"><h3>Threads</h3><p><code>thid</code> and <code>pthid</code>. But these mean <i>protocol</i> interactions; reusing them for UI threads needs care.</p></div>
-          <div class="card teal"><h3><code>receipts/1.0</code></h3><p>A registry protocol for <code>received</code>, <code>viewed</code> and <code>deleted</code> states, requested per message type.</p></div>
+          <div class="card teal"><h3><a href="https://didcomm.org/receipts/1.0/"><code>receipts/1.0</code></a></h3><p>A registry protocol for <code>received</code>, <code>viewed</code> and <code>deleted</code> states, requested per message type.</p></div>
           <div class="card teal"><h3>Attachments</h3><p>Inline or by reference with a hash: the natural carrier for images, files and previews.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>rich messages</span><span>3 / 12</span></div>
+      <div class="slide-foot"><span>rich messages</span><span>3 / 15</span></div>
       <aside class="notes">Spec: Threading (id, thid, pthid); Attachments. Registry: receipts/1.0 (status: Demonstrated), Message States.</aside>
     </section>
 
@@ -92,9 +92,9 @@
           <div class="card"><h3>Reuse <code>thid</code></h3><p>Set the reply's <code>thid</code> to the original message's id. No new fields, but it overloads a header that protocols use to track their own state. A reply to a reply to a reply becomes ambiguous.</p></div>
           <div class="card gold"><h3>A body field</h3><p>Something like <code>reply_to: "&lt;message id&gt;"</code>, plus an optional thread root for sub-threads. Explicit, and leaves DIDComm threading alone.</p></div>
         </div>
-        <p class="kicker">Other messaging systems chose the second: Matrix uses relations on the event (<code>m.in_reply_to</code>, <code>m.thread</code>); XMPP has a separate extension for replies (XEP-0461).</p>
+        <p class="kicker">Other messaging systems chose the second. Matrix <a href="https://spec.matrix.org/latest/client-server-api/#rich-replies">rich replies</a> put <code>m.in_reply_to</code> inside the event's <code>m.relates_to</code>, and <a href="https://spec.matrix.org/latest/client-server-api/#threading">threads</a> use <code>rel_type: m.thread</code>. XMPP has <a href="https://xmpp.org/extensions/xep-0461.html">XEP-0461 Message Replies</a> (Experimental).</p>
       </div>
-      <div class="slide-foot"><span>rich messages</span><span>4 / 12</span></div>
+      <div class="slide-foot"><span>rich messages</span><span>4 / 15</span></div>
     </section>
 
     <!-- REACTIONS -->
@@ -111,13 +111,57 @@
   }
 }</code></pre>
           <ul class="bullets">
-            <li><b>Send the full set</b> each time, not "add" and "remove". Then a lost or reordered message can't leave a stale reaction behind. XMPP's reactions extension (XEP-0444) works this way.</li>
+            <li><b>Send the full set</b> each time, not "add" and "remove", so a lost or reordered message can't leave a stale reaction behind. <a href="https://xmpp.org/extensions/xep-0444.html">XEP-0444</a> does this: an update carries "all &lt;reaction&gt; elements that are (still or newly) applicable".</li>
+            <li><a href="https://spec.matrix.org/latest/client-server-api/#event-annotations-and-reactions">Matrix</a> does the opposite: one <code>m.reaction</code> event per emoji, counted up by clients, and these events "are normally not encrypted". In DIDComm, every reaction would be encrypted like any other message.</li>
             <li>In groups, every member's set must reach every member, which multiplies with fan-out.</li>
-            <li>Should a reaction request a receipt? Probably not.</li>
           </ul>
         </div>
       </div>
-      <div class="slide-foot"><span>rich messages</span><span>5 / 12</span></div>
+      <div class="slide-foot"><span>rich messages</span><span>5 / 15</span></div>
+    </section>
+
+    <!-- STICKERS ELSEWHERE -->
+    <section>
+      <div class="eyebrow gold">stickers</div>
+      <div class="slide-body">
+        <h2>A picture as a message, from a shared pack</h2>
+        <div class="grid2">
+          <div class="card"><h3><a href="https://spec.matrix.org/latest/client-server-api/#sticker-messages">Matrix <code>m.sticker</code></a></h3><p>A message with three required fields: <code>body</code> (a text description), <code>info</code> (image metadata, including a thumbnail) and <code>url</code> (the image). <a href="https://spec.matrix.org/latest/client-server-api/#image-packs">Image packs</a> (added in v1.19) group stickers and custom emoji under shortcodes so they can be shared.</p></div>
+          <div class="card"><h3><a href="https://xmpp.org/extensions/xep-0449.html">XMPP XEP-0449 Stickers</a></h3><p>Experimental. The image is sent with <a href="https://xmpp.org/extensions/xep-0447.html">Stateless File Sharing</a> plus a <code>&lt;sticker/&gt;</code> element, with optional fallback text. Packs are published over pubsub and identified by a hash of their contents.</p></div>
+        </div>
+        <p class="kicker">Both separate the <b>sticker</b> (one message) from the <b>pack</b> (a collection you can import and reuse).</p>
+      </div>
+      <div class="slide-foot"><span>rich messages</span><span>6 / 15</span></div>
+    </section>
+
+    <!-- STICKERS IN DIDCOMM -->
+    <section>
+      <div class="eyebrow">stickers in didcomm — a sketch</div>
+      <h2 style="margin-bottom:.2rem">What DIDComm already has for this</h2>
+      <div class="grid2" style="flex:1">
+        <pre class="codeblock"><code>{
+  <span class="k">"type"</span>: <span class="s">".../sticker"</span>,   <span class="k">// hypothetical</span>
+  <span class="k">"body"</span>: {
+    <span class="k">"content"</span>: <span class="g">"[sticker: cat waving]"</span>,
+    <span class="k">"pack"</span>: <span class="s">"&lt;pack id&gt;"</span>
+  },
+  <span class="k">"attachments"</span>: [{
+    <span class="k">"media_type"</span>: <span class="s">"image/webp"</span>,
+    <span class="k">"data"</span>: {
+      <span class="k">"links"</span>: [<span class="s">"https://…/cat-wave.webp"</span>],
+      <span class="k">"hash"</span>: <span class="g">"&lt;multihash&gt;"</span>
+    }
+  }]
+}</code></pre>
+        <ul class="bullets">
+          <li>The image is an attachment: inline for small stickers, or by reference with the spec's required <code>hash</code>.</li>
+          <li><code>content</code> doubles as alt text and as the fallback for basic clients.</li>
+          <li>The hash lets a recipient reuse a sticker it has already cached.</li>
+          <li>Whole packs could be shared with <a href="https://didcomm.org/media-sharing/1.0/"><code>media-sharing/1.0</code></a>.</li>
+          <li><b>Privacy:</b> fetching a sticker from a shared host when it's viewed tells that host who viewed what, and when. The Matrix spec flags this timing correlation for its <a href="https://spec.matrix.org/latest/client-server-api/#encrypted-image-packs">image packs</a>. Caching packs up front avoids it.</li>
+        </ul>
+      </div>
+      <div class="slide-foot"><span>rich messages</span><span>7 / 15</span></div>
     </section>
 
     <!-- EDITS AND DELETES -->
@@ -130,9 +174,9 @@
           <div class="card"><h3>Edit</h3><p>A new message that references the original and carries replacement content. Clients show the latest, maybe with an "edited" marker and history.</p></div>
           <div class="card"><h3>Delete for everyone</h3><p>A message asking recipients to hide the original. <code>receipts/1.0</code>'s <code>deleted</code> state is the other direction: the recipient reporting that <i>they</i> deleted it.</p></div>
         </div>
-        <p class="kicker">Worth being explicit: authcrypt messages are repudiable, so an edit doesn't create evidence either way.</p>
+        <p class="kicker">Elsewhere: Matrix <a href="https://spec.matrix.org/latest/client-server-api/#event-replacements">event replacements</a> (<code>m.replace</code>) and <a href="https://spec.matrix.org/latest/client-server-api/#redactions">redactions</a>; XMPP <a href="https://xmpp.org/extensions/xep-0308.html">XEP-0308</a> (Stable, corrects only the <i>last</i> message) and <a href="https://xmpp.org/extensions/xep-0424.html">XEP-0424 Message Retraction</a> (Proposed). Authcrypt messages are repudiable, so an edit doesn't create evidence either way.</p>
       </div>
-      <div class="slide-foot"><span>rich messages</span><span>6 / 12</span></div>
+      <div class="slide-foot"><span>rich messages</span><span>8 / 15</span></div>
     </section>
 
     <!-- FORMATTING -->
@@ -143,14 +187,14 @@
         <table class="compare">
           <thead><tr><th>Approach</th><th>Upside</th><th>Downside</th></tr></thead>
           <tbody>
-            <tr><th>Markdown in <code>content</code></th><td>Readable even unrendered; easy to type</td><td>Many dialects; no underline in most; ambiguous edge cases</td></tr>
-            <tr><th>A formatted field beside plain <code>content</code></th><td>Old clients keep working; formatting is explicit</td><td>Two versions of the text can disagree</td></tr>
-            <tr><th>Style ranges over plain text</th><td>No markup to parse or sanitize</td><td>Offsets break if text is edited; awkward to author</td></tr>
+            <tr><th>Inline markup in <code>content</code><br><a class="mono" style="font-size:.7rem" href="https://xmpp.org/extensions/xep-0393.html">e.g. XEP-0393 Message Styling (Stable)</a></th><td>Readable even unrendered; easy to type</td><td>Many dialects; ambiguous edge cases</td></tr>
+            <tr><th>A formatted field beside plain <code>content</code><br><a class="mono" style="font-size:.7rem" href="https://spec.matrix.org/latest/client-server-api/#mroommessage-msgtypes">e.g. Matrix <code>formatted_body</code></a></th><td>Old clients keep working; formatting is explicit</td><td>Two versions of the text can disagree</td></tr>
+            <tr><th>Style ranges over plain text<br><a class="mono" style="font-size:.7rem" href="https://xmpp.org/extensions/xep-0394.html">e.g. XEP-0394 Message Markup (Experimental)</a></th><td>No markup to parse or sanitize</td><td>Offsets break if text is edited; awkward to author</td></tr>
           </tbody>
         </table>
-        <p class="kicker">Matrix takes the second route: a plain <code>body</code> plus an optional <code>formatted_body</code> in a restricted HTML subset.</p>
+        <p class="kicker">Mentions are similar: Matrix adds structured <a href="https://spec.matrix.org/latest/client-server-api/#user-and-room-mentions"><code>m.mentions</code></a> metadata; XMPP has <a href="https://xmpp.org/extensions/xep-0372.html">XEP-0372 References</a> (Experimental).</p>
       </div>
-      <div class="slide-foot"><span>rich messages</span><span>7 / 12</span></div>
+      <div class="slide-foot"><span>rich messages</span><span>9 / 15</span></div>
     </section>
 
     <!-- SECURITY OF RENDERING -->
@@ -164,7 +208,7 @@
           <li>Treat embedded media as untrusted input to image and video decoders.</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>rich messages</span><span>8 / 12</span></div>
+      <div class="slide-foot"><span>rich messages</span><span>10 / 15</span></div>
     </section>
 
     <!-- LINKS AND EMBEDS -->
@@ -176,9 +220,9 @@
           <div class="card danger"><h3>The recipient fetches it</h3><p>Every recipient's device contacts the linked site, revealing their IP address and when they read the message.</p></div>
           <div class="card teal"><h3>The sender attaches it</h3><p>The sender's device builds the preview (title, image) and sends it as an attachment. Recipients contact nothing. The sender can lie, but they could lie in the text anyway.</p></div>
         </div>
-        <p class="kicker">Larger embeds (photos, video) fit the encrypt-upload-share pattern of <code>media-sharing/1.0</code>. See "Sharing and Storing Files".</p>
+        <p class="kicker">Larger embeds (photos, video) fit the encrypt-upload-share pattern of <a href="https://didcomm.org/media-sharing/1.0/"><code>media-sharing/1.0</code></a>. See "Sharing and Storing Files".</p>
       </div>
-      <div class="slide-foot"><span>rich messages</span><span>9 / 12</span></div>
+      <div class="slide-foot"><span>rich messages</span><span>11 / 15</span></div>
     </section>
 
     <!-- COMPATIBILITY -->
@@ -188,12 +232,12 @@
         <h2>Degrade gracefully</h2>
         <ul class="bullets">
           <li>Always include plain <code>content</code> that makes sense alone, e.g. a quoted line before a reply's text.</li>
-          <li>Ask what the other side supports with <b>Discover Features 2.0</b> before sending reactions or edits it would ignore.</li>
-          <li>Several small protocols (reactions, edits, formatting), not one big one, so agents can adopt them one at a time.</li>
+          <li>Ask what the other side supports with <a href="https://didcomm.org/discover-features/2.0/"><b>Discover Features 2.0</b></a> before sending reactions or edits it would ignore.</li>
+          <li>Several small protocols (reactions, stickers, edits, formatting), not one big one, so agents can adopt them one at a time.</li>
           <li>In groups, members will have different support. Plan for mixed groups from the start.</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>rich messages</span><span>10 / 12</span></div>
+      <div class="slide-foot"><span>rich messages</span><span>12 / 15</span></div>
     </section>
 
     <!-- SKETCH -->
@@ -219,7 +263,7 @@
           <li>Whether extending <code>basicmessage</code> like this is acceptable, or a new message type is needed, is itself a question for the group.</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>rich messages</span><span>11 / 12</span></div>
+      <div class="slide-foot"><span>rich messages</span><span>13 / 15</span></div>
     </section>
 
     <!-- QUESTIONS -->
@@ -229,11 +273,38 @@
         <h1 style="font-size:2.6rem">Open questions</h1>
         <ul style="margin-top:.6rem">
           <li class="q">Extend <code>basicmessage</code>, or define a new rich-message protocol?</li>
-          <li class="q">One protocol, or small composable ones for reactions, edits and formatting?</li>
+          <li class="q">One protocol, or small composable ones for reactions, stickers, edits and formatting?</li>
           <li class="q">Is it OK to use <code>thid</code> for UI threads, or should it stay reserved for protocol state?</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>thank you</span><span>12 / 12</span></div>
+      <div class="slide-foot"><span>thank you</span><span>14 / 15</span></div>
+    </section>
+
+    <!-- REFERENCES -->
+    <section>
+      <div class="eyebrow">references</div>
+      <h2 style="margin-bottom:.4rem">Sources</h2>
+      <ul class="refs">
+        <li><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#threads">DIDComm Messaging v2.1 — Threads</a> · <a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#attachments">Attachments</a></li>
+        <li><a href="https://didcomm.org/basicmessage/2.0/">basicmessage/2.0</a> <span class="st">Production</span></li>
+        <li><a href="https://didcomm.org/receipts/1.0/">receipts/1.0</a> <span class="st">Demonstrated</span></li>
+        <li><a href="https://didcomm.org/media-sharing/1.0/">media-sharing/1.0</a> <span class="st">Demonstrated</span></li>
+        <li><a href="https://didcomm.org/discover-features/2.0/">discover-features/2.0</a></li>
+        <li><a href="https://spec.matrix.org/latest/client-server-api/#rich-replies">Matrix — Rich replies</a> · <a href="https://spec.matrix.org/latest/client-server-api/#threading">Threading</a></li>
+        <li><a href="https://spec.matrix.org/latest/client-server-api/#event-annotations-and-reactions">Matrix — Annotations and reactions</a></li>
+        <li><a href="https://spec.matrix.org/latest/client-server-api/#sticker-messages">Matrix — Sticker messages</a> · <a href="https://spec.matrix.org/latest/client-server-api/#image-packs">Image packs</a></li>
+        <li><a href="https://spec.matrix.org/latest/client-server-api/#event-replacements">Matrix — Event replacements</a> · <a href="https://spec.matrix.org/latest/client-server-api/#redactions">Redactions</a></li>
+        <li><a href="https://spec.matrix.org/latest/client-server-api/#mroommessage-msgtypes">Matrix — m.room.message msgtypes</a> · <a href="https://spec.matrix.org/latest/client-server-api/#user-and-room-mentions">Mentions</a></li>
+        <li><a href="https://xmpp.org/extensions/xep-0461.html">XEP-0461 Message Replies</a> <span class="st">Experimental</span></li>
+        <li><a href="https://xmpp.org/extensions/xep-0444.html">XEP-0444 Message Reactions</a> <span class="st">Experimental</span></li>
+        <li><a href="https://xmpp.org/extensions/xep-0449.html">XEP-0449 Stickers</a> <span class="st">Experimental</span></li>
+        <li><a href="https://xmpp.org/extensions/xep-0308.html">XEP-0308 Last Message Correction</a> <span class="st">Stable</span></li>
+        <li><a href="https://xmpp.org/extensions/xep-0424.html">XEP-0424 Message Retraction</a> <span class="st">Proposed</span></li>
+        <li><a href="https://xmpp.org/extensions/xep-0393.html">XEP-0393 Message Styling</a> <span class="st">Stable</span></li>
+        <li><a href="https://xmpp.org/extensions/xep-0394.html">XEP-0394 Message Markup</a> <span class="st">Experimental</span></li>
+        <li><a href="https://xmpp.org/extensions/xep-0372.html">XEP-0372 References</a> <span class="st">Experimental</span></li>
+      </ul>
+      <div class="slide-foot"><span>rich messages · statuses as of September 2026</span><span>15 / 15</span></div>
     </section>
 
   </div>
