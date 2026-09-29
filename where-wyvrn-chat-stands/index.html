@@ -31,7 +31,7 @@
 }
 *{box-sizing:border-box}
 html{font-size:clamp(11px, min(1.25vw, 2.22vh), 30px)}
-html,body{background:var(--ink);height:100%}
+html,body,.reveal-viewport{background:var(--ink);height:100%}
 body{margin:0;font-family:var(--body);color:var(--paper)}
 .reveal{font-family:var(--body);font-size:1.625rem;color:var(--paper)}
 .reveal .slides{text-align:left}
@@ -375,7 +375,7 @@ code,.mono{font-family:var(--mono)}
     center: false,
     controls: true,
     progress: true,
-    transition: 'fade',
+    transition: 'slide',
     // No fixed canvas: slides fill whatever viewport they're shown in and
     // the theme sizes itself off the viewport (see the html font-size rule).
     disableLayout: true,
