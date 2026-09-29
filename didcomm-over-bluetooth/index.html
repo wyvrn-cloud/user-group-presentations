@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DIDComm over Bluetooth</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@6.0.2/dist/reveal.css">
+<link rel="stylesheet" href="../assets/deck.css">
+
+<div class="reveal">
+  <div class="slides">
+
+    <!-- TITLE -->
+    <section>
+      <div class="slide-body title-slide">
+        <div class="brandmark">
+          <svg viewBox="0 0 48 48" fill="none"><circle cx="20" cy="18" r="13" stroke="#f0a83b" stroke-width="4"/><circle cx="28" cy="30" r="13" stroke="#34c0cf" stroke-width="4"/></svg>
+          <span class="eyebrow">didcomm user group</span>
+        </div>
+        <h1>DIDComm over<br>Bluetooth</h1>
+        <p class="sub">Local first when devices are close to each other; an HTTPS mediator when they aren't. The spec already leaves room for this. Here's what would have to be filled in.</p>
+        <span class="pill gold">draft</span>
+      </div>
+    </section>
+
+    <!-- SCENARIO -->
+    <section>
+      <div class="eyebrow">the scenario</div>
+      <div class="slide-body">
+        <h2>Two phones, one room, no internet.</h2>
+        <p class="lede">Today, a message between them goes <b>up to a mediator on the internet and back down</b>, even though the phones are a metre apart. With no connection at all (a field site, a basement, a plane), nothing moves.</p>
+        <div class="grid3">
+          <div class="card"><h3>Latency</h3><p>A round trip to a server for a message to the next desk.</p></div>
+          <div class="card"><h3>Availability</h3><p>No internet means no delivery, even when the recipient is right there.</p></div>
+          <div class="card"><h3>Metadata</h3><p>The mediator learns about traffic that never needed to leave the room.</p></div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>didcomm over bluetooth</span><span>1 / 12</span></div>
+    </section>
+
+    <!-- THE SPEC SAYS -->
+    <section>
+      <div class="eyebrow gold">the spec already says</div>
+      <div class="slide-body">
+        <h2>Bluetooth is named in DIDComm's own requirements</h2>
+        <div class="quote">Transport-agnostic (usable over HTTPS 1.x and 2.0, WebSockets, BlueTooth, chat, push notifications, libp2p, AMQP, SMTP, NFC, sneakernet, snail mail; supports both simplex and duplex; works offline; doesn't assume client-server or synchronous or real-time; allows paired or n-wise or public broadcast usage)<cite>DIDComm Messaging v2.1 — Requirements</cite></div>
+        <p class="lede">And security doesn't depend on the link: the encryption envelope "provides trust as a feature of each message". A Bluetooth link needn't be trusted at all.</p>
+      </div>
+      <div class="slide-foot"><span>didcomm over bluetooth</span><span>2 / 12</span></div>
+      <aside class="notes">Requirements list, item 4. The "trust as a feature of each message" wording is from Transports, Summary.</aside>
+    </section>
+
+    <!-- ENDPOINT ORDER -->
+    <section>
+      <div class="eyebrow">the hook</div>
+      <h2 style="margin-bottom:.2rem">Several endpoints, in order of preference</h2>
+      <div class="grid2" style="flex:1">
+        <pre class="codeblock"><code><span class="k">"service"</span>: [{
+  <span class="k">"type"</span>: <span class="s">"DIDCommMessaging"</span>,
+  <span class="k">"serviceEndpoint"</span>: [
+    { <span class="k">"uri"</span>: <span class="g">"ble:…"</span> },      <span class="k">// hypothetical</span>
+    { <span class="k">"uri"</span>: <span class="s">"did:example:mediator"</span> }
+  ]
+}]</code></pre>
+        <div class="slide-body" style="gap:1rem">
+          <div class="quote">The order of the endpoints SHOULD indicate the DID Document owner's preference in receiving messages. Any endpoint MAY be selected by the sender, typically by protocol availability or preference.<cite>Routing — Service Endpoint</cite></div>
+          <div class="quote">If the transmission of a message fails, the sender SHOULD try another endpoint or try delivery at a later time.<cite>Routing — Failover</cite></div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>didcomm over bluetooth</span><span>3 / 12</span></div>
+      <aside class="notes">"ble:" is a placeholder. No URI scheme for a Bluetooth DIDComm endpoint is defined anywhere that we know of.</aside>
+    </section>
+
+    <!-- THE GAP -->
+    <section>
+      <div class="eyebrow danger">the gap</div>
+      <div class="slide-body">
+        <h2>No one has written the Bluetooth transport</h2>
+        <p class="lede">The spec repo has transport extensions for <span class="t">email</span>, <span class="t">filesystem</span> and <span class="t">libp2p</span>. Bluetooth has none. Every transport MUST define:</p>
+        <div class="grid4">
+          <div class="card"><h3>Endpoint format</h3><p>The URI scheme, or the properties of the endpoint object.</p></div>
+          <div class="card"><h3>How to send</h3><p>Which Bluetooth mechanism, and how a message is framed on it.</p></div>
+          <div class="card"><h3>Media type</h3><p>How the receiver learns it's <code>didcomm-encrypted+json</code> (or another format).</p></div>
+          <div class="card"><h3>Extra context</h3><p>Where any transport-specific endpoint properties are defined.</p></div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>didcomm over bluetooth</span><span>4 / 12</span></div>
+      <aside class="notes">Spec: Transports, Transport Requirements.</aside>
+    </section>
+
+    <!-- BLUETOOTH REALITIES -->
+    <section>
+      <div class="eyebrow">bluetooth realities</div>
+      <div class="slide-body">
+        <h2>Encrypted DIDComm messages are big for Bluetooth</h2>
+        <div class="grid3">
+          <div class="card"><h3>BLE GATT</h3><p>Available everywhere, but each write is small: the default ATT MTU is 23 bytes, negotiable up to about 512. Messages must be chunked and reassembled.</p></div>
+          <div class="card"><h3>BLE L2CAP channels</h3><p>Connection-oriented channels give a proper byte stream with flow control. Better for bulk; platform support varies.</p></div>
+          <div class="card"><h3>Classic (RFCOMM)</h3><p>A serial stream with more throughput, but patchy on phones, especially iOS.</p></div>
+        </div>
+        <p class="kicker">A receiver can publish <code>max_receive_bytes</code> so senders know when to fall back to the mediator for large messages.</p>
+      </div>
+      <div class="slide-foot"><span>didcomm over bluetooth</span><span>5 / 12</span></div>
+      <aside class="notes">Double-check platform support claims before presenting; they change with OS releases.</aside>
+    </section>
+
+    <!-- DISCOVERY -->
+    <section>
+      <div class="eyebrow gold">the hardest part</div>
+      <div class="slide-body">
+        <h2>Finding each other without being trackable</h2>
+        <p class="lede">A DID document is fairly static; "who is nearby" changes by the minute. To connect, a device has to <b>advertise something</b>. If that's a stable identifier, anyone with a scanner can follow it around.</p>
+        <div class="grid2">
+          <div class="card teal"><h3>Known contacts</h3><p>Advertise short-lived identifiers derived from a secret the two parties already share, so only contacts recognise each other, and the value changes every few minutes.</p></div>
+          <div class="card gold"><h3>First contact</h3><p>Use an out-of-band invitation, for example a QR code, to exchange DIDs, then switch to Bluetooth for the conversation.</p></div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>didcomm over bluetooth</span><span>6 / 12</span></div>
+      <aside class="notes">Rotating identifiers derived from a shared secret is the same idea used by several proximity systems. The spec's out-of-band section also warns that identifiers passed in a QR code are no longer private and should be rotated over a secure connection if privacy matters.</aside>
+    </section>
+
+    <!-- DUPLEX -->
+    <section>
+      <div class="eyebrow">two-way links</div>
+      <div class="slide-body">
+        <h2>A Bluetooth link is naturally two-way</h2>
+        <p class="lede">DIDComm transports are one-way by default. The <span class="t">return-route</span> extension already covers "send replies back over the connection I opened": <code>return_route: all</code> or <code>thread</code>.</p>
+        <p class="kicker">It's defined for the directly connected pair only, not through routing keys, which is exactly the Bluetooth case.</p>
+      </div>
+      <div class="slide-foot"><span>didcomm over bluetooth</span><span>7 / 12</span></div>
+    </section>
+
+    <!-- SWITCHING -->
+    <section>
+      <div class="eyebrow gold">local first, mediator second</div>
+      <h2>Choosing a path, per message</h2>
+      <div class="numrow" style="flex:1;align-items:center">
+        <div class="step"><h3>Is the peer nearby?</h3><p>Recently seen advertising, and a link can be opened.</p></div>
+        <div class="step"><h3>Does it fit?</h3><p>Under the peer's <code>max_receive_bytes</code> and worth sending locally.</p></div>
+        <div class="step"><h3>Try Bluetooth</h3><p>Send and wait for a transport-level acknowledgement.</p></div>
+        <div class="step"><h3>Fall back</h3><p>No ack in time? Send the same message through the mediator, as the failover rule says.</p></div>
+      </div>
+      <div class="slide-foot"><span>didcomm over bluetooth</span><span>8 / 12</span></div>
+    </section>
+
+    <!-- DUPLICATES -->
+    <section>
+      <div class="eyebrow danger">the consequence</div>
+      <div class="slide-body">
+        <h2>Some messages will arrive twice</h2>
+        <p class="lede">A local send that succeeded but whose ack was lost gets retried through the mediator. The receiver later picks up a copy it already has.</p>
+        <ul class="bullets">
+          <li>Message <code>id</code>s are unique across all interactions the parties can see, which makes them good dedup keys.</li>
+          <li>Keep a window of recently seen ids; drop repeats.</li>
+          <li>For ordering-sensitive protocols, the Advanced Sequencing headers detect gaps and reordering across the two paths.</li>
+        </ul>
+      </div>
+      <div class="slide-foot"><span>didcomm over bluetooth</span><span>9 / 12</span></div>
+      <aside class="notes">Spec: Threading, Message IDs ("it MUST be unique across all interactions visible to the set of parties"). Extension: advanced_sequencing.</aside>
+    </section>
+
+    <!-- BEYOND TWO PHONES -->
+    <section>
+      <div class="eyebrow">where else it helps</div>
+      <div class="slide-body">
+        <h2>Not just chat</h2>
+        <div class="grid3">
+          <div class="card"><h3>Device enrollment</h3><p>Adding your own new device over Bluetooth, next to the one you already have.</p></div>
+          <div class="card"><h3>Kiosks and check-in</h3><p>A door, a counter or a vehicle that talks to your wallet locally, even when its own connection is flaky.</p></div>
+          <div class="card"><h3>Sensors and gateways</h3><p>A small device hands messages to a nearby gateway, which forwards them when it's online.</p></div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>didcomm over bluetooth</span><span>10 / 12</span></div>
+    </section>
+
+    <!-- WHAT AN EXTENSION WOULD SAY -->
+    <section>
+      <div class="eyebrow gold">a possible extension</div>
+      <div class="slide-body">
+        <h2>What a Bluetooth transport extension could specify</h2>
+        <table class="compare">
+          <tbody>
+            <tr><th>Endpoint</th><td>A URI or object meaning "reachable locally", with no stable identifier in it</td></tr>
+            <tr><th>Discovery</th><td>Rotating advertisement identifiers for known contacts; out-of-band for first contact</td></tr>
+            <tr><th>Framing</th><td>Length-prefixed messages; chunking rules for GATT; L2CAP where available</td></tr>
+            <tr><th>Media type</th><td>Carried in the frame header, like HTTP's <code>Content-Type</code></td></tr>
+            <tr><th>Duplex</th><td>Reuse the existing <code>return_route</code> header</td></tr>
+            <tr><th>Delivery</th><td>A transport ack, so senders know when to fall back</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="slide-foot"><span>didcomm over bluetooth</span><span>11 / 12</span></div>
+    </section>
+
+    <!-- QUESTIONS -->
+    <section>
+      <div class="eyebrow">for the group</div>
+      <div class="slide-body closing">
+        <h1 style="font-size:2.6rem">Open questions</h1>
+        <ul style="margin-top:.6rem">
+          <li class="q">Does "reachable locally" belong in the DID document at all, or only in discovery?</li>
+          <li class="q">Would anyone implement a Bluetooth transport extension if it were written up?</li>
+          <li class="q">Should the same extension cover Wi-Fi Direct and local networks, or just Bluetooth?</li>
+        </ul>
+      </div>
+      <div class="slide-foot"><span>thank you</span><span>12 / 12</span></div>
+    </section>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@6.0.2/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@6.0.2/dist/plugin/notes.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    center: false,
+    controls: true,
+    progress: true,
+    transition: 'slide',
+    // No fixed canvas: slides fill the viewport and ../assets/deck.css
+    // sizes everything off it.
+    disableLayout: true,
+    plugins: [RevealNotes],
+  });
+</script>

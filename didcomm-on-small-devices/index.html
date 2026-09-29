@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DIDComm on Small Devices</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@6.0.2/dist/reveal.css">
+<link rel="stylesheet" href="../assets/deck.css">
+
+<div class="reveal">
+  <div class="slides">
+
+    <!-- TITLE -->
+    <section>
+      <div class="slide-body title-slide">
+        <div class="brandmark">
+          <svg viewBox="0 0 48 48" fill="none"><circle cx="20" cy="18" r="13" stroke="#f0a83b" stroke-width="4"/><circle cx="28" cy="30" r="13" stroke="#34c0cf" stroke-width="4"/></svg>
+          <span class="eyebrow">didcomm user group</span>
+        </div>
+        <h1>DIDComm on<br>Small Devices</h1>
+        <p class="sub">Sensors, meters and gateways: devices that sleep, have little memory and slow links. What the spec already offers them, and where it gets heavy.</p>
+        <span class="pill gold">draft</span>
+      </div>
+    </section>
+
+    <!-- WHAT'S DIFFERENT -->
+    <section>
+      <div class="eyebrow">what's different</div>
+      <div class="slide-body">
+        <h2>IoT devices break the phone-and-server assumptions</h2>
+        <div class="grid4">
+          <div class="card"><h3>Asleep</h3><p>Awake for seconds, then gone for minutes or hours to save battery.</p></div>
+          <div class="card"><h3>Small</h3><p>Kilobytes of RAM, not gigabytes. Big messages may not fit in memory at all.</p></div>
+          <div class="card"><h3>Slow links</h3><p>Low-power radios where every byte costs airtime and energy.</p></div>
+          <div class="card"><h3>Headless</h3><p>No screen, no person to scan a QR or approve a prompt.</p></div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>didcomm on small devices</span><span>1 / 11</span></div>
+    </section>
+
+    <!-- MAX RECEIVE BYTES -->
+    <section>
+      <div class="eyebrow gold">the spec thought of this</div>
+      <h2 style="margin-bottom:.2rem"><code>max_receive_bytes</code></h2>
+      <div class="grid2" style="flex:1">
+        <div class="slide-body" style="gap:1rem">
+          <div class="quote">For example, IoT devices that may not have the bandwidth or buffering capabilites to accept large messages …<cite>Transports — Agent Constraint Disclosure</cite></div>
+          <ul class="bullets">
+            <li>Senders can ask for it with Discover Features 2.0.</li>
+            <li>Oversized messages "may be discarded", ideally with a problem report: <code>me.res.storage.message_too_big</code>.</li>
+          </ul>
+        </div>
+        <pre class="codeblock"><code>{
+  <span class="k">"type"</span>: <span class="s">".../discover-features/2.0/disclose"</span>,
+  <span class="k">"body"</span>: {
+    <span class="k">"disclosures"</span>: [{
+      <span class="k">"feature-type"</span>: <span class="s">"constraint"</span>,
+      <span class="k">"id"</span>: <span class="s">"max_receive_bytes"</span>,
+      <span class="k">"max_receive_bytes"</span>: <span class="g">"65536"</span>
+    }]
+  }
+}</code></pre>
+      </div>
+      <div class="slide-foot"><span>didcomm on small devices</span><span>2 / 11</span></div>
+      <aside class="notes">Example from the spec's Transports section. Sending a problem report back isn't always possible on simplex transports, which the spec acknowledges.</aside>
+    </section>
+
+    <!-- SLEEPING -->
+    <section>
+      <div class="eyebrow">devices that sleep</div>
+      <div class="slide-body">
+        <h2>Let something else stay awake</h2>
+        <div class="grid3">
+          <div class="card teal"><h3>A mediator holds mail</h3><p>Messages queue at the mediator; the device picks them up when it wakes.</p></div>
+          <div class="card teal"><h3>Queue transport</h3><p>The return-route extension's <code>didcomm:transport/queue</code>: messages wait <i>at the sender</i> until the device connects and collects them.</p></div>
+          <div class="card teal"><h3>Return route</h3><p>The device opens the connection when awake and asks for replies over it with <code>return_route</code>.</p></div>
+        </div>
+        <p class="kicker"><code>expires_time</code> lets senders say when a queued command is no longer worth delivering.</p>
+      </div>
+      <div class="slide-foot"><span>didcomm on small devices</span><span>3 / 11</span></div>
+    </section>
+
+    <!-- GATEWAY -->
+    <section>
+      <div class="eyebrow gold">a common shape</div>
+      <h2 style="margin-bottom:.2rem">One gateway, many devices</h2>
+      <div class="diagram" style="flex:1">
+        <svg viewBox="0 0 640 280" width="640" height="280">
+          <g font-family="IBM Plex Sans" font-size="13" text-anchor="middle">
+            <rect x="20" y="115" width="120" height="50" rx="8" fill="#101d2c" stroke="#f0a83b" stroke-width="1.5"/><text x="80" y="145" fill="#e9ece7">Operator</text>
+            <rect x="255" y="115" width="130" height="50" rx="8" fill="#101d2c" stroke="#34c0cf" stroke-width="1.5"/><text x="320" y="137" fill="#e9ece7">Gateway</text><text x="320" y="154" fill="#8fa3b3" font-size="11">mediator role</text>
+            <line x1="140" y1="140" x2="255" y2="140" stroke="#34c0cf" stroke-width="2"/>
+            <line x1="385" y1="130" x2="500" y2="50" stroke="#34c0cf" stroke-width="2" stroke-dasharray="5 5"/>
+            <line x1="385" y1="140" x2="500" y2="140" stroke="#34c0cf" stroke-width="2" stroke-dasharray="5 5"/>
+            <line x1="385" y1="150" x2="500" y2="230" stroke="#34c0cf" stroke-width="2" stroke-dasharray="5 5"/>
+            <rect x="500" y="30" width="110" height="40" rx="8" fill="#101d2c" stroke="#8fa3b3"/><text x="555" y="55" fill="#e9ece7">Sensor A</text>
+            <rect x="500" y="120" width="110" height="40" rx="8" fill="#101d2c" stroke="#8fa3b3"/><text x="555" y="145" fill="#e9ece7">Sensor B</text>
+            <rect x="500" y="210" width="110" height="40" rx="8" fill="#101d2c" stroke="#8fa3b3"/><text x="555" y="235" fill="#e9ece7">Valve C</text>
+          </g>
+          <text x="440" y="275" text-anchor="middle" fill="#8fa3b3" font-family="IBM Plex Mono" font-size="11">local radio, intermittent</text>
+        </svg>
+      </div>
+      <p class="kicker">Each device has its own DID; the gateway is its mediator. End-to-end encryption means the gateway forwards messages it can't read.</p>
+      <div class="slide-foot"><span>didcomm on small devices</span><span>4 / 11</span></div>
+    </section>
+
+    <!-- CRYPTO WEIGHT -->
+    <section>
+      <div class="eyebrow danger">where it gets heavy</div>
+      <div class="slide-body">
+        <h2>Full compliance asks a lot of a microcontroller</h2>
+        <div class="grid2">
+          <div class="card"><h3>Key agreement</h3><p>X25519, P-384 and P-256 are all MUST-support curves, plus AES-256-CBC with HMAC-SHA512 for authcrypt.</p></div>
+          <div class="card"><h3>Signatures</h3><p>Implementations MUST be able to <i>verify</i> EdDSA (Ed25519), ES256 and ES256K.</p></div>
+        </div>
+        <p class="lede" style="font-size:1.1rem">A tiny device that only ever talks to its own gateway doesn't need all of that. Is there room for a <b>constrained profile</b>: one curve, one cipher, declared up front?</p>
+      </div>
+      <div class="slide-foot"><span>didcomm on small devices</span><span>5 / 11</span></div>
+      <aside class="notes">Spec: Security, Curves and Content Encryption Algorithms ("the first three elliptic curves in this table MUST be supported"); Message Signing, Algorithms ("MUST be able to verify all of the following algorithms").</aside>
+    </section>
+
+    <!-- IDENTITY -->
+    <section>
+      <div class="eyebrow">identity for devices</div>
+      <div class="slide-body">
+        <h2>Provisioning, rotation, retirement</h2>
+        <div class="numrow">
+          <div class="step"><h3>Provision</h3><p>At install, an out-of-band invitation (printed QR on the device, or pushed by the installer's phone) sets up the first relationship.</p></div>
+          <div class="step"><h3>Rotate</h3><p>Switch to a relationship-specific DID with <code>from_prior</code>, signed by the previous DID's key.</p></div>
+          <div class="step"><h3>Retire</h3><p>End the relationship by rotating to nothing: a <code>from_prior</code> with no <code>sub</code>.</p></div>
+        </div>
+        <p class="kicker">A printed QR code is public forever. The spec says identifiers passed that way should be rotated if privacy matters.</p>
+      </div>
+      <div class="slide-foot"><span>didcomm on small devices</span><span>6 / 11</span></div>
+      <aside class="notes">Spec: DID Rotation; Ending a Relationship; Out Of Band Messages, Privacy Considerations.</aside>
+    </section>
+
+    <!-- TELEMETRY -->
+    <section>
+      <div class="eyebrow gold">readings you can prove</div>
+      <div class="slide-body">
+        <h2>Encrypted, signed, or both?</h2>
+        <table class="compare">
+          <thead><tr><th>Envelope</th><th>Good for</th></tr></thead>
+          <tbody>
+            <tr><th><code>authcrypt(plaintext)</code></th><td>Normal commands and readings. Only the recipient can tell who sent it, and can't prove it to anyone else.</td></tr>
+            <tr><th><code>anoncrypt(sign(plaintext))</code></th><td>Readings that may need to be shown to a third party later, such as a regulator or insurer.</td></tr>
+            <tr><th><code>sign(plaintext)</code></th><td>Public broadcasts, like a device's status, where tamper-evidence matters but confidentiality doesn't.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="slide-foot"><span>didcomm on small devices</span><span>7 / 11</span></div>
+      <aside class="notes">Spec: Message Formats, the envelope table; Uses of Signatures (non-repudiation requires signing before encryption).</aside>
+    </section>
+
+    <!-- ONE-WAY -->
+    <section>
+      <div class="eyebrow">one-way devices</div>
+      <div class="slide-body">
+        <h2>A sensor that never listens</h2>
+        <p class="lede">DIDComm transports are <b>simplex</b> by design; HTTPS delivery is a one-way POST. A device that only ever sends is still a legitimate DIDComm sender.</p>
+        <ul class="bullets">
+          <li>It still needs a DID the recipient can resolve, to authenticate its messages.</li>
+          <li>It can't receive problem reports or acknowledgements, so delivery is best-effort.</li>
+          <li>Key rotation has to be driven from the device side, or not at all.</li>
+        </ul>
+      </div>
+      <div class="slide-foot"><span>didcomm on small devices</span><span>8 / 11</span></div>
+    </section>
+
+    <!-- SIZE -->
+    <section>
+      <div class="eyebrow">size</div>
+      <div class="slide-body">
+        <h2>Every byte is airtime</h2>
+        <p class="lede">A reading of a few bytes becomes several hundred once it's wrapped in a JWE with headers, base64url and a <code>recipients</code> entry per key.</p>
+        <div class="grid2">
+          <div class="card"><h3>Batch</h3><p>Send readings in batches, using attachments or an array body, so the envelope cost is shared.</p></div>
+          <div class="card"><h3>Encode differently</h3><p>A binary profile would help most here. (See "DIDComm in CBOR?".)</p></div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>didcomm on small devices</span><span>9 / 11</span></div>
+      <aside class="notes">"Several hundred bytes" is an estimate; measure a real minimal authcrypt message before presenting.</aside>
+    </section>
+
+    <!-- WHY DIDCOMM -->
+    <section>
+      <div class="eyebrow gold">why bother</div>
+      <div class="slide-body">
+        <h2>What DIDComm offers over "just MQTT and TLS"</h2>
+        <div class="grid3">
+          <div class="card teal"><h3>End-to-end</h3><p>Security survives gateways, brokers and store-and-forward hops, not just one TLS connection.</p></div>
+          <div class="card teal"><h3>Portable identity</h3><p>A device's DID isn't tied to one vendor's cloud account.</p></div>
+          <div class="card teal"><h3>Transport-agnostic</h3><p>The same message can go over a local radio, a gateway, or HTTPS.</p></div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>didcomm on small devices</span><span>10 / 11</span></div>
+    </section>
+
+    <!-- QUESTIONS -->
+    <section>
+      <div class="eyebrow">for the group</div>
+      <div class="slide-body closing">
+        <h1 style="font-size:2.6rem">Open questions</h1>
+        <ul style="margin-top:.6rem">
+          <li class="q">Is a constrained profile (one curve, one cipher, maybe CBOR) worth defining?</li>
+          <li class="q">Is anyone running DIDComm on microcontrollers today? What broke?</li>
+          <li class="q">How should headless devices be provisioned without a person in the loop?</li>
+        </ul>
+      </div>
+      <div class="slide-foot"><span>thank you</span><span>11 / 11</span></div>
+    </section>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@6.0.2/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@6.0.2/dist/plugin/notes.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    center: false,
+    controls: true,
+    progress: true,
+    transition: 'slide',
+    // No fixed canvas: slides fill the viewport and ../assets/deck.css
+    // sizes everything off it.
+    disableLayout: true,
+    plugins: [RevealNotes],
+  });
+</script>
