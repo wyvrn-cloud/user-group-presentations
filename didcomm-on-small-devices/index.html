@@ -23,9 +23,18 @@
       </div>
     </section>
 
+    <!-- SECTION: WHAT'S DIFFERENT -->
+    <section>
+      <div class="slide-body section-slide">
+        <h1>What's different</h1>
+        <p class="sub">Sleeping, small, slow and headless devices.</p>
+      </div>
+      <div class="slide-foot"><span>didcomm on small devices</span><span>1 / 15</span></div>
+    </section>
+
     <!-- WHAT'S DIFFERENT -->
     <section>
-      <div class="eyebrow">what's different</div>
+      <div class="eyebrow"><span class="sec">What's different ·</span> what's different</div>
       <div class="slide-body">
         <h2>IoT devices break the phone-and-server assumptions</h2>
         <div class="grid4">
@@ -35,12 +44,12 @@
           <div class="card"><h3>Headless</h3><p>No screen, no person to scan a QR or approve a prompt.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>didcomm on small devices</span><span>1 / 12</span></div>
+      <div class="slide-foot"><span>didcomm on small devices</span><span>2 / 15</span></div>
     </section>
 
     <!-- MAX RECEIVE BYTES -->
     <section>
-      <div class="eyebrow gold">the spec thought of this</div>
+      <div class="eyebrow gold"><span class="sec">What's different ·</span> the spec thought of this</div>
       <h2 style="margin-bottom:.2rem"><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#agent-constraint-disclosure"><code>max_receive_bytes</code></a></h2>
       <div class="grid2" style="flex:1">
         <div class="slide-body" style="gap:1rem">
@@ -61,13 +70,13 @@
   }
 }</code></pre>
       </div>
-      <div class="slide-foot"><span>didcomm on small devices</span><span>2 / 12</span></div>
+      <div class="slide-foot"><span>didcomm on small devices</span><span>3 / 15</span></div>
       <aside class="notes">Example from the spec's Transports section. Sending a problem report back isn't always possible on simplex transports, which the spec acknowledges.</aside>
     </section>
 
     <!-- SLEEPING -->
     <section>
-      <div class="eyebrow">devices that sleep</div>
+      <div class="eyebrow"><span class="sec">What's different ·</span> devices that sleep</div>
       <div class="slide-body">
         <h2>Let something else stay awake</h2>
         <div class="grid3">
@@ -77,12 +86,12 @@
         </div>
         <p class="kicker"><code>expires_time</code> lets senders say when a queued command is no longer worth delivering.</p>
       </div>
-      <div class="slide-foot"><span>didcomm on small devices</span><span>3 / 12</span></div>
+      <div class="slide-foot"><span>didcomm on small devices</span><span>4 / 15</span></div>
     </section>
 
     <!-- GATEWAY -->
     <section>
-      <div class="eyebrow gold">a common shape</div>
+      <div class="eyebrow gold"><span class="sec">What's different ·</span> a common shape</div>
       <h2 style="margin-bottom:.2rem">One gateway, many devices</h2>
       <div class="diagram" style="flex:1">
         <svg viewBox="0 0 640 280" width="640" height="280">
@@ -101,12 +110,21 @@
         </svg>
       </div>
       <p class="kicker">Each device has its own DID; the gateway is its mediator. End-to-end encryption means the gateway forwards messages it can't read. The registry's <a href="https://didcomm.org/mesh/1.0/"><code>mesh/1.0</code></a> describes gateways that do exactly this for BLE and LoRa clusters.</p>
-      <div class="slide-foot"><span>didcomm on small devices</span><span>4 / 12</span></div>
+      <div class="slide-foot"><span>didcomm on small devices</span><span>5 / 15</span></div>
+    </section>
+
+    <!-- SECTION: KEYS AND TRUST -->
+    <section>
+      <div class="slide-body section-slide">
+        <h1>Keys and trust</h1>
+        <p class="sub">Crypto weight, identity, and readings you can prove.</p>
+      </div>
+      <div class="slide-foot"><span>didcomm on small devices</span><span>6 / 15</span></div>
     </section>
 
     <!-- CRYPTO WEIGHT -->
     <section>
-      <div class="eyebrow danger">where it gets heavy</div>
+      <div class="eyebrow danger"><span class="sec">Keys and trust ·</span> where it gets heavy</div>
       <div class="slide-body">
         <h2>Full compliance asks a lot of a microcontroller</h2>
         <div class="grid2">
@@ -115,13 +133,13 @@
         </div>
         <p class="lede" style="font-size:1.1rem">A tiny device that only ever talks to its own gateway doesn't need all of that. Is there room for a <b>constrained profile</b>: one curve, one cipher, declared up front?</p>
       </div>
-      <div class="slide-foot"><span>didcomm on small devices</span><span>5 / 12</span></div>
+      <div class="slide-foot"><span>didcomm on small devices</span><span>7 / 15</span></div>
       <aside class="notes">Spec: Security, Curves and Content Encryption Algorithms ("the first three elliptic curves in this table MUST be supported"); Message Signing, Algorithms ("MUST be able to verify all of the following algorithms").</aside>
     </section>
 
     <!-- IDENTITY -->
     <section>
-      <div class="eyebrow">identity for devices</div>
+      <div class="eyebrow"><span class="sec">Keys and trust ·</span> identity for devices</div>
       <div class="slide-body">
         <h2>Provisioning, rotation, retirement</h2>
         <div class="numrow">
@@ -131,13 +149,13 @@
         </div>
         <p class="kicker">A printed QR code is public forever. <a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#privacy-considerations">The spec says</a> identifiers passed that way should be rotated if privacy matters.</p>
       </div>
-      <div class="slide-foot"><span>didcomm on small devices</span><span>6 / 12</span></div>
+      <div class="slide-foot"><span>didcomm on small devices</span><span>8 / 15</span></div>
       <aside class="notes">Spec: DID Rotation; Ending a Relationship; Out Of Band Messages, Privacy Considerations.</aside>
     </section>
 
     <!-- TELEMETRY -->
     <section>
-      <div class="eyebrow gold">readings you can prove</div>
+      <div class="eyebrow gold"><span class="sec">Keys and trust ·</span> readings you can prove</div>
       <div class="slide-body">
         <h2>Encrypted, signed, or both?</h2>
         <table class="compare">
@@ -149,13 +167,13 @@
           </tbody>
         </table>
       </div>
-      <div class="slide-foot"><span>didcomm on small devices</span><span>7 / 12</span></div>
+      <div class="slide-foot"><span>didcomm on small devices</span><span>9 / 15</span></div>
       <aside class="notes">Spec: Message Formats, the envelope table; Uses of Signatures (non-repudiation requires signing before encryption).</aside>
     </section>
 
     <!-- ONE-WAY -->
     <section>
-      <div class="eyebrow">one-way devices</div>
+      <div class="eyebrow"><span class="sec">Keys and trust ·</span> one-way devices</div>
       <div class="slide-body">
         <h2>A sensor that never listens</h2>
         <p class="lede">DIDComm transports are <b>simplex</b> by design; HTTPS delivery is a one-way POST. A device that only ever sends is still a legitimate DIDComm sender.</p>
@@ -165,12 +183,21 @@
           <li>Key rotation has to be driven from the device side, or not at all.</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>didcomm on small devices</span><span>8 / 12</span></div>
+      <div class="slide-foot"><span>didcomm on small devices</span><span>10 / 15</span></div>
+    </section>
+
+    <!-- SECTION: WORTH IT? -->
+    <section>
+      <div class="slide-body section-slide">
+        <h1>Worth it?</h1>
+        <p class="sub">Size, and what DIDComm offers over the usual IoT stack.</p>
+      </div>
+      <div class="slide-foot"><span>didcomm on small devices</span><span>11 / 15</span></div>
     </section>
 
     <!-- SIZE -->
     <section>
-      <div class="eyebrow">size</div>
+      <div class="eyebrow"><span class="sec">Worth it? ·</span> size</div>
       <div class="slide-body">
         <h2>Every byte is airtime</h2>
         <p class="lede">In the spec's own <a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#c3-didcomm-encrypted-messages">test vectors</a>, a <b>241-byte</b> plaintext becomes <b>1,430 bytes</b> authcrypted to three X25519 keys, and <b>3,381 bytes</b> when signed, authcrypted and then anoncrypted to hide the sender.</p>
@@ -179,13 +206,13 @@
           <div class="card"><h3>Encode differently</h3><p>A binary profile would help most here (see "DIDComm in CBOR?"), or a compact link-level envelope like <code>mesh/1.0</code>'s.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>didcomm on small devices</span><span>9 / 12</span></div>
+      <div class="slide-foot"><span>didcomm on small devices</span><span>12 / 15</span></div>
       <aside class="notes">Sizes measured as minified JSON from the spec's Appendix C.3 test vectors (plaintext from C.1).</aside>
     </section>
 
     <!-- WHY DIDCOMM -->
     <section>
-      <div class="eyebrow gold">why bother</div>
+      <div class="eyebrow gold"><span class="sec">Worth it? ·</span> why bother</div>
       <div class="slide-body">
         <h2>What DIDComm offers over "just MQTT and TLS"</h2>
         <div class="grid3">
@@ -194,12 +221,12 @@
           <div class="card teal"><h3>Transport-agnostic</h3><p>The same message can go over a local radio, a gateway, or HTTPS.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>didcomm on small devices</span><span>10 / 12</span></div>
+      <div class="slide-foot"><span>didcomm on small devices</span><span>13 / 15</span></div>
     </section>
 
     <!-- QUESTIONS -->
     <section>
-      <div class="eyebrow">for the group</div>
+      <div class="eyebrow"><span class="sec">Worth it? ·</span> for the group</div>
       <div class="slide-body closing">
         <h1 style="font-size:2.6rem">Open questions</h1>
         <ul style="margin-top:.6rem">
@@ -208,7 +235,7 @@
           <li class="q">How should headless devices be provisioned without a person in the loop?</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>thank you</span><span>11 / 12</span></div>
+      <div class="slide-foot"><span>thank you</span><span>14 / 15</span></div>
     </section>
 
     <!-- REFERENCES -->
@@ -225,7 +252,7 @@
         <li><a href="https://didcomm.org/discover-features/2.0/">discover-features/2.0</a> <span class="st">Production</span> · <a href="https://didcomm.org/mesh/1.0/">mesh/1.0</a> <span class="st">Proposed</span></li>
         <li><a href="https://www.rfc-editor.org/rfc/rfc9864.html">RFC 9864 — Fully-specified algorithms for JOSE and COSE</a></li>
       </ul>
-      <div class="slide-foot"><span>didcomm on small devices · checked September 2026</span><span>12 / 12</span></div>
+      <div class="slide-foot"><span>didcomm on small devices · checked September 2026</span><span>15 / 15</span></div>
     </section>
 
   </div>
