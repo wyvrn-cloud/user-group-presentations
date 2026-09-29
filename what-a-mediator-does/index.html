@@ -23,20 +23,29 @@
       </div>
     </section>
 
+    <!-- SECTION: THE BASICS -->
+    <section>
+      <div class="slide-body section-slide">
+        <h1>The basics</h1>
+        <p class="sub">Why mediators exist, and the one message they handle.</p>
+      </div>
+      <div class="slide-foot"><span>what a mediator does</span><span>1 / 16</span></div>
+    </section>
+
     <!-- WHY -->
     <section>
-      <div class="eyebrow">why mediators exist</div>
+      <div class="eyebrow"><span class="sec">The basics ·</span> why mediators exist</div>
       <div class="slide-body">
         <h2>Most agents can't be reached directly.</h2>
         <p class="lede">Phones sleep, change networks and sit behind NAT. Agents inside a firewall have no public address. A DIDComm endpoint has to be something a sender can deliver to <b>while the recipient is away</b>.</p>
         <div class="quote">The routing protocol defines how a sender and a recipient cooperate, using a partly trusted mediator, to facilitate message delivery. No party is required to know the full route of a message.<cite><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#routing-protocol-20">DIDComm Messaging v2.1 — Routing Protocol 2.0</a></cite></div>
       </div>
-      <div class="slide-foot"><span>what a mediator does</span><span>1 / 13</span></div>
+      <div class="slide-foot"><span>what a mediator does</span><span>2 / 16</span></div>
     </section>
 
     <!-- FORWARD MESSAGE -->
     <section>
-      <div class="eyebrow">the only message</div>
+      <div class="eyebrow"><span class="sec">The basics ·</span> the only message</div>
       <h2 style="margin-bottom:.2rem">Routing 2.0 has exactly one message type: <code>forward</code></h2>
       <div class="grid2" style="flex:1">
         <pre class="codeblock"><code>{
@@ -57,13 +66,13 @@
           <li>Optional: <code>expires_time</code>, and <code>delay_milli</code> to ask for delayed (or, if negative, randomly delayed) delivery.</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>what a mediator does</span><span>2 / 13</span></div>
+      <div class="slide-foot"><span>what a mediator does</span><span>3 / 16</span></div>
       <aside class="notes">Example copied from the spec's Routing Protocol 2.0, Messages. Mediators are not required to support expires_time / delay_milli; only core forwarding is indispensable.</aside>
     </section>
 
     <!-- ONION -->
     <section>
-      <div class="eyebrow gold">wrapping</div>
+      <div class="eyebrow gold"><span class="sec">The basics ·</span> wrapping</div>
       <h2>How a sender builds the onion</h2>
       <div class="numrow" style="flex:1;align-items:center">
         <div class="step"><h3>Plaintext</h3><p>Build the message. Sign it first if non-repudiation is needed.</p></div>
@@ -72,13 +81,13 @@
         <div class="step"><h3>Send</h3><p>Deliver the outermost layer to the <code>uri</code> in the recipient's service endpoint.</p></div>
       </div>
       <p class="kicker">Each hop peels one layer, learns only the next hop, and passes the rest on.</p>
-      <div class="slide-foot"><span>what a mediator does</span><span>3 / 13</span></div>
+      <div class="slide-foot"><span>what a mediator does</span><span>4 / 16</span></div>
       <aside class="notes">Spec: Routing, Sender Process to Enable Forwarding (steps 1–5).</aside>
     </section>
 
     <!-- DIAGRAM -->
     <section>
-      <div class="eyebrow">one hop</div>
+      <div class="eyebrow"><span class="sec">The basics ·</span> one hop</div>
       <h2 style="margin-bottom:.2rem">Alice → mediator → Bob</h2>
       <div class="diagram" style="flex:1">
         <svg viewBox="0 0 640 260" width="640" height="260">
@@ -97,12 +106,21 @@
           <text x="320" y="200" text-anchor="middle" fill="#8fa3b3" font-family="IBM Plex Mono" font-size="12">teal layer: readable by the mediator · gold layer: readable only by Bob</text>
         </svg>
       </div>
-      <div class="slide-foot"><span>what a mediator does</span><span>4 / 13</span></div>
+      <div class="slide-foot"><span>what a mediator does</span><span>5 / 16</span></div>
+    </section>
+
+    <!-- SECTION: PRIVACY AND INDIRECTION -->
+    <section>
+      <div class="slide-body section-slide">
+        <h1>Privacy and indirection</h1>
+        <p class="sub">What a mediator can see, and the tricks that limit it.</p>
+      </div>
+      <div class="slide-foot"><span>what a mediator does</span><span>6 / 16</span></div>
     </section>
 
     <!-- WHAT IT SEES -->
     <section>
-      <div class="eyebrow">partly trusted</div>
+      <div class="eyebrow"><span class="sec">Privacy and indirection ·</span> partly trusted</div>
       <div class="slide-body">
         <h2>What a mediator can and can't see</h2>
         <div class="grid2">
@@ -111,13 +129,13 @@
         </div>
         <p class="lede" style="font-size:1.1rem">Authcrypt puts the sender's key id (<code>skid</code>) in the envelope header. The spec's <code>anoncrypt(authcrypt(plaintext))</code> combination hides it from the hop just before the mediator.</p>
       </div>
-      <div class="slide-foot"><span>what a mediator does</span><span>5 / 13</span></div>
+      <div class="slide-foot"><span>what a mediator does</span><span>7 / 16</span></div>
       <aside class="notes">Spec: Message Formats, IANA media types table ("A specialized combination that hides the skid header ..."), and Security, Protecting the Sender Identity.</aside>
     </section>
 
     <!-- REWRAPPING -->
     <section>
-      <div class="eyebrow gold">an optional trick</div>
+      <div class="eyebrow gold"><span class="sec">Privacy and indirection ·</span> an optional trick</div>
       <div class="slide-body">
         <h2>Rewrapping keeps the onion the same size</h2>
         <p class="lede">Instead of passing the inner payload on as-is, a mediator can put it in a <b>fresh</b> <code>forward</code> addressed to the recipient itself.</p>
@@ -130,12 +148,12 @@
           <div class="quote">These last two characteristics could provide the foundation of mixnet features for DIDComm; however, such functionality is out of scope in this spec.<cite><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#rewrapping">Routing Protocol 2.0 — Rewrapping</a></cite></div>
         </div>
       </div>
-      <div class="slide-foot"><span>what a mediator does</span><span>6 / 13</span></div>
+      <div class="slide-foot"><span>what a mediator does</span><span>8 / 16</span></div>
     </section>
 
     <!-- DID AS ENDPOINT -->
     <section>
-      <div class="eyebrow">indirection that helps</div>
+      <div class="eyebrow"><span class="sec">Privacy and indirection ·</span> indirection that helps</div>
       <h2 style="margin-bottom:.2rem">A mediator's DID as your endpoint</h2>
       <div class="grid2" style="flex:1">
         <pre class="codeblock"><code>{
@@ -151,13 +169,22 @@
           <li>A mediator's own DID document should use plain transport URIs, to avoid recursive resolution.</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>what a mediator does</span><span>7 / 13</span></div>
+      <div class="slide-foot"><span>what a mediator does</span><span>9 / 16</span></div>
       <aside class="notes">Spec: Routing, Using a DID as an endpoint (Endpoint Example 1).</aside>
+    </section>
+
+    <!-- SECTION: IN PRACTICE -->
+    <section>
+      <div class="slide-body section-slide">
+        <h1>In practice</h1>
+        <p class="sub">Profiles, mailboxes, return routes and failover.</p>
+      </div>
+      <div class="slide-foot"><span>what a mediator does</span><span>10 / 16</span></div>
     </section>
 
     <!-- PROFILES -->
     <section>
-      <div class="eyebrow">many envelope formats</div>
+      <div class="eyebrow"><span class="sec">In practice ·</span> many envelope formats</div>
       <div class="slide-body">
         <h2>One endpoint can speak several profiles</h2>
         <p class="lede">A service endpoint's <code>accept</code> list names <b>profiles</b>, in order of preference. Each profile fixes the envelope, signing, plaintext and routing conventions together.</p>
@@ -172,13 +199,13 @@
         </table>
         <p class="kicker">There is deliberately no negotiation mechanism: the spec says it "would create a recursive versioning problem of its own".</p>
       </div>
-      <div class="slide-foot"><span>what a mediator does</span><span>8 / 13</span></div>
+      <div class="slide-foot"><span>what a mediator does</span><span>11 / 16</span></div>
       <aside class="notes">Spec: Negotiating Compatibility, Defined Profiles / Incompatible Profiles. Declaring didcomm/v2 is a promise about every publicly visible hop of the inbound route, not only the endpoint itself.</aside>
     </section>
 
     <!-- OUT OF SCOPE -->
     <section>
-      <div class="eyebrow gold">left to other protocols</div>
+      <div class="eyebrow gold"><span class="sec">In practice ·</span> left to other protocols</div>
       <div class="slide-body">
         <h2>Setting up and emptying the mailbox</h2>
         <div class="quote">Prior to using a Mediator, it is the recipient's responsibility to coordinate with the mediator. … That coordination is out of the scope of this spec.<cite><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#mediator-process">Routing Protocol 2.0 — Mediator Process</a></cite></div>
@@ -188,13 +215,13 @@
           <div class="card"><h3>Waking the device</h3><p>Push notifications aren't covered by either. Every deployment with phones has to solve this somehow.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>what a mediator does</span><span>9 / 13</span></div>
+      <div class="slide-foot"><span>what a mediator does</span><span>12 / 16</span></div>
       <aside class="notes">Push wake-up: the push-notifications notes in wyvrn-cloud/protocols are one experiment with it.</aside>
     </section>
 
     <!-- RETURN ROUTE -->
     <section>
-      <div class="eyebrow">no public endpoint at all</div>
+      <div class="eyebrow"><span class="sec">In practice ·</span> no public endpoint at all</div>
       <div class="slide-body">
         <h2>Replies over the same connection</h2>
         <p class="lede">DIDComm transports are one-way. The <a href="https://github.com/decentralized-identity/didcomm-messaging/blob/main/extensions/return_route/main.md"><span class="t">return-route</span></a> extension lets an agent with no public endpoint ask for messages to come back over the connection it opened.</p>
@@ -205,13 +232,13 @@
         </div>
         <p class="kicker">Only between directly connected agents; it isn't valid when routing keys are in use.</p>
       </div>
-      <div class="slide-foot"><span>what a mediator does</span><span>10 / 13</span></div>
+      <div class="slide-foot"><span>what a mediator does</span><span>13 / 16</span></div>
       <aside class="notes">Spec: extensions/return_route. Also defines a Queue Transport, didcomm:transport/queue, where messages wait at the sender for pickup.</aside>
     </section>
 
     <!-- FAILOVER -->
     <section>
-      <div class="eyebrow">reliability</div>
+      <div class="eyebrow"><span class="sec">In practice ·</span> reliability</div>
       <div class="slide-body">
         <h2>More than one way in</h2>
         <ul class="bullets">
@@ -221,13 +248,13 @@
           <li><code>please_ack</code> is for the ultimate sender and receiver only; mediators MUST NOT honor it.</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>what a mediator does</span><span>11 / 13</span></div>
+      <div class="slide-foot"><span>what a mediator does</span><span>14 / 16</span></div>
       <aside class="notes">Spec: Routing, Service Endpoint and Failover; the note on please_ack in Routing Protocol 2.0.</aside>
     </section>
 
     <!-- QUESTIONS -->
     <section>
-      <div class="eyebrow">for the group</div>
+      <div class="eyebrow"><span class="sec">In practice ·</span> for the group</div>
       <div class="slide-body closing">
         <h1 style="font-size:2.6rem">Open questions</h1>
         <ul style="margin-top:.6rem">
@@ -236,7 +263,7 @@
           <li class="q">How much metadata protection do we actually want from mediators: padding, delays, rewrapping?</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>thank you</span><span>12 / 13</span></div>
+      <div class="slide-foot"><span>thank you</span><span>15 / 16</span></div>
     </section>
 
     <!-- REFERENCES -->
@@ -254,7 +281,7 @@
         <li><a href="https://didcomm.org/messagepickup/3.0/">messagepickup/3.0</a> <span class="st">Production</span></li>
         <li><a href="https://github.com/wyvrn-cloud/protocols/blob/master/protocols/push-notifications/1.0/readme.md">wyvrn-cloud/protocols — push-notifications notes</a> <span class="st">an experiment</span></li>
       </ul>
-      <div class="slide-foot"><span>what a mediator does · checked September 2026</span><span>13 / 13</span></div>
+      <div class="slide-foot"><span>what a mediator does · checked September 2026</span><span>16 / 16</span></div>
     </section>
 
   </div>
