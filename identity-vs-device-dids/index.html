@@ -55,12 +55,21 @@ body{margin:0;font-family:var(--body);color:var(--paper)}
 .reveal ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:.7rem}
 .reveal a{color:var(--teal)}
 .eyebrow{
-  font-family:var(--mono); font-size:.72rem; letter-spacing:.16em; text-transform:uppercase;
+  font-family:var(--mono); font-size:1rem; font-weight:500; letter-spacing:.12em; text-transform:uppercase;
   color:var(--teal); display:flex; align-items:center; gap:.6em;
 }
 .eyebrow::before{content:'';width:1.6em;height:1px;background:var(--teal);opacity:.6}
 .eyebrow.gold{color:var(--gold)}
 .eyebrow.gold::before{background:var(--gold)}
+.eyebrow.danger{color:var(--danger)}
+.eyebrow.danger::before{background:var(--danger)}
+.eyebrow .sec{color:var(--paper);opacity:.85;margin-right:.1em}
+/* section divider slides */
+.section-slide{justify-content:center!important;align-items:flex-start;gap:1.1rem!important}
+.section-slide .sec-num{font-family:var(--display);font-weight:600;font-size:7rem;line-height:.9;color:var(--gold)}
+.section-slide h1{font-size:3.4rem}
+.section-slide .sub{font-size:1.25rem;color:var(--muted);max-width:48ch}
+.section-slide .sec-of{font-family:var(--mono);font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--teal)}
 .kicker{color:var(--muted);font-size:1.02rem;max-width:46ch}
 .slide-body{flex:1;display:flex;flex-direction:column;gap:1.4rem;justify-content:center;min-height:0}
 .slide-foot{
@@ -160,19 +169,30 @@ code,.mono{font-family:var(--mono)}
       </div>
     </section>
 
+    <!-- SECTION 1: THE PROBLEM -->
+    <section>
+      <div class="slide-body section-slide">
+        <span class="sec-of">section 1 of 4</span>
+        <div class="sec-num">1</div>
+        <h1>The problem</h1>
+        <p class="sub">Why "one identity, one keypair" breaks as soon as someone owns two devices.</p>
+      </div>
+      <div class="slide-foot"><span>identity did · device did</span><span>1 / 19</span></div>
+    </section>
+
     <!-- 2: THE ASSUMPTION -->
     <section>
-      <div class="eyebrow">the assumption</div>
+      <div class="eyebrow"><span class="sec">1 ·</span> the assumption</div>
       <div class="slide-body">
         <h1>DIDComm's tooling quietly assumes<br><span style="color:var(--gold)">one identity, one keypair.</span></h1>
         <p class="lede">Generate a DID, hold its <span class="t">keyAgreement</span> secret, unpack with it. Almost every quickstart, every tutorial, every sample resolver in the ecosystem is built around exactly one device holding exactly one private key per identity.</p>
       </div>
-      <div class="slide-foot"><span>identity did · device did</span><span>1 / 15</span></div>
+      <div class="slide-foot"><span>identity did · device did</span><span>2 / 19</span></div>
     </section>
 
     <!-- 3: WHAT BREAKS -->
     <section>
-      <div class="eyebrow">the problem</div>
+      <div class="eyebrow"><span class="sec">1 ·</span> real people, many devices</div>
       <div class="slide-body">
         <h2>Real people aren't one device.</h2>
         <div class="grid3">
@@ -182,12 +202,12 @@ code,.mono{font-family:var(--mono)}
         </div>
         <p class="lede" style="margin-top:.4rem">A contact should reach <b>one identity</b> — not have to know which of three devices happens to be reachable right now.</p>
       </div>
-      <div class="slide-foot"><span>identity did · device did</span><span>2 / 15</span></div>
+      <div class="slide-foot"><span>identity did · device did</span><span>3 / 19</span></div>
     </section>
 
     <!-- 4: NAIVE FIX + COST -->
     <section>
-      <div class="eyebrow gold">the naive fix</div>
+      <div class="eyebrow gold"><span class="sec">1 ·</span> the naive fix</div>
       <div class="grid2" style="flex:1;align-items:center">
         <div>
           <h2>Copy the same keypair<br>to every device.</h2>
@@ -213,12 +233,12 @@ code,.mono{font-family:var(--mono)}
           </svg>
         </div>
       </div>
-      <div class="slide-foot"><span>identity did · device did — the naive fix</span><span>3 / 15</span></div>
+      <div class="slide-foot"><span>identity did · device did — the naive fix</span><span>4 / 19</span></div>
     </section>
 
     <!-- 5: CHECKED AGAINST THE SPEC -->
     <section>
-      <div class="eyebrow">checked, not assumed</div>
+      <div class="eyebrow"><span class="sec">1 ·</span> checked, not assumed</div>
       <div class="slide-body">
         <h2>Per-device keys aren't blocked by DIDComm.<br>The spec text already points that way.</h2>
         <p class="lede">"A sender only uses the first <span class="t">keyAgreement</span> entry it finds" — a claim about how one single-recipient-oriented resolver happens to behave, not something the spec requires.</p>
@@ -227,12 +247,23 @@ code,.mono{font-family:var(--mono)}
         </div>
         <p class="pill teal" style="align-self:flex-start">identity.foundation/didcomm-messaging/spec/v2.1</p>
       </div>
-      <div class="slide-foot"><span>identity did · device did — the spec</span><span>4 / 15</span></div>
+      <div class="slide-foot"><span>identity did · device did — the spec</span><span>5 / 19</span></div>
+    </section>
+
+    <!-- SECTION 2: AN APPROACH -->
+    <section>
+      <div class="slide-body section-slide">
+        <span class="sec-of">section 2 of 4</span>
+        <div class="sec-num">2</div>
+        <h1>An approach</h1>
+        <p class="sub">Per-device keys under one identity, and the split that makes it work.</p>
+      </div>
+      <div class="slide-foot"><span>identity did · device did</span><span>6 / 19</span></div>
     </section>
 
     <!-- 6: THE FIX DIAGRAM -->
     <section>
-      <div class="eyebrow gold">an approach</div>
+      <div class="eyebrow gold"><span class="sec">2 ·</span> an approach</div>
       <h2 style="margin-bottom:.2rem">One entry per device.<br>No private key ever leaves it.</h2>
       <div class="diagram" style="flex:1">
         <svg viewBox="0 0 620 300" width="620" height="300">
@@ -256,12 +287,12 @@ code,.mono{font-family:var(--mono)}
           <text x="310" y="270" text-anchor="middle" fill="#8fa3b3" font-family="IBM Plex Mono" font-size="12">each key, independently generated · public half only, ever shared</text>
         </svg>
       </div>
-      <div class="slide-foot"><span>identity did · device did — the approach</span><span>5 / 15</span></div>
+      <div class="slide-foot"><span>identity did · device did — the approach</span><span>7 / 19</span></div>
     </section>
 
     <!-- 7: TWO DIDS -->
     <section>
-      <div class="eyebrow">the split</div>
+      <div class="eyebrow"><span class="sec">2 ·</span> the split</div>
       <h2>One way to split it: two kinds of DID, not one.</h2>
       <div class="grid2" style="flex:1">
         <div class="card" style="border-color:var(--teal)">
@@ -275,12 +306,12 @@ code,.mono{font-family:var(--mono)}
           <p style="color:var(--paper);font-size:.95rem">One per device, independently generated, never shared with a contact. Exists so an <i>unenrolled</i> device — no Identity DID key yet — has somewhere to receive its own enrollment reply.</p>
         </div>
       </div>
-      <div class="slide-foot"><span>identity did · device did — the approach</span><span>6 / 15</span></div>
+      <div class="slide-foot"><span>identity did · device did — the approach</span><span>8 / 19</span></div>
     </section>
 
     <!-- 8: ROLES -->
     <section>
-      <div class="eyebrow">roles</div>
+      <div class="eyebrow"><span class="sec">2 ·</span> roles</div>
       <h2>Two roles. One boolean: has an <code>authentication</code> key.</h2>
       <div class="grid2" style="flex:1;align-items:center">
         <div class="card">
@@ -293,22 +324,33 @@ code,.mono{font-family:var(--mono)}
         </div>
       </div>
       <p class="kicker">The founding device starts trusted. A newly enrolled device starts <b style="color:var(--paper)">untrusted, always</b> — promotion is a separate, explicit step, never automatic.</p>
-      <div class="slide-foot"><span>identity did · device did — roles</span><span>7 / 15</span></div>
+      <div class="slide-foot"><span>identity did · device did — roles</span><span>9 / 19</span></div>
+    </section>
+
+    <!-- SECTION 3: HOW IT WORKS -->
+    <section>
+      <div class="slide-body section-slide">
+        <span class="sec-of">section 3 of 4</span>
+        <div class="sec-num">3</div>
+        <h1>How it works</h1>
+        <p class="sub">Adding a device, what goes over the wire, and the one mechanism behind every change.</p>
+      </div>
+      <div class="slide-foot"><span>identity did · device did</span><span>10 / 19</span></div>
     </section>
 
     <!-- 9: WALKTHROUGH INTRO -->
     <section>
-      <div class="eyebrow gold">walkthrough</div>
+      <div class="eyebrow gold"><span class="sec">3 ·</span> walkthrough</div>
       <div class="slide-body">
         <h1>Alice adds a laptop<br>to her phone's identity.</h1>
         <p class="lede">What this looks like in practice. No account server. No shared secret transmitted at any point — the private key the naive fix has to copy around never needs to be sent at all.</p>
       </div>
-      <div class="slide-foot"><span>identity did · device did — walkthrough</span><span>8 / 15</span></div>
+      <div class="slide-foot"><span>identity did · device did — walkthrough</span><span>11 / 19</span></div>
     </section>
 
     <!-- 10: WALKTHROUGH STEPS -->
     <section>
-      <div class="eyebrow">enrollment, step by step</div>
+      <div class="eyebrow"><span class="sec">3 ·</span> enrollment, step by step</div>
       <div class="numrow" style="flex:1;align-items:center">
         <div class="step"><h3>Laptop prepares</h3><p>Generates its own Device DID + its own <code>keyAgreement</code> keypair, offline. Never receives anyone else's private key.</p></div>
         <div class="step"><h3>QR scan</h3><p>Real <code>out-of-band/2.0</code> invitation from the phone's Device DID. No key material in it — just a route.</p></div>
@@ -316,12 +358,12 @@ code,.mono{font-family:var(--mono)}
         <div class="step"><h3>enroll-response</h3><p>Phone mints a <b style="color:var(--gold)">new</b> Identity DID document, signs <code>from_prior</code>, replies with the full roster.</p></div>
         <div class="step"><h3>Fan-out</h3><p>Phone rotates every <i>other</i> sibling and every contact onto the new DID. Both devices now independently receive as the identity.</p></div>
       </div>
-      <div class="slide-foot"><span>identity did · device did — walkthrough</span><span>9 / 15</span></div>
+      <div class="slide-foot"><span>identity did · device did — walkthrough</span><span>12 / 19</span></div>
     </section>
 
     <!-- 11: REAL MESSAGE JSON -->
     <section>
-      <div class="eyebrow">on the wire — a sketch</div>
+      <div class="eyebrow"><span class="sec">3 ·</span> on the wire — a sketch</div>
       <h2 style="margin-bottom:.2rem">What the two messages could carry</h2>
       <div class="grid2" style="flex:1">
         <pre class="codeblock"><code>{
@@ -344,23 +386,12 @@ code,.mono{font-family:var(--mono)}
 }</code></pre>
       </div>
       <p class="kicker">No field in either message is ever a private key. <span class="mono">rotation_seq</span> exists purely so an out-of-order fan-out can't resurrect a state a newer rotation already superseded.</p>
-      <div class="slide-foot"><span>identity did · device did — messages</span><span>10 / 15</span></div>
-    </section>
-
-    <!-- 12: THE ACCEPTED COST -->
-    <section>
-      <div class="eyebrow danger">the cost of this approach</div>
-      <div class="slide-body">
-        <h2><code>did:peer</code>'s value is a hash of its own document.</h2>
-        <p class="lede">Enroll a device. Revoke one. Promote, demote — any of those changes the document, which changes the <b>Identity DID's own value</b>. Every roster change means a <code class="t">from_prior</code> rotation broadcast to every contact.</p>
-        <p class="q">That's the trade-off: more rotation traffic, in exchange for never sharing a private key between devices.</p>
-      </div>
-      <div class="slide-foot"><span>identity did · device did — trade-offs</span><span>11 / 15</span></div>
+      <div class="slide-foot"><span>identity did · device did — messages</span><span>13 / 19</span></div>
     </section>
 
     <!-- 13: ONE MECHANISM -->
     <section>
-      <div class="eyebrow gold">key rotation</div>
+      <div class="eyebrow gold"><span class="sec">3 ·</span> key rotation</div>
       <div class="slide-body">
         <h2>One mechanism. Four use cases.</h2>
         <div class="grid3" style="grid-template-columns:repeat(4,1fr)">
@@ -371,12 +402,34 @@ code,.mono{font-family:var(--mono)}
         </div>
         <p class="kicker">Every case: mint a new document, sign <code>from_prior</code> with an <code>authentication</code> key the <i>old</i> document already lists, fan it out. No private key ever moves between devices, in any of the four.</p>
       </div>
-      <div class="slide-foot"><span>identity did · device did — rotation</span><span>12 / 15</span></div>
+      <div class="slide-foot"><span>identity did · device did — rotation</span><span>14 / 19</span></div>
+    </section>
+
+    <!-- SECTION 4: TRADE-OFFS AND OPEN QUESTIONS -->
+    <section>
+      <div class="slide-body section-slide">
+        <span class="sec-of">section 4 of 4</span>
+        <div class="sec-num">4</div>
+        <h1>Trade-offs and open questions</h1>
+        <p class="sub">What this costs, what it doesn't solve, and where we'd like your input.</p>
+      </div>
+      <div class="slide-foot"><span>identity did · device did</span><span>15 / 19</span></div>
+    </section>
+
+    <!-- 12: THE ACCEPTED COST -->
+    <section>
+      <div class="eyebrow danger"><span class="sec">4 ·</span> the cost of this approach</div>
+      <div class="slide-body">
+        <h2><code>did:peer</code>'s value is a hash of its own document.</h2>
+        <p class="lede">Enroll a device. Revoke one. Promote, demote — any of those changes the document, which changes the <b>Identity DID's own value</b>. Every roster change means a <code class="t">from_prior</code> rotation broadcast to every contact.</p>
+        <p class="q">That's the trade-off: more rotation traffic, in exchange for never sharing a private key between devices.</p>
+      </div>
+      <div class="slide-foot"><span>identity did · device did — trade-offs</span><span>16 / 19</span></div>
     </section>
 
     <!-- 14: SECURITY + OPEN LIMITATION -->
     <section>
-      <div class="eyebrow">security properties — and an open problem</div>
+      <div class="eyebrow"><span class="sec">4 ·</span> security properties — and an open problem</div>
       <div class="grid2" style="flex:1;align-items:center">
         <div>
           <h2 style="font-size:1.5rem">What holds</h2>
@@ -392,12 +445,12 @@ code,.mono{font-family:var(--mono)}
           </div>
         </div>
       </div>
-      <div class="slide-foot"><span>identity did · device did — security</span><span>13 / 15</span></div>
+      <div class="slide-foot"><span>identity did · device did — security</span><span>17 / 19</span></div>
     </section>
 
     <!-- 15: STATUS -->
     <section>
-      <div class="eyebrow gold">recap</div>
+      <div class="eyebrow gold"><span class="sec">4 ·</span> recap</div>
       <div class="slide-body">
         <h2>The approach, in three numbers.</h2>
         <div class="grid3">
@@ -407,12 +460,12 @@ code,.mono{font-family:var(--mono)}
         </div>
         <p class="lede">No new cryptography. Just existing DIDComm pieces put together: multiple <span class="t">keyAgreement</span> entries, <span class="t">out-of-band/2.0</span> for pairing, and <span class="t">from_prior</span> for rotation.</p>
       </div>
-      <div class="slide-foot"><span>identity did · device did</span><span>14 / 15</span></div>
+      <div class="slide-foot"><span>identity did · device did</span><span>18 / 19</span></div>
     </section>
 
     <!-- 16: DISCUSSION / CLOSE -->
     <section>
-      <div class="eyebrow">for the group</div>
+      <div class="eyebrow"><span class="sec">4 ·</span> for the group</div>
       <div class="slide-body closing">
         <h1 style="font-size:2.6rem">Open questions for the group</h1>
         <ul style="margin-top:.6rem">
@@ -426,7 +479,7 @@ code,.mono{font-family:var(--mono)}
           <a href="https://github.com/wyvrn-cloud/protocols/blob/master/protocols/history-sync/1.0/readme.md">↳ history sync — replicating history to a newly added device</a>
         </div>
       </div>
-      <div class="slide-foot"><span>thank you</span><span>15 / 15</span></div>
+      <div class="slide-foot"><span>thank you</span><span>19 / 19</span></div>
     </section>
 
   </div>
