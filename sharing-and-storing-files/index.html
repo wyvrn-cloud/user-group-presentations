@@ -30,12 +30,12 @@
         <h2>Big messages hurt everyone on the route</h2>
         <p class="lede">An attachment can ride inside the message as <code>base64</code>. Fine for a thumbnail. For a video it means every mediator <b>queues, stores and forwards</b> the whole thing, base64'd, possibly once per recipient.</p>
         <div class="grid3">
-          <div class="card"><h3>Size limits</h3><p>Receivers can declare <code>max_receive_bytes</code> and discard anything larger.</p></div>
+          <div class="card"><h3>Size limits</h3><p>Receivers can declare <a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#agent-constraint-disclosure"><code>max_receive_bytes</code></a> and discard anything larger.</p></div>
           <div class="card"><h3>Mediator load</h3><p>A relay built to forward small messages now holds large blobs until pickup.</p></div>
           <div class="card"><h3>All or nothing</h3><p>No resuming: a dropped transfer starts again from the first byte.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>sharing and storing files</span><span>1 / 11</span></div>
+      <div class="slide-foot"><span>sharing and storing files</span><span>1 / 12</span></div>
     </section>
 
     <!-- SPEC ATTACHMENTS -->
@@ -49,24 +49,24 @@
           <li><code>byte_count</code>: how big, so the receiver can decide when (or whether) to fetch.</li>
           <li><code>jws</code>: a detached signature over the content, from anyone.</li>
         </ul>
-        <div class="quote">The attachment(s) in the <code>attachments</code> field are able to use the full power of DIDComm attachments, including features like instructing the receiver to download the payload content from a CDN.<cite>Routing Protocol 2.0 — Messages</cite></div>
+        <div class="quote">The attachment(s) in the <code>attachments</code> field are able to use the full power of DIDComm attachments, including features like instructing the receiver to download the payload content from a CDN.<cite><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#routing-protocol-20">Routing Protocol 2.0 — Messages</a></cite></div>
       </div>
-      <div class="slide-foot"><span>sharing and storing files</span><span>2 / 11</span></div>
+      <div class="slide-foot"><span>sharing and storing files</span><span>2 / 12</span></div>
       <aside class="notes">Spec: Message Formats, Attachments ("MUST be used if the data is referenced via the links data attribute").</aside>
     </section>
 
     <!-- MEDIA SHARING -->
     <section>
       <div class="eyebrow gold">the registry's pattern</div>
-      <h2>Encrypt, upload, share the key: <code>media-sharing/1.0</code></h2>
+      <h2>Encrypt, upload, share the key: <a href="https://didcomm.org/media-sharing/1.0/"><code>media-sharing/1.0</code></a></h2>
       <div class="numrow" style="flex:1;align-items:center">
         <div class="step"><h3>New key</h3><p>The sender generates a content encryption key per file.</p></div>
         <div class="step"><h3>Encrypt &amp; upload</h3><p>The encrypted file goes to any server the recipient can reach. The server only ever sees ciphertext.</p></div>
-        <div class="step"><h3><code>share-media</code></h3><p>A normal DIDComm message carries the link, the hash and the key, end-to-end encrypted.</p></div>
-        <div class="step"><h3>Fetch &amp; decrypt</h3><p>The receiver downloads, checks the hash, and decrypts locally.</p></div>
+        <div class="step"><h3><code>share-media</code></h3><p>A normal DIDComm message carries the link and a <code>ciphering</code> block (algorithm, key, IV), end-to-end encrypted.</p></div>
+        <div class="step"><h3>Fetch &amp; decrypt</h3><p>The receiver downloads and decrypts locally. (Its examples show no <code>hash</code>, which DIDComm v2 requires for linked attachments; worth adding.)</p></div>
       </div>
       <p class="kicker">If the file is gone later, <code>request-media</code> (with the original thread as <code>pthid</code>) asks the sender to share it again.</p>
-      <div class="slide-foot"><span>sharing and storing files</span><span>3 / 11</span></div>
+      <div class="slide-foot"><span>sharing and storing files</span><span>3 / 12</span></div>
       <aside class="notes">Source: didcomm.org registry, media-sharing/1.0 (status: Demonstrated), Basic Walkthrough.</aside>
     </section>
 
@@ -82,7 +82,7 @@
           <tr><th>Nearby, directly</th><td>Bluetooth, local network, USB: no internet at all</td><td>Needs proximity. See "DIDComm over Bluetooth" and "DIDComm Without a Network"</td></tr>
         </tbody>
       </table>
-      <div class="slide-foot"><span>sharing and storing files</span><span>4 / 11</span></div>
+      <div class="slide-foot"><span>sharing and storing files</span><span>4 / 12</span></div>
     </section>
 
     <!-- LARGE FILES -->
@@ -101,7 +101,7 @@
           </ul>
         </div>
       </div>
-      <div class="slide-foot"><span>sharing and storing files</span><span>5 / 11</span></div>
+      <div class="slide-foot"><span>sharing and storing files</span><span>5 / 12</span></div>
     </section>
 
     <!-- FAN-OUT -->
@@ -112,7 +112,7 @@
         <p class="lede">The file is encrypted once, with its own key. Sharing with a group or with several devices means sending the <b>small key</b> in each recipient's DIDComm message, not re-uploading the file.</p>
         <p class="kicker">This fits nicely with multi-device (each device gets the key) and with fan-out group messaging (each member gets the key).</p>
       </div>
-      <div class="slide-foot"><span>sharing and storing files</span><span>6 / 11</span></div>
+      <div class="slide-foot"><span>sharing and storing files</span><span>6 / 12</span></div>
     </section>
 
     <!-- TRANSFER VS STORAGE -->
@@ -125,7 +125,7 @@
           <div class="card gold"><h3>Storage</h3><p>Keep this safe for years, let me grant and revoke access, survive a lost device. A much bigger design space.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>sharing and storing files</span><span>7 / 11</span></div>
+      <div class="slide-foot"><span>sharing and storing files</span><span>7 / 12</span></div>
     </section>
 
     <!-- VAULTS AND SWARM -->
@@ -134,12 +134,12 @@
       <div class="slide-body">
         <h2>Two proposals for the storage side</h2>
         <div class="grid2">
-          <div class="card"><h3><code>vaults/1.0</code> <span class="mono" style="color:var(--muted);font-size:.75rem">· Proposed</span></h3><p>DIDComm <b>coordinates</b> access to end-to-end encrypted data vaults on backends like S3 or Arweave: who gets access, to which objects, for how long. The bytes move over the vault's own HTTP API. Optional N-of-M threshold decryption.</p></div>
-          <div class="card"><h3><code>swarm/1.0</code> <span class="mono" style="color:var(--muted);font-size:.75rem">· Proposed</span></h3><p>Mediators and willing agents pledge to hold <b>encrypted shards</b> for a time, answer proof-of-storage challenges, and serve authorized retrievals. Aimed at durability: lost devices, crashed mediators, deleted CDN files.</p></div>
+          <div class="card"><h3><a href="https://didcomm.org/vaults/1.0/"><code>vaults/1.0</code></a> <span class="mono" style="color:var(--muted);font-size:.75rem">· Proposed</span></h3><p>DIDComm <b>coordinates</b> access to end-to-end encrypted data vaults on backends like S3 or Arweave: who gets access, to which objects, for how long. The bytes move over the vault's own HTTP API. Optional N-of-M threshold decryption.</p></div>
+          <div class="card"><h3><a href="https://didcomm.org/swarm/1.0/"><code>swarm/1.0</code></a> <span class="mono" style="color:var(--muted);font-size:.75rem">· Proposed</span></h3><p>Mediators and willing agents pledge to hold <b>encrypted shards</b> for a time, answer proof-of-storage challenges, and serve authorized retrievals. Aimed at durability: lost devices, crashed mediators, deleted CDN files.</p></div>
         </div>
         <p class="kicker">Both keep DIDComm for coordination and keys, and move bulk data some other way.</p>
       </div>
-      <div class="slide-foot"><span>sharing and storing files</span><span>8 / 11</span></div>
+      <div class="slide-foot"><span>sharing and storing files</span><span>8 / 12</span></div>
       <aside class="notes">Source: didcomm.org registry, vaults/1.0 and swarm/1.0 summaries. Both are Proposed; check their current text before presenting.</aside>
     </section>
 
@@ -155,7 +155,7 @@
           <li>Access that expires needs something online to enforce it: a vault, a storage host, or a threshold of approvers.</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>sharing and storing files</span><span>9 / 11</span></div>
+      <div class="slide-foot"><span>sharing and storing files</span><span>9 / 12</span></div>
     </section>
 
     <!-- PRIVACY -->
@@ -169,7 +169,7 @@
           <div class="card"><h3>Sameness</h3><p>With content-derived names, identical files look identical. A fresh key per share avoids that.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>sharing and storing files</span><span>10 / 11</span></div>
+      <div class="slide-foot"><span>sharing and storing files</span><span>10 / 12</span></div>
     </section>
 
     <!-- QUESTIONS -->
@@ -183,7 +183,22 @@
           <li class="q">What's the right default retention for a shared file nobody downloaded?</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>thank you</span><span>11 / 11</span></div>
+      <div class="slide-foot"><span>thank you</span><span>11 / 12</span></div>
+    </section>
+
+    <!-- REFERENCES -->
+    <section>
+      <div class="eyebrow">references</div>
+      <h2 style="margin-bottom:.4rem">Sources</h2>
+      <ul class="refs">
+        <li><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#attachments">DIDComm Messaging v2.1 — Attachments</a></li>
+        <li><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#routing-protocol-20">DIDComm Messaging v2.1 — Routing Protocol 2.0</a></li>
+        <li><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#agent-constraint-disclosure">DIDComm Messaging v2.1 — Agent Constraint Disclosure</a></li>
+        <li><a href="https://didcomm.org/media-sharing/1.0/">media-sharing/1.0</a> <span class="st">Demonstrated</span></li>
+        <li><a href="https://didcomm.org/vaults/1.0/">vaults/1.0</a> <span class="st">Proposed</span></li>
+        <li><a href="https://didcomm.org/swarm/1.0/">swarm/1.0</a> <span class="st">Proposed</span></li>
+      </ul>
+      <div class="slide-foot"><span>sharing and storing files · checked September 2026</span><span>12 / 12</span></div>
     </section>
 
   </div>
