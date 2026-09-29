@@ -24,33 +24,42 @@
       <aside class="notes">Companion to "Identity DID, Device DID". That talk ends with a device enrolled; this one picks up with the next question: what does it see when it opens the app?</aside>
     </section>
 
+    <!-- SECTION: THE GAP -->
+    <section>
+      <div class="slide-body section-slide">
+        <h1>The gap</h1>
+        <p class="sub">Why a new device starts empty, and where its missing history could come from.</p>
+      </div>
+      <div class="slide-foot"><span>catching up a new device</span><span>1 / 14</span></div>
+    </section>
+
     <!-- THE GAP -->
     <section>
-      <div class="eyebrow">the gap</div>
+      <div class="eyebrow"><span class="sec">The gap ·</span> relay, not archive</div>
       <div class="slide-body">
         <h2>A mediator is a relay, not an archive.</h2>
         <p class="lede">The <a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#routing-protocol-20">routing protocol</a> has a mediator unpack a <span class="t">forward</span> message and <b>pass the payload on</b>. <a href="https://didcomm.org/messagepickup/3.0/">Message Pickup 3.0</a> has the recipient acknowledge which messages "are safe to clear from the queue". Nothing in the path is meant to remember.</p>
         <p class="q">So a device added after the conversation started, or one that was offline for too long, can only recover history from somewhere else.</p>
       </div>
-      <div class="slide-foot"><span>catching up a new device</span><span>1 / 11</span></div>
+      <div class="slide-foot"><span>catching up a new device</span><span>2 / 14</span></div>
       <aside class="notes">Spec: Routing Protocol 2.0, Roles ("The mediator unpacks (decrypts) the payload of an encrypted forward message and passes on the result"). Message Pickup 3.0 on didcomm.org: messages-received lets the recipient tell the mediator to delete delivered messages.</aside>
     </section>
 
     <!-- OPTIONS -->
     <section>
-      <div class="eyebrow gold">the options</div>
+      <div class="eyebrow gold"><span class="sec">The gap ·</span> the options</div>
       <h2>Three places history could come from</h2>
       <div class="grid3" style="flex:1;align-items:center">
         <div class="card"><h3>Ask contacts to re-send</h3><p>Every contact would have to keep and re-encrypt their side of the conversation. Leaks the fact that you added a device, and depends on them being online.</p></div>
         <div class="card"><h3>An encrypted backup service</h3><p>Works when every other device is gone. But it reintroduces an archive, with its own key-management and trust questions. The registry's <a href="https://didcomm.org/vaults/1.0/"><code>vaults/1.0</code></a> and <a href="https://didcomm.org/swarm/1.0/"><code>swarm/1.0</code></a> (both Proposed) explore encrypted storage and durability.</p></div>
         <div class="card teal"><h3>Your other devices</h3><p>They already hold the history and already trust the new device. The question becomes: how do they reconcile efficiently?</p></div>
       </div>
-      <div class="slide-foot"><span>catching up a new device</span><span>2 / 11</span></div>
+      <div class="slide-foot"><span>catching up a new device</span><span>3 / 14</span></div>
     </section>
 
     <!-- RETENTION -->
     <section>
-      <div class="eyebrow">a constraint worth keeping</div>
+      <div class="eyebrow"><span class="sec">The gap ·</span> a constraint worth keeping</div>
       <div class="slide-body">
         <h2>"Keep everything everywhere" doesn't fit real devices.</h2>
         <div class="grid2">
@@ -59,12 +68,21 @@
         </div>
         <p class="lede">Treat retention as a <b>per-device local policy</b>. Two devices with different policies aren't "out of sync"; one has just chosen to forget more.</p>
       </div>
-      <div class="slide-foot"><span>catching up a new device</span><span>3 / 11</span></div>
+      <div class="slide-foot"><span>catching up a new device</span><span>4 / 14</span></div>
+    </section>
+
+    <!-- SECTION: ONE APPROACH -->
+    <section>
+      <div class="slide-body section-slide">
+        <h1>One approach</h1>
+        <p class="sub">Reconciling your own devices with each other, rsync-style.</p>
+      </div>
+      <div class="slide-foot"><span>catching up a new device</span><span>5 / 14</span></div>
     </section>
 
     <!-- RSYNC -->
     <section>
-      <div class="eyebrow gold">one approach</div>
+      <div class="eyebrow gold"><span class="sec">One approach ·</span> one approach</div>
       <h2>Borrow rsync's technique, not just its name</h2>
       <div class="numrow" style="flex:1;align-items:center">
         <div class="step"><h3>Compare summaries</h3><p>Per conversation: a count and the oldest/newest message ids. Cheap, and most conversations match here.</p></div>
@@ -72,13 +90,13 @@
         <div class="step"><h3>Diff inside the chunk</h3><p>Exchange item ids or hashes for the mismatched chunk only, then transfer just the missing items.</p></div>
       </div>
       <p class="kicker">Nothing is re-sent that both sides already hold, and each side's retention window is respected.</p>
-      <div class="slide-foot"><span>catching up a new device</span><span>4 / 11</span></div>
+      <div class="slide-foot"><span>catching up a new device</span><span>6 / 14</span></div>
       <aside class="notes">This is the approach sketched in the history-sync notes in wyvrn-cloud/protocols, an experiment rather than a standard.</aside>
     </section>
 
     <!-- ON THE WIRE -->
     <section>
-      <div class="eyebrow">on the wire — a sketch</div>
+      <div class="eyebrow"><span class="sec">One approach ·</span> on the wire — a sketch</div>
       <h2 style="margin-bottom:.2rem">Just ordinary pairwise DIDComm messages</h2>
       <div class="grid2" style="flex:1">
         <pre class="codeblock"><code>{
@@ -100,12 +118,12 @@
           <li>Pairwise encryption between the two devices; the mediator relays ciphertext as usual.</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>catching up a new device</span><span>5 / 11</span></div>
+      <div class="slide-foot"><span>catching up a new device</span><span>7 / 14</span></div>
     </section>
 
     <!-- BACKFILL -->
     <section>
-      <div class="eyebrow">the other case</div>
+      <div class="eyebrow"><span class="sec">One approach ·</span> the other case</div>
       <div class="slide-body">
         <h2>Scrolling back past what this device kept</h2>
         <p class="lede">Reconciliation is a background job. Scrolling is interactive: the person wants <b>older messages now</b>, and none of the chunking machinery helps.</p>
@@ -115,12 +133,21 @@
           <li>Open question: keep fetched items, or show them just for this session?</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>catching up a new device</span><span>6 / 11</span></div>
+      <div class="slide-foot"><span>catching up a new device</span><span>8 / 14</span></div>
+    </section>
+
+    <!-- SECTION: WEIGHING IT UP -->
+    <section>
+      <div class="slide-body section-slide">
+        <h1>Weighing it up</h1>
+        <p class="sub">What the spec gives for free, what it costs, and how others do it.</p>
+      </div>
+      <div class="slide-foot"><span>catching up a new device</span><span>9 / 14</span></div>
     </section>
 
     <!-- WHAT DIDCOMM GIVES -->
     <section>
-      <div class="eyebrow gold">what the spec already gives you</div>
+      <div class="eyebrow gold"><span class="sec">Weighing it up ·</span> what the spec already gives you</div>
       <div class="slide-body">
         <h2>No new crypto, no new trust boundary</h2>
         <div class="grid3">
@@ -129,13 +156,13 @@
           <div class="card"><h3>Size limits</h3><p>A device can publish <a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#agent-constraint-disclosure"><code>max_receive_bytes</code></a>, so batches can be sized to what the receiver accepts.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>catching up a new device</span><span>7 / 11</span></div>
+      <div class="slide-foot"><span>catching up a new device</span><span>10 / 14</span></div>
       <aside class="notes">Spec: Threading (id, thid); Transports, Agent Constraint Disclosure (max_receive_bytes, discoverable via Discover Features 2.0).</aside>
     </section>
 
     <!-- TRADE-OFFS -->
     <section>
-      <div class="eyebrow danger">the trade-offs</div>
+      <div class="eyebrow danger"><span class="sec">Weighing it up ·</span> the trade-offs</div>
       <div class="slide-body">
         <h2>What this approach costs</h2>
         <ul class="bullets">
@@ -145,12 +172,12 @@
           <li>If the only device holding history is lost, nothing here helps. That's the backup-service trade-off again.</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>catching up a new device</span><span>8 / 11</span></div>
+      <div class="slide-foot"><span>catching up a new device</span><span>11 / 14</span></div>
     </section>
 
     <!-- PRIOR ART -->
     <section>
-      <div class="eyebrow">prior art</div>
+      <div class="eyebrow"><span class="sec">Weighing it up ·</span> prior art</div>
       <div class="slide-body">
         <h2>Messengers take different stances</h2>
         <div class="grid3">
@@ -160,12 +187,12 @@
         </div>
         <p class="kicker">Ongoing, peer-to-peer reconciliation with per-device retention sits somewhere between the first two.</p>
       </div>
-      <div class="slide-foot"><span>catching up a new device</span><span>9 / 11</span></div>
+      <div class="slide-foot"><span>catching up a new device</span><span>12 / 14</span></div>
     </section>
 
     <!-- QUESTIONS -->
     <section>
-      <div class="eyebrow">for the group</div>
+      <div class="eyebrow"><span class="sec">Weighing it up ·</span> for the group</div>
       <div class="slide-body closing">
         <h1 style="font-size:2.6rem">Open questions</h1>
         <ul style="margin-top:.6rem">
@@ -174,7 +201,7 @@
           <li class="q">How should a new device prove it may receive old history, not just new messages?</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>thank you</span><span>10 / 11</span></div>
+      <div class="slide-foot"><span>thank you</span><span>13 / 14</span></div>
     </section>
 
     <!-- REFERENCES -->
@@ -190,7 +217,7 @@
         <li><a href="https://didcomm.org/vaults/1.0/">vaults/1.0</a> <span class="st">Proposed</span> · <a href="https://didcomm.org/swarm/1.0/">swarm/1.0</a> <span class="st">Proposed</span></li>
         <li><a href="https://github.com/wyvrn-cloud/protocols/blob/master/protocols/history-sync/1.0/readme.md">wyvrn-cloud/protocols — history-sync notes</a> <span class="st">an experiment</span></li>
       </ul>
-      <div class="slide-foot"><span>catching up a new device · checked September 2026</span><span>11 / 11</span></div>
+      <div class="slide-foot"><span>catching up a new device · checked September 2026</span><span>14 / 14</span></div>
     </section>
 
   </div>
