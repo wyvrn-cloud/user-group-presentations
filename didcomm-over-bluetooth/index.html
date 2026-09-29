@@ -35,7 +35,7 @@
           <div class="card"><h3>Metadata</h3><p>The mediator learns about traffic that never needed to leave the room.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>didcomm over bluetooth</span><span>1 / 13</span></div>
+      <div class="slide-foot"><span>didcomm over bluetooth</span><span>1 / 14</span></div>
     </section>
 
     <!-- THE SPEC SAYS -->
@@ -43,10 +43,10 @@
       <div class="eyebrow gold">the spec already says</div>
       <div class="slide-body">
         <h2>Bluetooth is named in DIDComm's own requirements</h2>
-        <div class="quote">Transport-agnostic (usable over HTTPS 1.x and 2.0, WebSockets, BlueTooth, chat, push notifications, libp2p, AMQP, SMTP, NFC, sneakernet, snail mail; supports both simplex and duplex; works offline; doesn't assume client-server or synchronous or real-time; allows paired or n-wise or public broadcast usage)<cite>DIDComm Messaging v2.1 — Requirements</cite></div>
+        <div class="quote">Transport-agnostic (usable over HTTPS 1.x and 2.0, WebSockets, BlueTooth, chat, push notifications, libp2p, AMQP, SMTP, NFC, sneakernet, snail mail; supports both simplex and duplex; works offline; doesn't assume client-server or synchronous or real-time; allows paired or n-wise or public broadcast usage)<cite><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#specific-requirements">DIDComm Messaging v2.1 — Specific Requirements</a></cite></div>
         <p class="lede">And security doesn't depend on the link: the encryption envelope "provides trust as a feature of each message". A Bluetooth link needn't be trusted at all.</p>
       </div>
-      <div class="slide-foot"><span>didcomm over bluetooth</span><span>2 / 13</span></div>
+      <div class="slide-foot"><span>didcomm over bluetooth</span><span>2 / 14</span></div>
       <aside class="notes">Requirements list, item 4. The "trust as a feature of each message" wording is from Transports, Summary.</aside>
     </section>
 
@@ -63,11 +63,11 @@
   ]
 }]</code></pre>
         <div class="slide-body" style="gap:1rem">
-          <div class="quote">The order of the endpoints SHOULD indicate the DID Document owner's preference in receiving messages. Any endpoint MAY be selected by the sender, typically by protocol availability or preference.<cite>Routing — Service Endpoint</cite></div>
-          <div class="quote">If the transmission of a message fails, the sender SHOULD try another endpoint or try delivery at a later time.<cite>Routing — Failover</cite></div>
+          <div class="quote">The order of the endpoints SHOULD indicate the DID Document owner's preference in receiving messages. Any endpoint MAY be selected by the sender, typically by protocol availability or preference.<cite><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#service-endpoint">Routing — Service Endpoint</a></cite></div>
+          <div class="quote">If the transmission of a message fails, the sender SHOULD try another endpoint or try delivery at a later time.<cite><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#failover">Routing — Failover</a></cite></div>
         </div>
       </div>
-      <div class="slide-foot"><span>didcomm over bluetooth</span><span>3 / 13</span></div>
+      <div class="slide-foot"><span>didcomm over bluetooth</span><span>3 / 14</span></div>
       <aside class="notes">"ble:" is a placeholder. No URI scheme for a Bluetooth DIDComm endpoint is defined anywhere that we know of.</aside>
     </section>
 
@@ -84,7 +84,7 @@
           <div class="card"><h3>Extra context</h3><p>Where any transport-specific endpoint properties are defined.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>didcomm over bluetooth</span><span>4 / 13</span></div>
+      <div class="slide-foot"><span>didcomm over bluetooth</span><span>4 / 14</span></div>
       <aside class="notes">Spec: Transports, Transport Requirements.</aside>
     </section>
 
@@ -92,7 +92,7 @@
     <section>
       <div class="eyebrow gold">prior work in the registry</div>
       <div class="slide-body">
-        <h2><code>mesh/1.0</code> goes further than point-to-point</h2>
+        <h2><a href="https://didcomm.org/mesh/1.0/"><code>mesh/1.0</code></a> goes further than point-to-point</h2>
         <p class="lede">A registry protocol (status: Proposed) for DIDComm agents forming an <b>ad-hoc mesh</b> over BLE, LoRa, Wi-Fi and the internet, relaying encrypted messages across several hops.</p>
         <div class="grid3">
           <div class="card"><h3>BLE as a GATT service</h3><p>Every node is both GATT server and client, with write/notify characteristics and fragmentation for small MTUs.</p></div>
@@ -101,7 +101,7 @@
         </div>
         <p class="kicker">It also defines its own compact binary packet format and a session-key envelope for constrained links.</p>
       </div>
-      <div class="slide-foot"><span>didcomm over bluetooth</span><span>5 / 13</span></div>
+      <div class="slide-foot"><span>didcomm over bluetooth</span><span>5 / 14</span></div>
       <aside class="notes">Source: didcomm.org registry, site/content/protocols/mesh/1.0 (Transport, BLE, Transport Selection, Roles).</aside>
     </section>
 
@@ -111,14 +111,14 @@
       <div class="slide-body">
         <h2>Encrypted DIDComm messages are big for Bluetooth</h2>
         <div class="grid3">
-          <div class="card"><h3>BLE GATT</h3><p>Available everywhere, but each write is small: the default ATT MTU is 23 bytes, negotiable up to about 512. Messages must be chunked and reassembled.</p></div>
-          <div class="card"><h3>BLE L2CAP channels</h3><p>Connection-oriented channels give a proper byte stream with flow control. Better for bulk; platform support varies.</p></div>
-          <div class="card"><h3>Classic (RFCOMM)</h3><p>A serial stream with more throughput, but patchy on phones, especially iOS.</p></div>
+          <div class="card"><h3>BLE GATT</h3><p>Available everywhere, but small: the LE <a href="https://www.bluetooth.com/wp-content/uploads/Files/Specification/HTML/Core-60/out/en/host/generic-attribute-profile--gatt-.html">default ATT_MTU is 23 bytes</a>, and an <a href="https://www.bluetooth.com/wp-content/uploads/Files/Specification/HTML/Core-60/out/en/host/attribute-protocol--att-.html">attribute value is at most 512</a>. <a href="https://developer.android.com/about/versions/14/behavior-changes-all">Android 14+</a> asks for a 517-byte MTU. Messages must be chunked and reassembled.</p></div>
+          <div class="card"><h3>BLE L2CAP channels</h3><p>Connection-oriented channels: a byte stream with flow control, better for bulk. Exposed on <a href="https://developer.android.com/reference/android/bluetooth/BluetoothDevice">Android</a> (<code>createL2capChannel</code>) and on <a href="https://developer.apple.com/documentation/corebluetooth/cbl2capchannel">iOS 11+</a> (<code>CBL2CAPChannel</code>).</p></div>
+          <div class="card"><h3>Classic (RFCOMM)</h3><p>A serial stream with more throughput. <a href="https://developer.android.com/reference/android/bluetooth/BluetoothDevice">Android</a> exposes RFCOMM sockets; check each platform before relying on it.</p></div>
         </div>
-        <p class="kicker"><code>mesh/1.0</code> assumes a 512-byte MTU by default and 185 bytes minimum (the iOS minimum). A receiver can also publish <code>max_receive_bytes</code> so senders know when to fall back to the mediator.</p>
+        <p class="kicker"><code>mesh/1.0</code> assumes a 512-byte MTU by default and 185 bytes minimum, which it calls the iOS minimum. A receiver can also publish <a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#agent-constraint-disclosure"><code>max_receive_bytes</code></a> so senders know when to fall back to the mediator.</p>
       </div>
-      <div class="slide-foot"><span>didcomm over bluetooth</span><span>6 / 13</span></div>
-      <aside class="notes">Double-check platform support claims before presenting; they change with OS releases.</aside>
+      <div class="slide-foot"><span>didcomm over bluetooth</span><span>6 / 14</span></div>
+      <aside class="notes">Numbers from Bluetooth Core 6.0 (GATT §5.2.1, ATT §3.2.9) and Android's docs; platform support changes with OS releases, so re-check before presenting.</aside>
     </section>
 
     <!-- DISCOVERY -->
@@ -126,13 +126,13 @@
       <div class="eyebrow gold">the hardest part</div>
       <div class="slide-body">
         <h2>Finding each other without being trackable</h2>
-        <p class="lede">A DID document is fairly static; "who is nearby" changes by the minute. To connect, a device has to <b>advertise something</b>. If that's a stable identifier, anyone with a scanner can follow it around. (<code>mesh/1.0</code> exposes a node's routing ID over GATT; how long-lived it should be is worth discussing.)</p>
+        <p class="lede">A DID document is fairly static; "who is nearby" changes by the minute. To connect, a device has to <b>advertise something</b>. If that's a stable identifier, anyone with a scanner can follow it around. (<code>mesh/1.0</code> exposes a node's 8-byte routing ID over GATT. It's derived from the node's Ed25519 public key, so it lives as long as that key does.)</p>
         <div class="grid2">
           <div class="card teal"><h3>Known contacts</h3><p>Advertise short-lived identifiers derived from a secret the two parties already share, so only contacts recognise each other, and the value changes every few minutes.</p></div>
           <div class="card gold"><h3>First contact</h3><p>Use an out-of-band invitation, for example a QR code, to exchange DIDs, then switch to Bluetooth for the conversation.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>didcomm over bluetooth</span><span>7 / 13</span></div>
+      <div class="slide-foot"><span>didcomm over bluetooth</span><span>7 / 14</span></div>
       <aside class="notes">Rotating identifiers derived from a shared secret is the same idea used by several proximity systems. The spec's out-of-band section also warns that identifiers passed in a QR code are no longer private and should be rotated over a secure connection if privacy matters.</aside>
     </section>
 
@@ -144,7 +144,7 @@
         <p class="lede">DIDComm transports are one-way by default. The <span class="t">return-route</span> extension already covers "send replies back over the connection I opened": <code>return_route: all</code> or <code>thread</code>.</p>
         <p class="kicker">It's defined for the directly connected pair only, not through routing keys, which is exactly the Bluetooth case.</p>
       </div>
-      <div class="slide-foot"><span>didcomm over bluetooth</span><span>8 / 13</span></div>
+      <div class="slide-foot"><span>didcomm over bluetooth</span><span>8 / 14</span></div>
     </section>
 
     <!-- SWITCHING -->
@@ -157,7 +157,7 @@
         <div class="step"><h3>Try Bluetooth</h3><p>Send and wait for a transport-level acknowledgement.</p></div>
         <div class="step"><h3>Fall back</h3><p>No ack in time? Send the same message through the mediator, as the failover rule says.</p></div>
       </div>
-      <div class="slide-foot"><span>didcomm over bluetooth</span><span>9 / 13</span></div>
+      <div class="slide-foot"><span>didcomm over bluetooth</span><span>9 / 14</span></div>
     </section>
 
     <!-- DUPLICATES -->
@@ -172,7 +172,7 @@
           <li>For ordering-sensitive protocols, the Advanced Sequencing headers detect gaps and reordering across the two paths.</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>didcomm over bluetooth</span><span>10 / 13</span></div>
+      <div class="slide-foot"><span>didcomm over bluetooth</span><span>10 / 14</span></div>
       <aside class="notes">Spec: Threading, Message IDs ("it MUST be unique across all interactions visible to the set of parties"). Extension: advanced_sequencing.</aside>
     </section>
 
@@ -187,7 +187,7 @@
           <div class="card"><h3>Sensors and gateways</h3><p>A small device hands messages to a nearby gateway, which forwards them when it's online.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>didcomm over bluetooth</span><span>11 / 13</span></div>
+      <div class="slide-foot"><span>didcomm over bluetooth</span><span>11 / 14</span></div>
     </section>
 
     <!-- WHAT AN EXTENSION WOULD SAY -->
@@ -206,7 +206,7 @@
           </tbody>
         </table>
       </div>
-      <div class="slide-foot"><span>didcomm over bluetooth</span><span>12 / 13</span></div>
+      <div class="slide-foot"><span>didcomm over bluetooth</span><span>12 / 14</span></div>
     </section>
 
     <!-- QUESTIONS -->
@@ -220,7 +220,26 @@
           <li class="q">Should the same extension cover Wi-Fi Direct and local networks, or just Bluetooth?</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>thank you</span><span>13 / 13</span></div>
+      <div class="slide-foot"><span>thank you</span><span>13 / 14</span></div>
+    </section>
+
+    <!-- REFERENCES -->
+    <section>
+      <div class="eyebrow">references</div>
+      <h2 style="margin-bottom:.4rem">Sources</h2>
+      <ul class="refs">
+        <li><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#specific-requirements">DIDComm Messaging v2.1 — Specific Requirements</a></li>
+        <li><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#service-endpoint">Service endpoint</a> · <a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#failover">Failover</a> · <a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#transport-requirements">Transport requirements</a></li>
+        <li><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#message-ids">Message IDs</a> · <a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#out-of-band-messages">Out-of-band messages</a> · <a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#agent-constraint-disclosure">max_receive_bytes</a></li>
+        <li><a href="https://github.com/decentralized-identity/didcomm-messaging/blob/main/extensions/return_route/main.md">Return-Route extension</a> · <a href="https://github.com/decentralized-identity/didcomm-messaging/blob/main/extensions/advanced_sequencing/main.md">Advanced Sequencing extension</a></li>
+        <li><a href="https://github.com/decentralized-identity/didcomm-messaging/blob/main/extensions/">DIDComm transport extensions (email, filesystem, libp2p)</a></li>
+        <li><a href="https://didcomm.org/mesh/1.0/">mesh/1.0</a> <span class="st">Proposed</span></li>
+        <li><a href="https://www.bluetooth.com/wp-content/uploads/Files/Specification/HTML/Core-60/out/en/host/generic-attribute-profile--gatt-.html">Bluetooth Core 6.0 — GATT §5.2.1 ATT_MTU</a></li>
+        <li><a href="https://www.bluetooth.com/wp-content/uploads/Files/Specification/HTML/Core-60/out/en/host/attribute-protocol--att-.html">Bluetooth Core 6.0 — ATT §3.2.9 attribute value length</a></li>
+        <li><a href="https://developer.android.com/about/versions/14/behavior-changes-all">Android 14 behavior changes — MTU set to 517</a></li>
+        <li><a href="https://developer.android.com/reference/android/bluetooth/BluetoothDevice">Android BluetoothDevice</a> · <a href="https://developer.apple.com/documentation/corebluetooth/cbl2capchannel">Apple CBL2CAPChannel</a></li>
+      </ul>
+      <div class="slide-foot"><span>didcomm over bluetooth · checked September 2026</span><span>14 / 14</span></div>
     </section>
 
   </div>
