@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DIDComm Without a Network</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@6.0.2/dist/reveal.css">
+<link rel="stylesheet" href="../assets/deck.css">
+
+<div class="reveal">
+  <div class="slides">
+
+    <!-- TITLE -->
+    <section>
+      <div class="slide-body title-slide">
+        <div class="brandmark">
+          <svg viewBox="0 0 48 48" fill="none"><circle cx="20" cy="18" r="13" stroke="#f0a83b" stroke-width="4"/><circle cx="28" cy="30" r="13" stroke="#34c0cf" stroke-width="4"/></svg>
+          <span class="eyebrow">didcomm user group</span>
+        </div>
+        <h1>DIDComm Without<br>a Network</h1>
+        <p class="sub">Supply chains move through ships, warehouses and borders where connectivity comes and goes. DIDComm's transport extensions already cover more of that than you'd expect.</p>
+        <span class="pill gold">draft</span>
+      </div>
+    </section>
+
+    <!-- SUPPLY CHAIN PROPERTIES -->
+    <section>
+      <div class="eyebrow">the setting</div>
+      <div class="slide-body">
+        <h2>What a supply chain asks of messaging</h2>
+        <div class="grid4">
+          <div class="card"><h3>Many parties</h3><p>Manufacturer, carrier, customs, warehouse, buyer. Few of them share a system.</p></div>
+          <div class="card"><h3>Patchy connectivity</h3><p>At sea, in a container yard, at a remote site. Days offline is normal.</p></div>
+          <div class="card"><h3>Evidence</h3><p>When something goes wrong, someone has to prove who said what, and when.</p></div>
+          <div class="card"><h3>Documents travel</h3><p>Certificates and manifests move with the goods, not just over a network.</p></div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>didcomm without a network</span><span>1 / 12</span></div>
+    </section>
+
+    <!-- SELF-CONTAINED -->
+    <section>
+      <div class="eyebrow gold">the key property</div>
+      <div class="slide-body">
+        <h2>A DIDComm message is a self-contained file.</h2>
+        <p class="lede">Security lives in the envelope, not the connection. So the message can travel <b>any way at all</b>, and still be verified and decrypted at the other end.</p>
+        <div class="grid3">
+          <div class="card"><h3><code>*.dcem</code></h3><p>Encrypted message</p></div>
+          <div class="card"><h3><code>*.dcsm</code></h3><p>Signed message</p></div>
+          <div class="card"><h3><code>*.dcpm</code></h3><p>Plaintext message</p></div>
+        </div>
+        <p class="kicker">The <a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#iana-media-types">spec defines these file extensions</a> for when messages are "persisted as a file or attached as a payload in other contexts".</p>
+      </div>
+      <div class="slide-foot"><span>didcomm without a network</span><span>2 / 12</span></div>
+    </section>
+
+    <!-- FILESYSTEM TRANSPORT -->
+    <section>
+      <div class="eyebrow">an existing extension</div>
+      <div class="slide-body">
+        <h2>The <a href="https://github.com/decentralized-identity/didcomm-messaging/blob/main/extensions/filesystem_transport/main.md">filesystem transport</a></h2>
+        <div class="quote">Since files can be moved over AirDrop or AWS Snowball, attached to a chat, carried on USB thumb drives, or managed by WebDAV, a file-oriented transport enables flexible communications patterns … This includes a "sneakernet" that is full-featured even when its offline and highly asynchronous.<cite><a href="https://github.com/decentralized-identity/didcomm-messaging/blob/main/extensions/filesystem_transport/main.md">DIDComm Filesystem Transport Extension</a></cite></div>
+        <ul class="bullets">
+          <li>Endpoint: a <code>file:</code> URI (or anything folder-like: S3, a git repo) that the sender can write and the recipient can read.</li>
+          <li>Ordering: by modification time, or explicit prefixes like <code>01--msg.dcem</code>.</li>
+          <li>Busy folders can nest per thread: <code>&lt;thid&gt;.thid/</code>.</li>
+        </ul>
+      </div>
+      <div class="slide-foot"><span>didcomm without a network</span><span>3 / 12</span></div>
+    </section>
+
+    <!-- EMAIL -->
+    <section>
+      <div class="eyebrow">another existing extension</div>
+      <div class="slide-body">
+        <h2>Email: already everywhere in logistics</h2>
+        <p class="lede">The <a href="https://github.com/decentralized-identity/didcomm-messaging/blob/main/extensions/email_transport/main.md">email transport extension</a> uses a <code>mailto:</code> endpoint. DIDComm messages ride as <b>attachments</b>; the body stays for humans.</p>
+        <ul class="bullets">
+          <li>Works with the email systems partners already run, with no new infrastructure.</li>
+          <li>Agents must process DIDComm-typed attachments, and may sniff for <code>*.dcem</code> files a person attached by hand.</li>
+          <li>Email headers are hints only; the DIDComm content is authoritative.</li>
+        </ul>
+      </div>
+      <div class="slide-foot"><span>didcomm without a network</span><span>4 / 12</span></div>
+      <aside class="notes">Spec: extensions/email_transport. The address can also be a mediator's shared address for herd privacy.</aside>
+    </section>
+
+    <!-- EVIDENCE -->
+    <section>
+      <div class="eyebrow gold">evidence</div>
+      <div class="slide-body">
+        <h2>Authcrypt is deliberately deniable</h2>
+        <p class="lede">The default envelope proves the sender <b>only to the recipient</b>, who can't prove it to anyone else. For a dispute, that's not enough.</p>
+        <div class="quote">DIDComm Encrypted messages are repudiable. If non-repudiation is required for a particular protocol message, the message MUST be signed before encryption.<cite><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#uses-of-signatures">Message Signing — Uses of Signatures</a></cite></div>
+        <p class="kicker">So shipping notices, receipts and inspection results would use <code>anoncrypt(sign(plaintext))</code>: confidential in transit, provable afterwards.</p>
+      </div>
+      <div class="slide-foot"><span>didcomm without a network</span><span>5 / 12</span></div>
+    </section>
+
+    <!-- ATTACHMENTS -->
+    <section>
+      <div class="eyebrow">documents</div>
+      <h2 style="margin-bottom:.2rem">Attachments by value or by reference</h2>
+      <div class="grid2" style="flex:1">
+        <ul class="bullets">
+          <li><code>base64</code> or <code>json</code>: the document travels inside the message. Best offline.</li>
+          <li><code>links</code> + <code>hash</code>: the document stays elsewhere; the hash is <b>required</b> so the receiver can check what it fetched.</li>
+          <li><code>jws</code>: an attachment can carry its own signature, and the signer need not be the message's author (say, a lab certificate forwarded by a carrier).</li>
+          <li><code>byte_count</code>: lets the receiver decide whether to fetch it now.</li>
+        </ul>
+        <pre class="codeblock"><code>{
+  <span class="k">"id"</span>: <span class="s">"coa-1"</span>,
+  <span class="k">"filename"</span>: <span class="s">"certificate.pdf"</span>,
+  <span class="k">"media_type"</span>: <span class="s">"application/pdf"</span>,
+  <span class="k">"byte_count"</span>: <span class="ty">184233</span>,
+  <span class="k">"data"</span>: {
+    <span class="k">"links"</span>: [<span class="s">"https://…/certificate.pdf"</span>],
+    <span class="k">"hash"</span>: <span class="g">"&lt;multihash&gt;"</span>,
+    <span class="k">"jws"</span>: { <span class="k">…</span> }
+  }
+}</code></pre>
+      </div>
+      <div class="slide-foot"><span>didcomm without a network</span><span>6 / 12</span></div>
+      <aside class="notes">Spec: Message Formats, Attachments. The example is illustrative; the field names are the spec's. For encrypt-upload-share-the-key flows, see the registry's media-sharing/1.0 (and the "Sharing and Storing Files" deck).</aside>
+    </section>
+
+    <!-- MULTI-PARTY THREADS -->
+    <section>
+      <div class="eyebrow">many parties, one shipment</div>
+      <div class="slide-body">
+        <h2>Threads that span organisations</h2>
+        <div class="grid2">
+          <div class="card"><h3>Parent threads</h3><p>A shipment is one thread; customs clearance or a payment is a child thread linked with <code>pthid</code>. With more than two parties, each must learn the parent from the first child message it sees, so repeat <code>pthid</code> on every message.</p></div>
+          <div class="card"><h3>Ordering across hops</h3><p>Messages that arrive by USB stick, email and HTTPS won't arrive in order. The <a href="https://github.com/decentralized-identity/didcomm-messaging/blob/main/extensions/advanced_sequencing/main.md">Advanced Sequencing</a> headers detect gaps without assuming a single transport.</p></div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>didcomm without a network</span><span>7 / 12</span></div>
+    </section>
+
+    <!-- WALKTHROUGH -->
+    <section>
+      <div class="eyebrow gold">a sketch</div>
+      <h2>One container, four transports</h2>
+      <div class="numrow" style="flex:1;align-items:center">
+        <div class="step"><h3>Manufacturer</h3><p>Signs and encrypts a shipping notice for the carrier; sends over HTTPS.</p></div>
+        <div class="step"><h3>Ship</h3><p>No connectivity. Inspection messages pile up in an outbox folder on the vessel.</p></div>
+        <div class="step"><h3>Port</h3><p>The folder is copied off by USB or synced on arrival; queued messages deliver in order.</p></div>
+        <div class="step"><h3>Customs</h3><p>Receives a signed manifest by email; verifies the signatures back to the manufacturer.</p></div>
+        <div class="step"><h3>Buyer</h3><p>Holds the full signed chain of messages as evidence.</p></div>
+      </div>
+      <div class="slide-foot"><span>didcomm without a network</span><span>8 / 12</span></div>
+    </section>
+
+    <!-- FAN-OUT -->
+    <section>
+      <div class="eyebrow">shared folders</div>
+      <div class="slide-body">
+        <h2>One folder, many readers</h2>
+        <p class="lede">The <a href="https://github.com/decentralized-identity/didcomm-messaging/blob/main/extensions/filesystem_transport/main.md">filesystem extension</a> explicitly allows <b>duplex and fan-out</b>: a shared endpoint folder can serve a group, or a public broadcast.</p>
+        <ul class="bullets">
+          <li>Encryption still decides who can read what; the outer envelope shows who each message is for.</li>
+          <li>Writers create <code>msg.dcem.tmp</code> and rename it, so readers never see half-written files.</li>
+          <li>Readers clean up messages addressed only to them once processed.</li>
+        </ul>
+      </div>
+      <div class="slide-foot"><span>didcomm without a network</span><span>9 / 12</span></div>
+    </section>
+
+    <!-- LONG TERM -->
+    <section>
+      <div class="eyebrow danger">the long tail</div>
+      <div class="slide-body">
+        <h2>Evidence has to outlive the keys</h2>
+        <p class="lede">A signed manifest may need to be checked <b>years later</b>, after the signer has rotated keys, changed DIDs, or gone out of business.</p>
+        <ul class="bullets">
+          <li>Verifying needs the DID document <i>as it was</i> when the message was signed.</li>
+          <li>DID Core defines a <a href="https://www.w3.org/TR/did-1.0/#did-parameters"><code>versionTime</code></a> parameter for resolving the document "that was valid for a DID at a certain time", but only some DID methods can honour it. <code>did:peer</code> documents are exchanged directly, so the parties must archive what they saw.</li>
+          <li>Algorithms age too. (See "DIDComm and Post-Quantum Cryptography".)</li>
+        </ul>
+      </div>
+      <div class="slide-foot"><span>didcomm without a network</span><span>10 / 12</span></div>
+    </section>
+
+    <!-- QUESTIONS -->
+    <section>
+      <div class="eyebrow">for the group</div>
+      <div class="slide-body closing">
+        <h1 style="font-size:2.6rem">Open questions</h1>
+        <ul style="margin-top:.6rem">
+          <li class="q">Has anyone used the filesystem or email transports in practice?</li>
+          <li class="q">What's the right way to archive the DID state needed to verify old signatures?</li>
+          <li class="q">Which supply-chain messages actually need non-repudiation, and which are fine as authcrypt?</li>
+        </ul>
+      </div>
+      <div class="slide-foot"><span>thank you</span><span>11 / 12</span></div>
+    </section>
+
+    <!-- REFERENCES -->
+    <section>
+      <div class="eyebrow">references</div>
+      <h2 style="margin-bottom:.4rem">Sources</h2>
+      <ul class="refs">
+        <li><a href="https://github.com/decentralized-identity/didcomm-messaging/blob/main/extensions/filesystem_transport/main.md">DIDComm Filesystem Transport extension</a></li>
+        <li><a href="https://github.com/decentralized-identity/didcomm-messaging/blob/main/extensions/email_transport/main.md">DIDComm Email Transport extension</a></li>
+        <li><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#iana-media-types">IANA media types and file extensions</a> · <a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#uses-of-signatures">Uses of signatures</a></li>
+        <li><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#attachments">Attachments</a> · <a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#parent-threads">Parent threads</a></li>
+        <li><a href="https://github.com/decentralized-identity/didcomm-messaging/blob/main/extensions/advanced_sequencing/main.md">Advanced Sequencing extension</a> · <a href="https://github.com/decentralized-identity/didcomm-messaging/blob/main/extensions/return_route/main.md">Return-Route extension</a></li>
+        <li><a href="https://didcomm.org/media-sharing/1.0/">media-sharing/1.0</a> <span class="st">Demonstrated</span></li>
+        <li><a href="https://www.w3.org/TR/did-1.0/#did-parameters">W3C DID Core 1.0 — DID parameters (versionTime)</a></li>
+      </ul>
+      <div class="slide-foot"><span>didcomm without a network · checked September 2026</span><span>12 / 12</span></div>
+    </section>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@6.0.2/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@6.0.2/dist/plugin/notes.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    center: false,
+    controls: true,
+    progress: true,
+    transition: 'slide',
+    // No fixed canvas: slides fill the viewport and ../assets/deck.css
+    // sizes everything off it.
+    disableLayout: true,
+    plugins: [RevealNotes],
+  });
+</script>
