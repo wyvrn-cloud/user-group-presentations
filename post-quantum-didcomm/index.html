@@ -23,20 +23,29 @@
       </div>
     </section>
 
+    <!-- SECTION: THE THREAT -->
+    <section>
+      <div class="slide-body section-slide">
+        <h1>The threat</h1>
+        <p class="sub">What breaks, why it matters now, and what's been standardised.</p>
+      </div>
+      <div class="slide-foot"><span>post-quantum didcomm</span><span>1 / 16</span></div>
+    </section>
+
     <!-- THE SPEC SAYS -->
     <section>
-      <div class="eyebrow gold">the spec says so itself</div>
+      <div class="eyebrow gold"><span class="sec">The threat ·</span> the spec says so itself</div>
       <div class="slide-body">
         <h2>Known, acknowledged, deferred</h2>
         <div class="quote">The designers of DIDComm are aware that DIDComm's cryptographic methods will need to be upgraded when quantum computing matures. This is because DIDComm makes heavy use of asymmetric elliptic curve mechanisms that depend on the discrete logarithm problem …<cite><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#post-quantum-crypto">DIDComm Messaging v2.1 — Future Work, Post-Quantum Crypto</a></cite></div>
         <div class="quote">DIDComm is able to use arbitrary DID methods, which should allow approaches that are quantum-secure without changing the general pattern of DIDComm's interaction with key management technology.<cite>same section</cite></div>
       </div>
-      <div class="slide-foot"><span>post-quantum didcomm</span><span>1 / 13</span></div>
+      <div class="slide-foot"><span>post-quantum didcomm</span><span>2 / 16</span></div>
     </section>
 
     <!-- WHAT'S EXPOSED -->
     <section>
-      <div class="eyebrow">what's exposed</div>
+      <div class="eyebrow"><span class="sec">The threat ·</span> what's exposed</div>
       <div class="slide-body">
         <h2>Which parts of DIDComm a quantum computer breaks</h2>
         <table class="compare">
@@ -48,13 +57,13 @@
           </tbody>
         </table>
       </div>
-      <div class="slide-foot"><span>post-quantum didcomm</span><span>2 / 13</span></div>
+      <div class="slide-foot"><span>post-quantum didcomm</span><span>3 / 16</span></div>
       <aside class="notes">Algorithm lists from the spec's Security (curves, key wrapping) and Message Signing (algorithms) sections. Grover's algorithm roughly halves symmetric security, which is why 256-bit keys are considered comfortable.</aside>
     </section>
 
     <!-- HARVEST NOW -->
     <section>
-      <div class="eyebrow danger">why now, not later</div>
+      <div class="eyebrow danger"><span class="sec">The threat ·</span> why now, not later</div>
       <div class="slide-body">
         <h2>Harvest now, decrypt later</h2>
         <p class="lede">An encrypted DIDComm message captured today, at a mediator, in a log or on the wire, can be stored and <b>decrypted once the capability exists</b>. Confidentiality is the urgent part.</p>
@@ -63,12 +72,12 @@
           <div class="card gold"><h3>Less urgent: signatures</h3><p>A signature only needs to resist forgery until it is checked, unless it's long-term evidence.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>post-quantum didcomm</span><span>3 / 13</span></div>
+      <div class="slide-foot"><span>post-quantum didcomm</span><span>4 / 16</span></div>
     </section>
 
     <!-- NIST -->
     <section>
-      <div class="eyebrow gold">what exists now</div>
+      <div class="eyebrow gold"><span class="sec">The threat ·</span> what exists now</div>
       <div class="slide-body">
         <h2>NIST published the first standards in 2024</h2>
         <div class="grid3">
@@ -78,13 +87,22 @@
         </div>
         <p class="kicker">ML-DSA is now registered for both JOSE and COSE (<a href="https://www.rfc-editor.org/rfc/rfc9964.html">RFC 9964</a>). ML-KEM is still in IETF drafts (e.g. <a href="https://datatracker.ietf.org/doc/draft-ietf-jose-pqc-kem/">draft-ietf-jose-pqc-kem</a>). Nothing yet for DIDComm itself.</p>
       </div>
-      <div class="slide-foot"><span>post-quantum didcomm</span><span>4 / 13</span></div>
+      <div class="slide-foot"><span>post-quantum didcomm</span><span>5 / 16</span></div>
       <aside class="notes">The spec's own section predates these (it links NIST's then-ongoing project). An update of that paragraph would be a reasonable contribution. Registry status checked against IANA JOSE/COSE, September 2026.</aside>
+    </section>
+
+    <!-- SECTION: WHAT CHANGES -->
+    <section>
+      <div class="slide-body section-slide">
+        <h1>What changes</h1>
+        <p class="sub">Bigger keys, bigger DIDs, and an envelope built on Diffie-Hellman.</p>
+      </div>
+      <div class="slide-foot"><span>post-quantum didcomm</span><span>6 / 16</span></div>
     </section>
 
     <!-- SIZE -->
     <section>
-      <div class="eyebrow">the first surprise</div>
+      <div class="eyebrow"><span class="sec">What changes ·</span> the first surprise</div>
       <div class="slide-body">
         <h2>Keys and signatures get much bigger</h2>
         <table class="compare">
@@ -98,12 +116,12 @@
         </table>
         <p class="kicker">Multi-device makes this worse: one encrypted message carries a wrapped key <i>per recipient key</i>.</p>
       </div>
-      <div class="slide-foot"><span>post-quantum didcomm</span><span>5 / 13</span></div>
+      <div class="slide-foot"><span>post-quantum didcomm</span><span>7 / 16</span></div>
     </section>
 
     <!-- DID PEER -->
     <section>
-      <div class="eyebrow danger">the second surprise</div>
+      <div class="eyebrow danger"><span class="sec">What changes ·</span> the second surprise</div>
       <div class="slide-body">
         <h2>Some DIDs contain their keys</h2>
         <p class="lede"><a href="https://identity.foundation/peer-did-method-spec/#method-2-multiple-inception-key-without-doc"><code>did:peer</code> method 2</a> encodes the keys <b>in the DID string itself</b>; <a href="https://identity.foundation/peer-did-method-spec/#method-4-short-form-and-long-form">method 4</a>'s long form encodes the whole document. With post-quantum keys, those identifiers grow to kilobytes.</p>
@@ -113,12 +131,12 @@
           <li>Identifiers that don't embed keys fare better: <code>did:peer:4</code>'s short form (a hash of the long form, usable after the first exchange), or ledger and web methods.</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>post-quantum didcomm</span><span>6 / 13</span></div>
+      <div class="slide-foot"><span>post-quantum didcomm</span><span>8 / 16</span></div>
     </section>
 
     <!-- AUTHCRYPT -->
     <section>
-      <div class="eyebrow gold">the deeper problem</div>
+      <div class="eyebrow gold"><span class="sec">What changes ·</span> the deeper problem</div>
       <div class="slide-body">
         <h2>Authcrypt is built on Diffie-Hellman</h2>
         <p class="lede">ECDH-1PU authenticates the sender by mixing <b>the sender's static key</b> into the key agreement. A KEM isn't Diffie-Hellman: it encapsulates a secret to one public key, and there's no direct "one-pass unified model" equivalent.</p>
@@ -127,12 +145,21 @@
           <div class="card"><h3>Authenticated KEM designs</h3><p>An active research area. Not yet something to standardize on.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>post-quantum didcomm</span><span>7 / 13</span></div>
+      <div class="slide-foot"><span>post-quantum didcomm</span><span>9 / 16</span></div>
+    </section>
+
+    <!-- SECTION: GETTING THERE -->
+    <section>
+      <div class="slide-body section-slide">
+        <h1>Getting there</h1>
+        <p class="sub">Hybrids, migration, and what already exists.</p>
+      </div>
+      <div class="slide-foot"><span>post-quantum didcomm</span><span>10 / 16</span></div>
     </section>
 
     <!-- HYBRID -->
     <section>
-      <div class="eyebrow">a pragmatic step</div>
+      <div class="eyebrow"><span class="sec">Getting there ·</span> a pragmatic step</div>
       <div class="slide-body">
         <h2>Hybrid: classical and post-quantum together</h2>
         <p class="lede">Derive the key-wrapping key from <b>both</b> an X25519 exchange and an ML-KEM encapsulation. An attacker has to break both.</p>
@@ -141,12 +168,12 @@
           <div class="card"><h3>How it could show up</h3><p>A new key-wrapping algorithm, recipient keys that carry both public keys, and a new profile in the <code>accept</code> list.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>post-quantum didcomm</span><span>8 / 13</span></div>
+      <div class="slide-foot"><span>post-quantum didcomm</span><span>11 / 16</span></div>
     </section>
 
     <!-- MIGRATION -->
     <section>
-      <div class="eyebrow danger">migration</div>
+      <div class="eyebrow danger"><span class="sec">Getting there ·</span> migration</div>
       <div class="slide-body">
         <h2>Rotation is signed with the key being retired</h2>
         <p class="lede"><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#did-rotation"><code>from_prior</code></a> is a JWT signed by a key the <i>old</i> DID authorizes. Once that key type can be broken, anyone could forge a rotation <b>from</b> your old DID to theirs.</p>
@@ -156,13 +183,13 @@
           <li>Long-lived evidence signed with old algorithms may need re-signing or timestamping.</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>post-quantum didcomm</span><span>9 / 13</span></div>
+      <div class="slide-foot"><span>post-quantum didcomm</span><span>12 / 16</span></div>
       <aside class="notes">Spec: DID Rotation ("with a signature from a key authorized by prior DID").</aside>
     </section>
 
     <!-- PQ-BRIDGE -->
     <section>
-      <div class="eyebrow gold">already proposed</div>
+      <div class="eyebrow gold"><span class="sec">Getting there ·</span> already proposed</div>
       <div class="slide-body">
         <h2><a href="https://didcomm.org/pq-bridge/1.0/"><code>pq-bridge/1.0</code></a>: post-quantum on top, not inside</h2>
         <p class="lede">A registry protocol (status: Proposed) that adds ML-KEM and ML-DSA <b>after</b> a normal DIDComm connection exists, as a transitional layer until the core envelopes adopt them.</p>
@@ -173,13 +200,13 @@
         </div>
         <p class="kicker">It sidesteps the big-DID problem from earlier, at the cost of a second envelope layer and a session to manage.</p>
       </div>
-      <div class="slide-foot"><span>post-quantum didcomm</span><span>10 / 13</span></div>
+      <div class="slide-foot"><span>post-quantum didcomm</span><span>13 / 16</span></div>
       <aside class="notes">Source: didcomm.org registry, site/content/protocols/pq-bridge/1.0. Read its full security section before presenting; the summary here is from its overview.</aside>
     </section>
 
     <!-- WHAT'S ALREADY FLEXIBLE -->
     <section>
-      <div class="eyebrow gold">what's already flexible</div>
+      <div class="eyebrow gold"><span class="sec">Getting there ·</span> what's already flexible</div>
       <div class="slide-body">
         <h2>The spec's extension points help</h2>
         <div class="grid3">
@@ -188,12 +215,12 @@
           <div class="card teal"><h3>Multiple keys</h3><p>A DID document can list classical and PQ keys side by side during a transition.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>post-quantum didcomm</span><span>11 / 13</span></div>
+      <div class="slide-foot"><span>post-quantum didcomm</span><span>14 / 16</span></div>
     </section>
 
     <!-- QUESTIONS -->
     <section>
-      <div class="eyebrow">for the group</div>
+      <div class="eyebrow"><span class="sec">Getting there ·</span> for the group</div>
       <div class="slide-body closing">
         <h1 style="font-size:2.6rem">Open questions</h1>
         <ul style="margin-top:.6rem">
@@ -202,7 +229,7 @@
           <li class="q">Is it time to update the spec's post-quantum paragraph now that NIST has published standards?</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>thank you</span><span>12 / 13</span></div>
+      <div class="slide-foot"><span>thank you</span><span>15 / 16</span></div>
     </section>
 
     <!-- REFERENCES -->
@@ -220,7 +247,7 @@
         <li><a href="https://identity.foundation/peer-did-method-spec/">Peer DID Method Specification</a></li>
         <li><a href="https://didcomm.org/pq-bridge/1.0/">pq-bridge/1.0</a> <span class="st">Proposed</span></li>
       </ul>
-      <div class="slide-foot"><span>post-quantum didcomm · checked September 2026</span><span>13 / 13</span></div>
+      <div class="slide-foot"><span>post-quantum didcomm · checked September 2026</span><span>16 / 16</span></div>
     </section>
 
   </div>
