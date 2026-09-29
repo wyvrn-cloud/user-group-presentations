@@ -49,12 +49,17 @@ body{margin:0;font-family:var(--body);color:var(--paper)}
 .reveal p{margin:0;line-height:1.5}
 .reveal a{color:var(--teal)}
 .eyebrow{
-  font-family:var(--mono); font-size:.7rem; letter-spacing:.14em; text-transform:uppercase;
+  font-family:var(--mono); font-size:1rem; font-weight:500; letter-spacing:.12em; text-transform:uppercase;
   color:var(--gold); display:flex; align-items:center; gap:.6em;
 }
 .eyebrow::before{content:'§';font-family:var(--display);font-size:1em;color:var(--gold);opacity:.8}
 .eyebrow.bad::before,.eyebrow.bad{color:var(--bad)}
 .eyebrow.teal::before,.eyebrow.teal{color:var(--teal)}
+.eyebrow .sec{color:var(--paper);opacity:.85;margin-right:.1em}
+/* section divider slides: section name with a gold rule, plus a summary */
+.section-slide{justify-content:center!important;align-items:flex-start;gap:1.1rem!important}
+.section-slide h1{font-size:3.7rem;border-left:3px solid var(--gold);padding-left:1.4rem}
+.section-slide .sub{font-size:1.25rem;color:var(--muted);max-width:48ch;padding-left:calc(1.4rem + 3px)}
 .kicker{color:var(--muted);font-size:1.02rem;max-width:52ch}
 .slide-body{flex:1;display:flex;flex-direction:column;gap:1.3rem;justify-content:center;min-height:0}
 .slide-foot{
@@ -116,6 +121,7 @@ code,.mono{font-family:var(--mono)}
   .reveal .slides section{padding:4vh 5vw; overflow-y:auto}
   .reveal h1{font-size:2rem!important}
   .title-slide h1{font-size:2.3rem!important}
+  .section-slide h1{font-size:2.3rem}
   .grid2,.grid3{grid-template-columns:1fr!important;gap:1rem;align-items:start}
   .grid2,.grid3{flex:0 0 auto!important;align-content:start}
   .slide-body{justify-content:flex-start}
@@ -145,9 +151,18 @@ code,.mono{font-family:var(--mono)}
       </div>
     </section>
 
+    <!-- SECTION: WHERE IT FITS -->
+    <section>
+      <div class="slide-body section-slide">
+        <h1>Where it fits</h1>
+        <p class="sub">What wyvrn-chat is, the gap it aims at, and a scorecard against real projects.</p>
+      </div>
+      <div class="slide-foot"><span>positioning</span><span>1 / 18</span></div>
+    </section>
+
     <!-- 2: WHAT IT IS -->
     <section>
-      <div class="eyebrow">what it is</div>
+      <div class="eyebrow"><span class="sec">Where it fits ·</span> what it is</div>
       <div class="slide-body">
         <h1>A chat app.<br>Not a wallet with messaging bolted on.</h1>
         <p class="lede">Contacts on the left, messages on the right — <span class="t">basicmessage/2.0</span>, real read receipts, group chats, profiles. DIDComm v2 as the transport, not as a means to issue a credential.</p>
@@ -157,24 +172,24 @@ code,.mono{font-family:var(--mono)}
           <div class="card"><h3>Encrypted at rest</h3><p>PIN or passkey-gated vault key; SQLCipher on native. Never regenerates an existing identity.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>positioning</span><span>1 / 15</span></div>
+      <div class="slide-foot"><span>positioning</span><span>2 / 18</span></div>
     </section>
 
     <!-- 3: THE GAP -->
     <section>
-      <div class="eyebrow gold">the gap</div>
+      <div class="eyebrow gold"><span class="sec">Where it fits ·</span> the gap</div>
       <div class="slide-body">
         <h2>Most of the DIDComm ecosystem builds<br><span style="color:var(--gold)">credential wallets</span>, not chat apps.</h2>
         <p class="lede">Bifold — the OpenWallet Foundation's own reference wallet, built on Credo — lists peer-to-peer messaging as a capability. A real chat UI is on its <b>roadmap</b>, not shipped.</p>
         <p class="q">We didn't find a consumer DIDComm chat app comparable to wyvrn-chat anywhere in the Aries/Credo ecosystem. Most DIDComm traffic today issues and presents credentials — it doesn't carry a conversation.</p>
         <p class="source">source: github.com/openwallet-foundation/bifold-wallet</p>
       </div>
-      <div class="slide-foot"><span>positioning</span><span>2 / 15</span></div>
+      <div class="slide-foot"><span>positioning</span><span>3 / 18</span></div>
     </section>
 
     <!-- 4: THE MATRIX -->
     <section>
-      <div class="eyebrow">the scorecard</div>
+      <div class="eyebrow"><span class="sec">Where it fits ·</span> the scorecard</div>
       <h2 style="margin-bottom:.3rem">Six capabilities, three real projects.</h2>
       <table class="matrix" style="margin-top:.3rem">
         <thead>
@@ -190,12 +205,21 @@ code,.mono{font-family:var(--mono)}
         </tbody>
       </table>
       <p class="source">ACA-Py: aca-py.org/latest/features/Multitenancy (one public DID per wallet — multi-<i>tenant</i>, not multi-device). Credo/Bifold: github.com/openwallet-foundation/{credo-ts,bifold-wallet}.</p>
-      <div class="slide-foot"><span>positioning</span><span>3 / 15</span></div>
+      <div class="slide-foot"><span>positioning</span><span>4 / 18</span></div>
+    </section>
+
+    <!-- SECTION: STRENGTHS -->
+    <section>
+      <div class="slide-body section-slide">
+        <h1>Strengths</h1>
+        <p class="sub">Where the experiment goes further than what's shipped elsewhere.</p>
+      </div>
+      <div class="slide-foot"><span>positioning</span><span>5 / 18</span></div>
     </section>
 
     <!-- 5: STRENGTH — MULTI-DEVICE -->
     <section>
-      <div class="eyebrow teal">strength — multi-device identity</div>
+      <div class="eyebrow teal"><span class="sec">Strengths ·</span> multi-device identity</div>
       <div class="slide-body">
         <h2>One identity, several devices,<br>independent keys. Nobody else ships this.</h2>
         <div class="grid2">
@@ -210,12 +234,12 @@ code,.mono{font-family:var(--mono)}
         </div>
         <p class="lede">wyvrn-chat's <span class="t">multi-device/1.0</span>: an Identity DID with one <code>keyAgreement</code> per device, a Device DID per device for coordination, no private key ever leaves the device that generated it.</p>
       </div>
-      <div class="slide-foot"><span>positioning — see also: Identity DID, Device DID</span><span>4 / 15</span></div>
+      <div class="slide-foot"><span>positioning — see also: Identity DID, Device DID</span><span>6 / 18</span></div>
     </section>
 
     <!-- 6: STRENGTH — CBOR -->
     <section>
-      <div class="eyebrow teal">strength — didcomm/v2+cbor</div>
+      <div class="eyebrow teal"><span class="sec">Strengths ·</span> didcomm/v2+cbor</div>
       <div class="slide-body">
         <h2>The spec has debated this since 2021.<br>We shipped it.</h2>
         <p class="lede">DIDComm Messaging v2.1 <i>names</i> <code>+cbor</code>/<code>+msgpack</code>/<code>+protobuf</code> as future possibilities. A real 2021 spec-repo issue — <span class="mono" style="font-size:.85em">"Should we flip to CBOR?"</span> — argued JSON creates real overhead. It was never resolved.</p>
@@ -231,12 +255,12 @@ code,.mono{font-family:var(--mono)}
         </div>
         <p class="source">decentralized-identity/didcomm-messaging issue #207 (2021) — no shipped Aries/Credo/DIDComm-rs/Veramo implementation of a CBOR envelope was found.</p>
       </div>
-      <div class="slide-foot"><span>positioning</span><span>5 / 15</span></div>
+      <div class="slide-foot"><span>positioning</span><span>7 / 18</span></div>
     </section>
 
     <!-- 7: STRENGTH — MEDIATOR -->
     <section>
-      <div class="eyebrow teal">strength — the mediator itself</div>
+      <div class="eyebrow teal"><span class="sec">Strengths ·</span> the mediator itself</div>
       <div class="slide-body">
         <h2>One mediator. Both eras.<br>Built to run more than one copy.</h2>
         <div class="grid3">
@@ -245,34 +269,33 @@ code,.mono{font-family:var(--mono)}
           <div class="card"><h3>Horizontally scalable</h3><p>Live delivery decoupled through a WS↔HTTP relay; any replica can deliver to a DID connected on a different one.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>positioning</span><span>6 / 15</span></div>
+      <div class="slide-foot"><span>positioning</span><span>8 / 18</span></div>
     </section>
 
     <!-- 8: STRENGTH — PUSH + MULTI-DEVICE COMBINED -->
     <section>
-      <div class="eyebrow teal">strength — combined, not isolated</div>
+      <div class="eyebrow teal"><span class="sec">Strengths ·</span> combined, not isolated</div>
       <div class="slide-body">
         <h2>Credo's mediator can push. It has nothing to combine that with.</h2>
         <p class="lede">didcomm-mediator-credo implements Aries RFC 0734 — real, functional, FCM only, no APNs mentioned anywhere in its own repo. wyvrn adopted the exact same protocol.</p>
         <p class="q">The difference isn't the push protocol. It's that <span class="t">any</span> of a person's enrolled devices — not just the one that happened to register — can be woken, because multi-device/1.0 already knows about all of them.</p>
         <p class="source">github.com/openwallet-foundation/didcomm-mediator-credo — ~98 commits, 18 stars, 37 forks: real and functional, not a widely-deployed production mediator.</p>
       </div>
-      <div class="slide-foot"><span>positioning</span><span>7 / 15</span></div>
+      <div class="slide-foot"><span>positioning</span><span>9 / 18</span></div>
     </section>
 
-    <!-- 9: TURN -->
+    <!-- SECTION: WEAKNESSES -->
     <section>
-      <div class="eyebrow bad">now, the honest part</div>
-      <div class="slide-body title-slide" style="justify-content:center!important">
-        <h1 style="font-size:3rem">The weaknesses we'd tell you about<br>even if you didn't ask.</h1>
-        <p class="sub">A scorecard that only lists wins isn't a scorecard.</p>
+      <div class="slide-body section-slide">
+        <h1>Weaknesses</h1>
+        <p class="sub">The ones we'd tell you about even if you didn't ask. A scorecard that only lists wins isn't a scorecard.</p>
       </div>
-      <div class="slide-foot"><span>positioning</span><span>8 / 15</span></div>
+      <div class="slide-foot"><span>positioning</span><span>10 / 18</span></div>
     </section>
 
     <!-- 10: WEAKNESS — HARDWARE KEYS -->
     <section>
-      <div class="eyebrow bad">weakness — key storage</div>
+      <div class="eyebrow bad"><span class="sec">Weaknesses ·</span> key storage</div>
       <div class="slide-body">
         <h2>Software-derived, not hardware-backed.</h2>
         <p class="lede">The vault key comes from a PIN (PBKDF2) or a passkey's <code>prf</code> output. SQLCipher protects the file at rest. Real, but it's <b style="color:var(--paper)">not</b> the same guarantee as a hardware secure element.</p>
@@ -281,33 +304,33 @@ code,.mono{font-family:var(--mono)}
         </div>
         <p class="source">github.com/openwallet-foundation/askar; OWASP MASTG on hardware-backed key storage.</p>
       </div>
-      <div class="slide-foot"><span>positioning</span><span>9 / 15</span></div>
+      <div class="slide-foot"><span>positioning</span><span>11 / 18</span></div>
     </section>
 
     <!-- 11: WEAKNESS — CBOR INTEROP COST -->
     <section>
-      <div class="eyebrow bad">weakness — the same cbor, cuts both ways</div>
+      <div class="eyebrow bad"><span class="sec">Weaknesses ·</span> the same cbor, cuts both ways</div>
       <div class="slide-body">
         <h2>Only two wyvrn endpoints ever see the saving.</h2>
         <p class="lede">Every real Aries, Credo, or other DIDComm peer today only understands <code>+json</code>. <code>didcomm/v2+cbor</code> negotiates down to plain JSON automatically when the other side doesn't advertise it —</p>
         <p class="q bad">— which means, in practice, almost every message wyvrn-chat sends to the wider ecosystem today gets none of the benefit slide 5 described.</p>
       </div>
-      <div class="slide-foot"><span>positioning</span><span>10 / 15</span></div>
+      <div class="slide-foot"><span>positioning</span><span>12 / 18</span></div>
     </section>
 
     <!-- 12: WEAKNESS — ROTATION STORM -->
     <section>
-      <div class="eyebrow bad">weakness — the accepted cost, revisited</div>
+      <div class="eyebrow bad"><span class="sec">Weaknesses ·</span> the accepted cost, revisited</div>
       <div class="slide-body">
         <h2>Every roster change is a broadcast.</h2>
         <p class="lede">Enroll a device, revoke one, promote, demote — each mints a new Identity DID and rotates <b style="color:var(--paper)">every contact</b> onto it. A person who churns devices often means real, recurring chatter no single-key architecture pays.</p>
       </div>
-      <div class="slide-foot"><span>positioning — see also: multi-device/1.0, Motivation</span><span>11 / 15</span></div>
+      <div class="slide-foot"><span>positioning — see also: multi-device/1.0, Motivation</span><span>13 / 18</span></div>
     </section>
 
     <!-- 13: WEAKNESS — MATURITY -->
     <section>
-      <div class="eyebrow bad">weakness — a young project vs. a mature one</div>
+      <div class="eyebrow bad"><span class="sec">Weaknesses ·</span> a young project vs. a mature one</div>
       <div class="grid2" style="flex:1;align-items:center">
         <div class="card bad">
           <h3 style="color:var(--bad)">ACA-Py</h3>
@@ -318,22 +341,31 @@ code,.mono{font-family:var(--mono)}
           <p>A single-team project. No iOS build exists yet — needs a real Mac. <code>group-chat/1.0</code> is still "Proposed," not hardened by outside use.</p>
         </div>
       </div>
-      <div class="slide-foot"><span>positioning</span><span>12 / 15</span></div>
+      <div class="slide-foot"><span>positioning</span><span>14 / 18</span></div>
     </section>
 
     <!-- 14: WEAKNESS — LICENSE -->
     <section>
-      <div class="eyebrow bad">weakness — the mediator isn't fully open</div>
+      <div class="eyebrow bad"><span class="sec">Weaknesses ·</span> the mediator isn't fully open</div>
       <div class="slide-body">
         <h2>ACA-Py and Credo-TS: Apache 2.0, no gate.<br>wyvrn-mediator: a real license check at startup.</h2>
         <p class="lede">Not a technical limitation — a plain business-model difference worth naming rather than glossing over. Anyone standing up their own mediator instance needs a valid <code>wyvrn-license</code> first.</p>
       </div>
-      <div class="slide-foot"><span>positioning</span><span>13 / 15</span></div>
+      <div class="slide-foot"><span>positioning</span><span>15 / 18</span></div>
+    </section>
+
+    <!-- SECTION: WRAPPING UP -->
+    <section>
+      <div class="slide-body section-slide">
+        <h1>Wrapping up</h1>
+        <p class="sub">Where this leaves us.</p>
+      </div>
+      <div class="slide-foot"><span>positioning</span><span>16 / 18</span></div>
     </section>
 
     <!-- 15: SYNTHESIS -->
     <section>
-      <div class="eyebrow">where this leaves us</div>
+      <div class="eyebrow"><span class="sec">Wrapping up ·</span> where this leaves us</div>
       <div class="slide-body">
         <h2>Two real gaps closed. Two real costs still open.</h2>
         <div class="grid2">
@@ -348,12 +380,12 @@ code,.mono{font-family:var(--mono)}
         </div>
         <p class="kicker" style="margin-top:.2rem">Neither list is closed. This is a snapshot, not a verdict.</p>
       </div>
-      <div class="slide-foot"><span>positioning</span><span>14 / 15</span></div>
+      <div class="slide-foot"><span>positioning</span><span>17 / 18</span></div>
     </section>
 
     <!-- 16: CLOSE -->
     <section>
-      <div class="eyebrow">thank you</div>
+      <div class="eyebrow"><span class="sec">Wrapping up ·</span> thank you</div>
       <div class="slide-body closing">
         <h1 style="font-size:2.5rem">Questions, corrections,<br>counter-examples welcome.</h1>
         <p class="lede">If your project already solves per-device keys, hardware-backed mobile storage, or a shipped CBOR profile — we'd genuinely like to know. This deck is easier to falsify than to defend.</p>
@@ -362,7 +394,7 @@ code,.mono{font-family:var(--mono)}
           <a href="https://github.com/wyvrn-cloud/wyvrn-chat">github.com/wyvrn-cloud/wyvrn-chat</a>
         </div>
       </div>
-      <div class="slide-foot"><span>wyvrn-chat</span><span>15 / 15</span></div>
+      <div class="slide-foot"><span>wyvrn-chat</span><span>18 / 18</span></div>
     </section>
 
   </div>

@@ -39,7 +39,8 @@ the Konami code (↑ ↑ ↓ ↓ ← → ← → B A). Do the same again to hide
 decks that are actually published appear, so drafts whose PRs aren't merged
 yet stay out of the list.
 
-`where-wyvrn-chat-stands/` is an older deck, left in place but not listed.
+`where-wyvrn-chat-stands/` is an older deck outside the presentation order.
+It sits at the bottom of the hidden list on the landing page.
 
 ## Layout
 
