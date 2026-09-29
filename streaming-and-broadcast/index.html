@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Streaming and Broadcast</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@6.0.2/dist/reveal.css">
+<link rel="stylesheet" href="../assets/deck.css">
+
+<div class="reveal">
+  <div class="slides">
+
+    <!-- TITLE -->
+    <section>
+      <div class="slide-body title-slide">
+        <div class="brandmark">
+          <svg viewBox="0 0 48 48" fill="none"><circle cx="20" cy="18" r="13" stroke="#f0a83b" stroke-width="4"/><circle cx="28" cy="30" r="13" stroke="#34c0cf" stroke-width="4"/></svg>
+          <span class="eyebrow">didcomm user group</span>
+        </div>
+        <h1>Beyond Messages:<br>Streaming and Broadcast</h1>
+        <p class="sub">The spec explicitly invites "sister specs" for streaming and multicast. What they would need, and a couple of ways to approach them.</p>
+        <span class="pill gold">draft</span>
+      </div>
+    </section>
+
+    <!-- THE INVITATION -->
+    <section>
+      <div class="eyebrow gold">the invitation</div>
+      <div class="slide-body">
+        <h2>The spec leaves the door open on purpose</h2>
+        <div class="quote">This is a DIDComm <i>messaging</i> spec. Security, privacy, routing, and metadata concepts from this spec could be adapted to other communication styles, including multicast/broadcast and streaming. This will create sister specs to DIDComm Messaging, rather than evolving DIDComm Messaging itself.<cite>DIDComm Messaging v2.1 — Future Work, Beyond Messaging</cite></div>
+        <div class="quote">In the future, specifications that encompass communications patterns other than messaging — DIDComm Multicast or DIDComm Streaming, for example — might use a suffix: <code>application/didcomm-encrypted-multicast</code> or similar.<cite>Message Formats — DIDComm Encrypted Messages</cite></div>
+      </div>
+      <div class="slide-foot"><span>streaming and broadcast</span><span>1 / 12</span></div>
+    </section>
+
+    <!-- WHY MESSAGES DON'T STREAM -->
+    <section>
+      <div class="eyebrow">why messaging isn't streaming</div>
+      <div class="slide-body">
+        <h2>Every message stands alone</h2>
+        <div class="quote">Each message MUST be transmitted individually; if encryption or signing are used, the unit of encryption or signing is one message only.<cite>Transports — WebSockets</cite></div>
+        <ul class="bullets">
+          <li>Each message does its own key agreement and carries its own headers.</li>
+          <li>The libp2p transport extension runs DIDComm <i>over</i> a stream, but only as a pipe for separate messages.</li>
+          <li>Fine for chat. Too heavy for audio, video or high-rate telemetry.</li>
+        </ul>
+      </div>
+      <div class="slide-foot"><span>streaming and broadcast</span><span>2 / 12</span></div>
+    </section>
+
+    <!-- WHAT STREAMING NEEDS -->
+    <section>
+      <div class="eyebrow">what streaming needs</div>
+      <div class="slide-body">
+        <div class="grid4">
+          <div class="card"><h3>Low overhead</h3><p>Small per-packet cost; no key agreement per chunk.</p></div>
+          <div class="card"><h3>Low latency</h3><p>Chunks usable as they arrive, not after the whole thing.</p></div>
+          <div class="card"><h3>Loss tolerance</h3><p>A dropped packet mustn't break everything after it, for live media.</p></div>
+          <div class="card"><h3>Bounded memory</h3><p>Encrypt and decrypt without holding the whole stream.</p></div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>streaming and broadcast</span><span>3 / 12</span></div>
+    </section>
+
+    <!-- APPROACH A -->
+    <section>
+      <div class="eyebrow gold">approach A</div>
+      <div class="slide-body">
+        <h2>DIDComm sets it up; something else carries it</h2>
+        <p class="lede">Use ordinary DIDComm messages to <b>negotiate</b> a stream: who, where, which cipher and a fresh session key. Then send the media over a transport built for it, encrypted with that key.</p>
+        <div class="grid2">
+          <div class="card teal"><h3>Good</h3><p>Reuses DIDComm's identity, authentication and routing for the hard part. The stream layer can be an existing, well-tested protocol.</p></div>
+          <div class="card danger"><h3>Costs</h3><p>The stream no longer goes through mediators, so both ends must be reachable, and its security is only as good as how the key was handed over.</p></div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>streaming and broadcast</span><span>4 / 12</span></div>
+      <aside class="notes">Similar in spirit to how call signalling sets up an encrypted media session.</aside>
+    </section>
+
+    <!-- WEBRTC -->
+    <section>
+      <div class="eyebrow gold">approach A, already proposed</div>
+      <div class="slide-body">
+        <h2><code>webrtc/1.0</code> does this for calls</h2>
+        <p class="lede">A registry protocol (status: Proposed) that uses <b>DIDComm v2 as the signalling channel</b> for WebRTC audio and video.</p>
+        <div class="grid3">
+          <div class="card"><h3>Identity-bound media</h3><p>WebRTC's DTLS certificate fingerprints are bound to DID keys, against man-in-the-middle attacks.</p></div>
+          <div class="card"><h3>Two topologies</h3><p>Peer-to-peer mesh for small calls (2–8); an SFU for larger ones (10–100+).</p></div>
+          <div class="card"><h3>End-to-end through an SFU</h3><p>SFrame keeps media encrypted even when a server forwards it.</p></div>
+        </div>
+        <p class="kicker">So for real-time media, the open question is less "how" and more "does this fit your use case". Non-media streams are still open.</p>
+      </div>
+      <div class="slide-foot"><span>streaming and broadcast</span><span>5 / 12</span></div>
+      <aside class="notes">Source: didcomm.org registry, site/content/protocols/webrtc/1.0. It also defines out-of-band join links.</aside>
+    </section>
+
+    <!-- APPROACH B -->
+    <section>
+      <div class="eyebrow gold">approach B</div>
+      <div class="slide-body">
+        <h2>Chunks as messages, with sequencing</h2>
+        <p class="lede">Keep everything in DIDComm: each chunk is a message in one thread, with <code>sender_order</code> from the Advanced Sequencing extension so the receiver can reassemble and spot gaps.</p>
+        <div class="grid2">
+          <div class="card teal"><h3>Good</h3><p>Works through mediators and offline transports. No new crypto.</p></div>
+          <div class="card danger"><h3>Costs</h3><p>Full envelope overhead on every chunk. Fine for "a large file, eventually"; poor for live media.</p></div>
+        </div>
+        <p class="kicker">For large files specifically, attachments by reference (<code>links</code> + <code>hash</code>) avoid chunking altogether.</p>
+      </div>
+      <div class="slide-foot"><span>streaming and broadcast</span><span>6 / 12</span></div>
+    </section>
+
+    <!-- BROADCAST -->
+    <section>
+      <div class="eyebrow">broadcast</div>
+      <div class="slide-body">
+        <h2>One sender, many receivers</h2>
+        <div class="grid3">
+          <div class="card"><h3>Public</h3><p>Signed but not encrypted. Anyone can read; everyone can verify. The filesystem extension already describes a shared folder used this way.</p></div>
+          <div class="card"><h3>Known audience</h3><p>Encrypt for each recipient DID. Correct today, but the cost grows with the audience.</p></div>
+          <div class="card gold"><h3>Large audience</h3><p>A group key, rotated as members join and leave. The subject of a real multicast spec.</p></div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>streaming and broadcast</span><span>7 / 12</span></div>
+    </section>
+
+    <!-- PFS -->
+    <section>
+      <div class="eyebrow">sessions</div>
+      <div class="slide-body">
+        <h2>Streaming would add something messaging lacks</h2>
+        <p class="lede">DIDComm messaging has <b>no session construct</b>, so the spec points to the DIDComm Guidebook for how forward secrecy maps onto it. A stream is a session by nature.</p>
+        <p class="q small">A sister spec could give streams forward secrecy by ratcheting the session key as the stream goes on. That's something one-shot messages can't easily do.</p>
+      </div>
+      <div class="slide-foot"><span>streaming and broadcast</span><span>8 / 12</span></div>
+      <aside class="notes">Spec: Security, Perfect Forward Secrecy — "The mapping of the Perfect Forward Secrecy concepts to DIDComm requires some discussion, due to the lack of a session construct."</aside>
+    </section>
+
+    <!-- WHAT A SISTER SPEC DEFINES -->
+    <section>
+      <div class="eyebrow gold">a sister spec would define</div>
+      <table class="compare" style="margin-top:.4rem">
+        <tbody>
+          <tr><th>Setup</th><td>A DIDComm protocol to offer, accept and end a stream</td></tr>
+          <tr><th>Keys</th><td>How the session key is derived, rotated, and bound to the parties' DIDs</td></tr>
+          <tr><th>Framing</th><td>Chunk format, sequence numbers, and per-chunk authentication</td></tr>
+          <tr><th>Loss</th><td>What a receiver does with gaps: skip, wait, or ask again</td></tr>
+          <tr><th>Media type</th><td>Something like <code>application/didcomm-encrypted-stream</code></td></tr>
+          <tr><th>Transports</th><td>Which carriers are suitable, and whether mediators take part at all</td></tr>
+        </tbody>
+      </table>
+      <div class="slide-foot"><span>streaming and broadcast</span><span>9 / 12</span></div>
+    </section>
+
+    <!-- USE CASES -->
+    <section>
+      <div class="eyebrow">why anyone would want it</div>
+      <div class="slide-body">
+        <h2>Use cases that don't fit one message at a time</h2>
+        <div class="grid3">
+          <div class="card"><h3>Calls</h3><p>Voice and video between parties who already have a DIDComm relationship.</p></div>
+          <div class="card"><h3>Telemetry</h3><p>A device reporting many times a second, where per-message envelopes dominate.</p></div>
+          <div class="card"><h3>Announcements</h3><p>An organisation broadcasting signed updates to everyone who follows it.</p></div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>streaming and broadcast</span><span>10 / 12</span></div>
+    </section>
+
+    <!-- RISK -->
+    <section>
+      <div class="eyebrow danger">a caution</div>
+      <div class="slide-body">
+        <h2>Don't reinvent media security</h2>
+        <p class="lede">Real-time media encryption is a mature field with its own hard-won protocols. The most useful thing DIDComm can probably contribute is the part those protocols <b>don't</b> solve well: <span class="t">who you're talking to</span>, and how to reach them. That's the split <code>webrtc/1.0</code> makes.</p>
+      </div>
+      <div class="slide-foot"><span>streaming and broadcast</span><span>11 / 12</span></div>
+    </section>
+
+    <!-- QUESTIONS -->
+    <section>
+      <div class="eyebrow">for the group</div>
+      <div class="slide-body closing">
+        <h1 style="font-size:2.6rem">Open questions</h1>
+        <ul style="margin-top:.6rem">
+          <li class="q"><code>webrtc/1.0</code> covers calls. What about non-media streams like telemetry?</li>
+          <li class="q">Approach A or B, or does it depend entirely on the use case?</li>
+          <li class="q">Should multicast and group messaging share one design?</li>
+        </ul>
+      </div>
+      <div class="slide-foot"><span>thank you</span><span>12 / 12</span></div>
+    </section>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@6.0.2/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@6.0.2/dist/plugin/notes.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    center: false,
+    controls: true,
+    progress: true,
+    transition: 'slide',
+    // No fixed canvas: slides fill the viewport and ../assets/deck.css
+    // sizes everything off it.
+    disableLayout: true,
+    plugins: [RevealNotes],
+  });
+</script>
