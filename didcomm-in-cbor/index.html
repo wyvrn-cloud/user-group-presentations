@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DIDComm in CBOR?</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@6.0.2/dist/reveal.css">
+<link rel="stylesheet" href="../assets/deck.css">
+
+<div class="reveal">
+  <div class="slides">
+
+    <!-- TITLE -->
+    <section>
+      <div class="slide-body title-slide">
+        <div class="brandmark">
+          <svg viewBox="0 0 48 48" fill="none"><circle cx="20" cy="18" r="13" stroke="#f0a83b" stroke-width="4"/><circle cx="28" cy="30" r="13" stroke="#34c0cf" stroke-width="4"/></svg>
+          <span class="eyebrow">didcomm user group</span>
+        </div>
+        <h1>DIDComm<br>in CBOR?</h1>
+        <p class="sub">The spec considered a binary encoding more than once and chose JSON. What a CBOR profile could look like, what it would buy, and what it would cost.</p>
+        <span class="pill gold">draft</span>
+      </div>
+    </section>
+
+    <!-- THE SPEC'S OWN HISTORY -->
+    <section>
+      <div class="eyebrow">the spec's own history</div>
+      <div class="slide-body">
+        <h2>CBOR was discussed, and deferred.</h2>
+        <div class="quote">At multiple points in the creation of this spec the community discussed switching to CBOR as a primary encoding format to replace JSON. Two reasons prevented that switch: The maturity of the JSON related standards as compared to CBOR related standards, and the cost of switching so late in spec development.<cite>DIDComm Messaging v2.1 — Future Work, Additional Encodings</cite></div>
+        <div class="quote">Future encodings might introduce binary serializations. Each innovation like this MUST specify a deterministic and reliable method for indicating the alternative encoding used.<cite>same section</cite></div>
+      </div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>1 / 11</span></div>
+    </section>
+
+    <!-- WHERE BYTES GO -->
+    <section>
+      <div class="eyebrow gold">where the bytes go</div>
+      <div class="slide-body">
+        <h2>Base64 inside JSON, inside base64</h2>
+        <p class="lede">A DIDComm encrypted message is a JWE in General JSON format: ciphertext, IV, tag and protected header are all <b>base64url strings</b>, each about <b>4/3</b> the size of the bytes they carry.</p>
+        <div class="grid3">
+          <div class="card"><h3>Encrypt only</h3><p>Ciphertext is base64url'd once: roughly 1.33× the plaintext, plus headers.</p></div>
+          <div class="card"><h3>Sign, then encrypt</h3><p>The JWS payload is base64url'd, then the whole JWS is encrypted and base64url'd again: roughly 1.8×.</p></div>
+          <div class="card"><h3>Binary attachments</h3><p>Images and files ride as base64url too, before any of the above.</p></div>
+        </div>
+        <p class="kicker">Plus JSON key names like <code>"protected"</code> and <code>"recipients"</code> repeated in every message. CBOR carries raw bytes and can use small integer keys.</p>
+      </div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>2 / 11</span></div>
+      <aside class="notes">4/3 per base64url layer is exact up to padding; two nested layers give 16/9 ≈ 1.78. Worth measuring real messages before presenting, including per-recipient header overhead.</aside>
+    </section>
+
+    <!-- JOSE vs COSE -->
+    <section>
+      <div class="eyebrow">the counterpart stack</div>
+      <h2>JOSE has a CBOR twin: COSE</h2>
+      <table class="compare" style="margin-top:.4rem">
+        <thead><tr><th>Purpose</th><th>JSON (used by DIDComm today)</th><th>CBOR</th></tr></thead>
+        <tbody>
+          <tr><th>Encoding</th><td>JSON</td><td>CBOR — RFC 8949</td></tr>
+          <tr><th>Signing</th><td>JWS</td><td>COSE_Sign / COSE_Sign1 — RFC 9052</td></tr>
+          <tr><th>Encryption, many recipients</th><td>JWE (General JSON)</td><td>COSE_Encrypt — RFC 9052</td></tr>
+          <tr><th>Keys</th><td>JWK</td><td>COSE_Key</td></tr>
+          <tr><th>Tokens (e.g. <code>from_prior</code>)</th><td>JWT</td><td>CWT — RFC 8392</td></tr>
+        </tbody>
+      </table>
+      <p class="kicker" style="margin-top:.6rem">Algorithms for COSE are registered in RFC 9053, including ECDH-ES key agreement with key wrap.</p>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>3 / 11</span></div>
+      <aside class="notes">The spec's note cites CBOR RFC 7049, since obsoleted by RFC 8949.</aside>
+    </section>
+
+    <!-- THE HARD PART -->
+    <section>
+      <div class="eyebrow danger">the hard part</div>
+      <div class="slide-body">
+        <h2>Authcrypt doesn't map across directly</h2>
+        <p class="lede">DIDComm's default envelope, <span class="t">authcrypt</span>, uses <b>ECDH-1PU</b>: a JOSE draft that mixes the sender's static key into key agreement so the recipient knows who sent it.</p>
+        <div class="grid2">
+          <div class="card"><h3>What COSE has</h3><p>ECDH-ES (ephemeral–static), which matches anoncrypt, and ECDH-SS (static–static). Neither is ECDH-1PU.</p></div>
+          <div class="card gold"><h3>So a CBOR profile must…</h3><p>…define or register an ECDH-1PU equivalent for COSE, or change how sender authentication works in that profile.</p></div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>4 / 11</span></div>
+      <aside class="notes">Spec: Security, Sender Authenticated Encryption ("the JWA of ECDH-1PU MUST be used"). Verify the current COSE algorithm registry before presenting; the claim here is that we couldn't find an ECDH-1PU registration.</aside>
+    </section>
+
+    <!-- SIGNALLING -->
+    <section>
+      <div class="eyebrow gold">signalling it</div>
+      <h2 style="margin-bottom:.2rem">The spec already sketched the media type</h2>
+      <div class="grid2" style="flex:1">
+        <div class="slide-body" style="gap:1rem">
+          <div class="quote">If future versions of this spec allow binary encodings, variations like <code>application/didcomm-encrypted+cbor</code> … may become reasonable.<cite>Message Formats — DIDComm Encrypted Messages</cite></div>
+          <p class="lede" style="font-size:1.05rem">A receiver lists what it accepts, in preference order, in its service endpoint. A sender that can't produce CBOR just uses the next entry.</p>
+        </div>
+        <pre class="codeblock"><code><span class="k">"serviceEndpoint"</span>: {
+  <span class="k">"uri"</span>: <span class="s">"https://example.com/didcomm"</span>,
+  <span class="k">"accept"</span>: [
+    <span class="g">"didcomm/v2;enc=cbor"</span>, <span class="k">// hypothetical</span>
+    <span class="s">"didcomm/v2"</span>
+  ]
+}</code></pre>
+      </div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>5 / 11</span></div>
+      <aside class="notes">The profile string is made up for illustration. Profiles in the spec are IANA-media-type-like strings with parameters, e.g. didcomm/aip2;env=rfc587.</aside>
+    </section>
+
+    <!-- ROUTES -->
+    <section>
+      <div class="eyebrow">routes complicate it</div>
+      <div class="slide-body">
+        <h2>Every hop has to agree</h2>
+        <p class="lede">Declaring a profile is a promise about <b>every publicly visible hop</b> of the inbound route, not only the final endpoint. A CBOR recipient behind a JSON-only mediator can't advertise CBOR end to end.</p>
+        <ul class="bullets">
+          <li>Mixed routes: could the outer <code>forward</code> layers stay JSON while the innermost envelope is CBOR?</li>
+          <li>A <code>forward</code> attachment can carry any bytes, so in principle yes. But the attachment's media type would need to say so.</li>
+        </ul>
+      </div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>6 / 11</span></div>
+      <aside class="notes">Spec: Negotiating Compatibility — "When Alice declares that she accepts didcomm/v2, she is making a declaration about more than her own endpoint..."</aside>
+    </section>
+
+    <!-- WHAT TO PIN DOWN -->
+    <section>
+      <div class="eyebrow gold">a CBOR profile would need to pin down</div>
+      <div class="slide-body">
+        <div class="grid2">
+          <ul class="bullets">
+            <li>Integer labels for plaintext headers (<code>id</code>, <code>type</code>, <code>thid</code>, <code>body</code>…), or keep text keys.</li>
+            <li>How <code>body</code> is encoded: native CBOR, or JSON inside.</li>
+            <li>Attachments: raw bytes instead of <code>base64</code>; what happens to <code>json</code> attachments.</li>
+          </ul>
+          <ul class="bullets">
+            <li>The authcrypt question from earlier.</li>
+            <li><code>from_prior</code> as a CWT instead of a JWT.</li>
+            <li>Out-of-band invitations in QR codes, where size matters most.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>7 / 11</span></div>
+    </section>
+
+    <!-- COSTS -->
+    <section>
+      <div class="eyebrow danger">the costs</div>
+      <div class="slide-body">
+        <h2>Why it might not be worth it</h2>
+        <div class="grid2">
+          <div class="card danger"><h3>Two of everything</h3><p>Implementations and mediators that support both encodings carry two code paths and two sets of test vectors.</p></div>
+          <div class="card danger"><h3>Harder to debug</h3><p>You can't read a CBOR message in a log without a decoder.</p></div>
+          <div class="card danger"><h3>Interop first</h3><p>A binary profile only pays off once the other side supports it. Until then, everyone sends JSON anyway.</p></div>
+          <div class="card danger"><h3>Compression exists</h3><p>Ciphertext doesn't compress, but for many links, HTTP compression of the JSON framing may be enough.</p></div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>8 / 11</span></div>
+    </section>
+
+    <!-- WHEN IT PAYS -->
+    <section>
+      <div class="eyebrow gold">when it pays off</div>
+      <div class="slide-body">
+        <h2>Constrained links, not web servers</h2>
+        <div class="grid3">
+          <div class="card teal"><h3>Bluetooth</h3><p>Small writes; every byte saved is fewer chunks. (See "DIDComm over Bluetooth".)</p></div>
+          <div class="card teal"><h3>Small devices</h3><p>Less parsing, less memory, smaller messages. (See "DIDComm on Small Devices".)</p></div>
+          <div class="card teal"><h3>QR codes</h3><p>Out-of-band invitations are size-limited by what a camera can read.</p></div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>9 / 11</span></div>
+    </section>
+
+    <!-- EXPERIMENT -->
+    <section>
+      <div class="eyebrow">an experiment</div>
+      <div class="slide-body">
+        <h2>Worth measuring before deciding</h2>
+        <p class="lede">An experimental CBOR profile has been tried in wyvrn. So far it helps almost nothing it talks to, because <b>almost nothing on the other end speaks it</b>. Interop, not encoding, is the real hurdle.</p>
+        <p class="kicker">A different route in the registry: <code>mesh/1.0</code> doesn't CBOR-encode the standard envelope at all. It defines its own binary packet format and a compact session-key envelope for BLE and LoRa, with JSON kept for debugging and the internet.</p>
+        <p class="kicker">Useful next step for the group: agree on a few reference messages and measure JSON vs. CBOR sizes for each.</p>
+      </div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>10 / 11</span></div>
+      <aside class="notes">Keep this framed as an experiment. Replace with measured numbers once there are any.</aside>
+    </section>
+
+    <!-- QUESTIONS -->
+    <section>
+      <div class="eyebrow">for the group</div>
+      <div class="slide-body closing">
+        <h1 style="font-size:2.6rem">Open questions</h1>
+        <ul style="margin-top:.6rem">
+          <li class="q">Is a CBOR profile worth writing up now, or only once someone needs it?</li>
+          <li class="q">How should authcrypt work in COSE?</li>
+          <li class="q">"CBOR only on the last hop", or a separate compact envelope like <code>mesh/1.0</code>'s?</li>
+        </ul>
+      </div>
+      <div class="slide-foot"><span>thank you</span><span>11 / 11</span></div>
+    </section>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@6.0.2/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@6.0.2/dist/plugin/notes.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    center: false,
+    controls: true,
+    progress: true,
+    transition: 'slide',
+    // No fixed canvas: slides fill the viewport and ../assets/deck.css
+    // sizes everything off it.
+    disableLayout: true,
+    plugins: [RevealNotes],
+  });
+</script>
