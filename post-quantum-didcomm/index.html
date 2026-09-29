@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Post-Quantum DIDComm</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@6.0.2/dist/reveal.css">
+<link rel="stylesheet" href="../assets/deck.css">
+
+<div class="reveal">
+  <div class="slides">
+
+    <!-- TITLE -->
+    <section>
+      <div class="slide-body title-slide">
+        <div class="brandmark">
+          <svg viewBox="0 0 48 48" fill="none"><circle cx="20" cy="18" r="13" stroke="#f0a83b" stroke-width="4"/><circle cx="28" cy="30" r="13" stroke="#34c0cf" stroke-width="4"/></svg>
+          <span class="eyebrow">didcomm user group</span>
+        </div>
+        <h1>DIDComm and<br>Post-Quantum Crypto</h1>
+        <p class="sub">The spec says upfront that its elliptic-curve cryptography will need replacing. What breaks, what the new algorithms look like, and why the move is more than swapping one algorithm for another.</p>
+        <span class="pill gold">draft</span>
+      </div>
+    </section>
+
+    <!-- THE SPEC SAYS -->
+    <section>
+      <div class="eyebrow gold">the spec says so itself</div>
+      <div class="slide-body">
+        <h2>Known, acknowledged, deferred</h2>
+        <div class="quote">The designers of DIDComm are aware that DIDComm's cryptographic methods will need to be upgraded when quantum computing matures. This is because DIDComm makes heavy use of asymmetric elliptic curve mechanisms that depend on the discrete logarithm problem …<cite>DIDComm Messaging v2.1 — Future Work, Post-Quantum Crypto</cite></div>
+        <div class="quote">DIDComm is able to use arbitrary DID methods, which should allow approaches that are quantum-secure without changing the general pattern of DIDComm's interaction with key management technology.<cite>same section</cite></div>
+      </div>
+      <div class="slide-foot"><span>post-quantum didcomm</span><span>1 / 12</span></div>
+    </section>
+
+    <!-- WHAT'S EXPOSED -->
+    <section>
+      <div class="eyebrow">what's exposed</div>
+      <div class="slide-body">
+        <h2>Which parts of DIDComm a quantum computer breaks</h2>
+        <table class="compare">
+          <thead><tr><th>Part</th><th>Used for</th><th>Exposed?</th></tr></thead>
+          <tbody>
+            <tr><th>X25519, P-256/384/521 (ECDH-ES, ECDH-1PU)</th><td>Key agreement: anoncrypt and authcrypt</td><td style="color:var(--danger)">Yes: Shor's algorithm</td></tr>
+            <tr><th>EdDSA, ES256, ES256K</th><td>Signatures, <code>from_prior</code>, signed attachments</td><td style="color:var(--danger)">Yes: Shor's algorithm</td></tr>
+            <tr><th>AES-256, SHA-512, HMAC</th><td>Content encryption, hashes</td><td style="color:var(--teal)">Largely fine at 256-bit sizes</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="slide-foot"><span>post-quantum didcomm</span><span>2 / 12</span></div>
+      <aside class="notes">Algorithm lists from the spec's Security (curves, key wrapping) and Message Signing (algorithms) sections. Grover's algorithm roughly halves symmetric security, which is why 256-bit keys are considered comfortable.</aside>
+    </section>
+
+    <!-- HARVEST NOW -->
+    <section>
+      <div class="eyebrow danger">why now, not later</div>
+      <div class="slide-body">
+        <h2>Harvest now, decrypt later</h2>
+        <p class="lede">An encrypted DIDComm message captured today, at a mediator, in a log or on the wire, can be stored and <b>decrypted once the capability exists</b>. Confidentiality is the urgent part.</p>
+        <div class="grid2">
+          <div class="card danger"><h3>Urgent: key agreement</h3><p>Protects content that must stay secret for years: health, legal, commercial.</p></div>
+          <div class="card gold"><h3>Less urgent: signatures</h3><p>A signature only needs to resist forgery until it is checked, unless it's long-term evidence.</p></div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>post-quantum didcomm</span><span>3 / 12</span></div>
+    </section>
+
+    <!-- NIST -->
+    <section>
+      <div class="eyebrow gold">what exists now</div>
+      <div class="slide-body">
+        <h2>NIST published the first standards in 2024</h2>
+        <div class="grid3">
+          <div class="card teal"><h3>ML-KEM — FIPS 203</h3><p>Key encapsulation (from Kyber). The replacement for ECDH key agreement.</p></div>
+          <div class="card teal"><h3>ML-DSA — FIPS 204</h3><p>Signatures (from Dilithium). General-purpose replacement for EdDSA/ECDSA.</p></div>
+          <div class="card teal"><h3>SLH-DSA — FIPS 205</h3><p>Hash-based signatures (from SPHINCS+). Larger, slower, very conservative assumptions.</p></div>
+        </div>
+        <p class="kicker">JOSE and COSE registrations for these are being worked on in the IETF; check their status before presenting.</p>
+      </div>
+      <div class="slide-foot"><span>post-quantum didcomm</span><span>4 / 12</span></div>
+      <aside class="notes">The spec's own section predates these (it links NIST's then-ongoing project). An update of that paragraph would be a reasonable contribution.</aside>
+    </section>
+
+    <!-- SIZE -->
+    <section>
+      <div class="eyebrow">the first surprise</div>
+      <div class="slide-body">
+        <h2>Keys and signatures get much bigger</h2>
+        <table class="compare">
+          <thead><tr><th></th><th>Today</th><th>Post-quantum</th></tr></thead>
+          <tbody>
+            <tr><th>Key agreement public key</th><td>X25519: 32 bytes</td><td>ML-KEM-768: 1,184 bytes</td></tr>
+            <tr><th>Per-recipient ciphertext</th><td>32-byte ephemeral key</td><td>ML-KEM-768: 1,088 bytes</td></tr>
+            <tr><th>Signing public key</th><td>Ed25519: 32 bytes</td><td>ML-DSA-65: 1,952 bytes</td></tr>
+            <tr><th>Signature</th><td>Ed25519: 64 bytes</td><td>ML-DSA-65: 3,309 bytes</td></tr>
+          </tbody>
+        </table>
+        <p class="kicker">Multi-device makes this worse: one encrypted message carries a wrapped key <i>per recipient key</i>.</p>
+      </div>
+      <div class="slide-foot"><span>post-quantum didcomm</span><span>5 / 12</span></div>
+    </section>
+
+    <!-- DID PEER -->
+    <section>
+      <div class="eyebrow danger">the second surprise</div>
+      <div class="slide-body">
+        <h2>Some DIDs contain their keys</h2>
+        <p class="lede"><code>did:peer</code> numalgo 2 encodes the keys <b>in the DID string itself</b>; numalgo 4's long form encodes the whole document. With post-quantum keys, those identifiers grow to kilobytes.</p>
+        <ul class="bullets">
+          <li>They appear in every message's <code>from</code> and <code>to</code> headers.</li>
+          <li>They don't fit comfortably in a QR code for out-of-band invitations.</li>
+          <li>Methods that reference keys instead of embedding them (short-form <code>did:peer:4</code>, ledger or web methods) fare better.</li>
+        </ul>
+      </div>
+      <div class="slide-foot"><span>post-quantum didcomm</span><span>6 / 12</span></div>
+    </section>
+
+    <!-- AUTHCRYPT -->
+    <section>
+      <div class="eyebrow gold">the deeper problem</div>
+      <div class="slide-body">
+        <h2>Authcrypt is built on Diffie-Hellman</h2>
+        <p class="lede">ECDH-1PU authenticates the sender by mixing <b>the sender's static key</b> into the key agreement. A KEM isn't Diffie-Hellman: it encapsulates a secret to one public key, and there's no direct "one-pass unified model" equivalent.</p>
+        <div class="grid2">
+          <div class="card"><h3>Sign, then encrypt</h3><p>Works today with a PQ signature, but gives up authcrypt's deniability, and signatures are large.</p></div>
+          <div class="card"><h3>Authenticated KEM designs</h3><p>An active research area. Not yet something to standardize on.</p></div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>post-quantum didcomm</span><span>7 / 12</span></div>
+    </section>
+
+    <!-- HYBRID -->
+    <section>
+      <div class="eyebrow">a pragmatic step</div>
+      <div class="slide-body">
+        <h2>Hybrid: classical and post-quantum together</h2>
+        <p class="lede">Derive the key-wrapping key from <b>both</b> an X25519 exchange and an ML-KEM encapsulation. An attacker has to break both.</p>
+        <div class="grid2">
+          <div class="card teal"><h3>Why</h3><p>Protects against harvest-now-decrypt-later while keeping today's security if the new algorithm turns out to be weak. Web browsers already use hybrid X25519 + ML-KEM in TLS.</p></div>
+          <div class="card"><h3>How it could show up</h3><p>A new key-wrapping algorithm, recipient keys that carry both public keys, and a new profile in the <code>accept</code> list.</p></div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>post-quantum didcomm</span><span>8 / 12</span></div>
+    </section>
+
+    <!-- MIGRATION -->
+    <section>
+      <div class="eyebrow danger">migration</div>
+      <div class="slide-body">
+        <h2>Rotation is signed with the key being retired</h2>
+        <p class="lede"><code>from_prior</code> is a JWT signed by a key the <i>old</i> DID authorizes. Once that key type can be broken, anyone could forge a rotation <b>from</b> your old DID to theirs.</p>
+        <ul class="bullets">
+          <li>Relationships should migrate to post-quantum DIDs <i>before</i> the old keys become breakable.</li>
+          <li>Afterwards, receivers must stop accepting rotations signed with the old algorithms.</li>
+          <li>Long-lived evidence signed with old algorithms may need re-signing or timestamping.</li>
+        </ul>
+      </div>
+      <div class="slide-foot"><span>post-quantum didcomm</span><span>9 / 12</span></div>
+      <aside class="notes">Spec: DID Rotation ("with a signature from a key authorized by prior DID").</aside>
+    </section>
+
+    <!-- PQ-BRIDGE -->
+    <section>
+      <div class="eyebrow gold">already proposed</div>
+      <div class="slide-body">
+        <h2><code>pq-bridge/1.0</code>: post-quantum on top, not inside</h2>
+        <p class="lede">A registry protocol (status: Proposed) that adds ML-KEM and ML-DSA <b>after</b> a normal DIDComm connection exists, as a transitional layer until the core envelopes adopt them.</p>
+        <div class="grid3">
+          <div class="card"><h3>Ephemeral PQ DIDs</h3><p>Each session gets a fresh <code>did:peer:4</code> holding the PQ keys, so long-lived DID documents never carry them.</p></div>
+          <div class="card"><h3>Hybrid modes</h3><p>X25519 + ML-KEM and Ed25519 + ML-DSA, negotiated with Discover Features.</p></div>
+          <div class="card"><h3>Wrapped bodies</h3><p>Message bodies and attachments are wrapped in a PQ envelope, with replay protection and key rotation.</p></div>
+        </div>
+        <p class="kicker">It sidesteps the big-DID problem from earlier, at the cost of a second envelope layer and a session to manage.</p>
+      </div>
+      <div class="slide-foot"><span>post-quantum didcomm</span><span>10 / 12</span></div>
+      <aside class="notes">Source: didcomm.org registry, site/content/protocols/pq-bridge/1.0. Read its full security section before presenting; the summary here is from its overview.</aside>
+    </section>
+
+    <!-- WHAT'S ALREADY FLEXIBLE -->
+    <section>
+      <div class="eyebrow gold">what's already flexible</div>
+      <div class="slide-body">
+        <h2>The spec's extension points help</h2>
+        <div class="grid3">
+          <div class="card teal"><h3>DID methods</h3><p>Any DID method can publish new key types; DIDComm doesn't hard-code where keys come from.</p></div>
+          <div class="card teal"><h3>Profiles</h3><p>A new profile string in <code>accept</code> lets endpoints advertise PQ support without breaking others.</p></div>
+          <div class="card teal"><h3>Multiple keys</h3><p>A DID document can list classical and PQ keys side by side during a transition.</p></div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>post-quantum didcomm</span><span>11 / 12</span></div>
+    </section>
+
+    <!-- QUESTIONS -->
+    <section>
+      <div class="eyebrow">for the group</div>
+      <div class="slide-body closing">
+        <h1 style="font-size:2.6rem">Open questions</h1>
+        <ul style="margin-top:.6rem">
+          <li class="q">A bridge protocol like <code>pq-bridge/1.0</code>, or post-quantum in the core envelope?</li>
+          <li class="q">What does sender-authenticated encryption look like without Diffie-Hellman?</li>
+          <li class="q">Is it time to update the spec's post-quantum paragraph now that NIST has published standards?</li>
+        </ul>
+      </div>
+      <div class="slide-foot"><span>thank you</span><span>12 / 12</span></div>
+    </section>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@6.0.2/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@6.0.2/dist/plugin/notes.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    center: false,
+    controls: true,
+    progress: true,
+    transition: 'slide',
+    // No fixed canvas: slides fill the viewport and ../assets/deck.css
+    // sizes everything off it.
+    disableLayout: true,
+    plugins: [RevealNotes],
+  });
+</script>
