@@ -157,7 +157,7 @@ code,.mono{font-family:var(--mono)}
         <h1>Where it fits</h1>
         <p class="sub">What wyvrn-chat is, the gap it aims at, and a scorecard against real projects.</p>
       </div>
-      <div class="slide-foot"><span>positioning</span><span>1 / 18</span></div>
+      <div class="slide-foot"><span>positioning</span><span>1 / 28</span></div>
     </section>
 
     <!-- 2: WHAT IT IS -->
@@ -172,7 +172,7 @@ code,.mono{font-family:var(--mono)}
           <div class="card"><h3>Encrypted at rest</h3><p>PIN or passkey-gated vault key; SQLCipher on native. Never regenerates an existing identity.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>positioning</span><span>2 / 18</span></div>
+      <div class="slide-foot"><span>positioning</span><span>2 / 28</span></div>
     </section>
 
     <!-- 3: THE GAP -->
@@ -184,7 +184,7 @@ code,.mono{font-family:var(--mono)}
         <p class="q">The didcomm.org registry does have group messaging protocols (<code>group-chat/1.0</code> and <code>rooms/1.0</code>, both Demonstrated), but we haven't found a consumer chat app built on DIDComm in the Aries/Credo ecosystem. Most DIDComm traffic today issues and presents credentials; it doesn't carry a conversation.</p>
         <p class="source">sources: github.com/openwallet-foundation/bifold-wallet · didcomm.org/group-chat/1.0 · didcomm.org/rooms/1.0</p>
       </div>
-      <div class="slide-foot"><span>positioning</span><span>3 / 18</span></div>
+      <div class="slide-foot"><span>positioning</span><span>3 / 28</span></div>
     </section>
 
     <!-- 4: THE MATRIX -->
@@ -205,7 +205,58 @@ code,.mono{font-family:var(--mono)}
         </tbody>
       </table>
       <p class="source">ACA-Py: aca-py.org/latest/features/Multitenancy (one public DID per wallet — multi-<i>tenant</i>, not multi-device). Credo/Bifold: github.com/openwallet-foundation/{credo-ts,bifold-wallet}. Profiles: DIDComm Messaging v2.1, Defined Profiles. Binary encodings: the registry's <code>mesh/1.0</code> (Proposed) defines its own compact binary envelope for BLE/LoRa, separate from a CBOR profile.</p>
-      <div class="slide-foot"><span>positioning</span><span>4 / 18</span></div>
+      <div class="slide-foot"><span>positioning</span><span>4 / 28</span></div>
+    </section>
+
+    <!-- SECTION: UNDER THE HOOD -->
+    <section>
+      <div class="slide-body section-slide">
+        <h1>Under the hood</h1>
+        <p class="sub">Three pieces: a DIDComm library, a mediator, and the chat app on top of both.</p>
+      </div>
+      <div class="slide-foot"><span>positioning</span><span>5 / 28</span></div>
+    </section>
+
+    <!-- UNDER THE HOOD: THREE PIECES -->
+    <section>
+      <div class="eyebrow"><span class="sec">Under the hood ·</span> the stack</div>
+      <div class="slide-body">
+        <h2>Three pieces, one experiment</h2>
+        <div class="grid3">
+          <div class="card"><h3>wyvrn-didcomm</h3><p>A DIDComm v1 + v2 library in Rust, ported from <code>didcomm-messaging-python</code>, with bindings for the browser (wasm), Node.js and Python.</p></div>
+          <div class="card"><h3>wyvrn-mediator</h3><p>A DIDComm mediator built on that library: SQL storage, WebSocket live delivery, and several copies behind one address.</p></div>
+          <div class="card"><h3>wyvrn-chat</h3><p>The chat app: browser, desktop and Android from one codebase, talking to its mediator over HTTP and WebSocket.</p></div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>positioning</span><span>6 / 28</span></div>
+    </section>
+
+    <!-- UNDER THE HOOD: THE LIBRARY -->
+    <section>
+      <div class="eyebrow"><span class="sec">Under the hood ·</span> the library</div>
+      <div class="slide-body">
+        <h2>Checked against someone else's implementation</h2>
+        <div class="grid2">
+          <ul class="bullets" style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.7rem">
+            <li class="lede" style="font-size:1.05rem">DIDComm <b>v2</b>: anoncrypt (ECDH-ES) and authcrypt (ECDH-1PU), with <code>routing/2.0</code> forward wrapping, wire-compatible with <code>didcomm-messaging-python</code> in both directions.</li>
+            <li class="lede" style="font-size:1.05rem">DIDComm <b>v1</b>: the Aries RFC 0019 pack format and <code>routing/1.0</code>, also wire-compatible both ways.</li>
+          </ul>
+          <div class="card"><h3>Five DID methods</h3><p><code>did:peer:2</code>, <code>did:peer:4</code>, <code>did:jwk</code>, <code>did:web</code> and <code>did:webvh</code>. The browser build covers the first three.</p></div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>positioning</span><span>7 / 28</span></div>
+    </section>
+
+    <!-- UNDER THE HOOD: PROTOCOLS -->
+    <section>
+      <div class="eyebrow"><span class="sec">Under the hood ·</span> the protocols</div>
+      <h2 style="margin-bottom:.3rem">Mostly the registry's protocols, and a few of its own</h2>
+      <div class="grid2" style="flex:1;align-items:center">
+        <div class="card good"><h3 style="color:var(--teal)">From the didcomm.org registry</h3><p style="color:var(--paper)"><code>basicmessage/2.0</code> · <code>receipts/1.0</code> · <code>user-profile/1.0</code> · <code>discover-features/2.0</code> · <code>trust-ping/2.0</code> · <code>coordinate-mediation/3.0</code> · <code>messagepickup/3.0</code> and <code>4.0</code> · <code>routing/2.0</code></p></div>
+        <div class="card"><h3 style="color:var(--gold)">Written for the experiment</h3><p style="color:var(--paper)">multi-device · history sync · group chat · push notifications (FCM). Documented in the registry's own format in <code>wyvrn-cloud/protocols</code>, in case any are worth proposing upstream.</p></div>
+      </div>
+      <p class="source">sources: wyvrn-chat README; wyvrn-didcomm README and PLAN; didcomm.org</p>
+      <div class="slide-foot"><span>positioning</span><span>8 / 28</span></div>
     </section>
 
     <!-- SECTION: STRENGTHS -->
@@ -214,7 +265,7 @@ code,.mono{font-family:var(--mono)}
         <h1>Strengths</h1>
         <p class="sub">Where the experiment goes further than what's shipped elsewhere.</p>
       </div>
-      <div class="slide-foot"><span>positioning</span><span>5 / 18</span></div>
+      <div class="slide-foot"><span>positioning</span><span>9 / 28</span></div>
     </section>
 
     <!-- 5: STRENGTH — MULTI-DEVICE -->
@@ -234,7 +285,7 @@ code,.mono{font-family:var(--mono)}
         </div>
         <p class="lede">The spec already recommends it: encrypt to <b>every</b> <code>keyAgreement</code> key, so a recipient "can decrypt his messages on any device he controls, without sharing keys". The experiment's <span class="t">multi-device/1.0</span> notes put that into practice: one <code>keyAgreement</code> per device, a Device DID per device for coordination, and no private key ever leaving the device that generated it.</p>
       </div>
-      <div class="slide-foot"><span>positioning — see also: the Identity DID, Device DID deck</span><span>6 / 18</span></div>
+      <div class="slide-foot"><span>positioning — see also: the Identity DID, Device DID deck</span><span>10 / 28</span></div>
     </section>
 
     <!-- 6: STRENGTH — CBOR -->
@@ -255,7 +306,7 @@ code,.mono{font-family:var(--mono)}
         </div>
         <p class="source">DIDComm Messaging v2.1 — Future Work, Additional Encodings. We didn't find an Aries/Credo/DIDComm-rs/Veramo implementation of a CBOR envelope. See also the "DIDComm in CBOR?" deck.</p>
       </div>
-      <div class="slide-foot"><span>positioning</span><span>7 / 18</span></div>
+      <div class="slide-foot"><span>positioning</span><span>11 / 28</span></div>
     </section>
 
     <!-- 7: STRENGTH — MEDIATOR -->
@@ -269,7 +320,7 @@ code,.mono{font-family:var(--mono)}
           <div class="card"><h3>Horizontally scalable</h3><p>Live delivery decoupled through a WS↔HTTP relay; any replica can deliver to a DID connected on a different one.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>positioning</span><span>8 / 18</span></div>
+      <div class="slide-foot"><span>positioning</span><span>12 / 28</span></div>
     </section>
 
     <!-- 8: STRENGTH — PUSH + MULTI-DEVICE COMBINED -->
@@ -281,7 +332,94 @@ code,.mono{font-family:var(--mono)}
         <p class="q">The difference isn't the push protocol. It's that <span class="t">any</span> of a person's enrolled devices — not just the one that happened to register — can be woken, because multi-device/1.0 already knows about all of them.</p>
         <p class="source">github.com/openwallet-foundation/didcomm-mediator-credo — ~98 commits, 18 stars, 37 forks: real and functional, not a widely-deployed production mediator.</p>
       </div>
-      <div class="slide-foot"><span>positioning</span><span>9 / 18</span></div>
+      <div class="slide-foot"><span>positioning</span><span>13 / 28</span></div>
+    </section>
+
+    <!-- SECTION: ACROSS THE SERIES -->
+    <section>
+      <div class="slide-body section-slide">
+        <h1>Across the series</h1>
+        <p class="sub">Each talk in the series, and where the experiment stands on it today.</p>
+      </div>
+      <div class="slide-foot"><span>positioning</span><span>14 / 28</span></div>
+    </section>
+
+    <!-- ACROSS: TABLE 1 -->
+    <section>
+      <div class="eyebrow"><span class="sec">Across the series ·</span> talks 1–6</div>
+      <h2 style="margin-bottom:.3rem">Identity, conversations and delivery</h2>
+      <table class="matrix" style="margin-top:.3rem;font-size:.85rem">
+        <thead><tr><th>Talk</th><th>In wyvrn today</th><th>What that means</th></tr></thead>
+        <tbody>
+            <tr><th style="white-space:normal"><span class="mono" style="color:var(--muted);font-size:.8em">1</span> <a href="../identity-vs-device-dids/">Identity DID, Device DID</a></th><td class="yes" style="white-space:nowrap">Working</td><td>Per-device keys; enroll, revoke, promote and demote devices, each rotating the Identity DID.</td></tr>
+            <tr><th style="white-space:normal"><span class="mono" style="color:var(--muted);font-size:.8em">2</span> <a href="../catching-up-a-new-device/">Catching Up a New Device</a></th><td class="yes" style="white-space:nowrap">Working</td><td>History sync between a person's own devices: reconciliation, on-demand backfill, per-device retention.</td></tr>
+            <tr><th style="white-space:normal"><span class="mono" style="color:var(--muted);font-size:.8em">3</span> <a href="../group-conversations/">Group Conversations</a></th><td class="yes" style="white-space:nowrap">Working</td><td>Fan-out group chat with its own protocol. No member removal or join consent yet.</td></tr>
+            <tr><th style="white-space:normal"><span class="mono" style="color:var(--muted);font-size:.8em">4</span> <a href="../rich-messages/">Rich Messages</a></th><td class="part" style="white-space:nowrap">Partly</td><td>Text and "Seen" receipts. No replies, reactions, stickers, edits or formatting yet.</td></tr>
+            <tr><th style="white-space:normal"><span class="mono" style="color:var(--muted);font-size:.8em">5</span> <a href="../what-a-mediator-does/">What a Mediator Does</a></th><td class="yes" style="white-space:nowrap">Working</td><td>Its own mediator, plus push wake-up on Android via FCM.</td></tr>
+            <tr><th style="white-space:normal"><span class="mono" style="color:var(--muted);font-size:.8em">6</span> <a href="../sharing-and-storing-files/">Sharing and Storing Files</a></th><td class="part" style="white-space:nowrap">Minimal</td><td>Profile pictures travel as attachments. No file sharing yet.</td></tr>
+        </tbody>
+      </table>
+      <div class="slide-foot"><span>positioning</span><span>15 / 28</span></div>
+    </section>
+
+    <!-- ACROSS: TABLE 2 -->
+    <section>
+      <div class="eyebrow"><span class="sec">Across the series ·</span> talks 7–12</div>
+      <h2 style="margin-bottom:.3rem">Beyond the phone-and-server model</h2>
+      <table class="matrix" style="margin-top:.3rem;font-size:.85rem">
+        <thead><tr><th>Talk</th><th>In wyvrn today</th><th>What that means</th></tr></thead>
+        <tbody>
+            <tr><th style="white-space:normal"><span class="mono" style="color:var(--muted);font-size:.8em">7</span> <a href="../didcomm-over-bluetooth/">DIDComm over Bluetooth</a></th><td class="no" style="white-space:nowrap">Not yet</td><td>Everything goes through the mediator today.</td></tr>
+            <tr><th style="white-space:normal"><span class="mono" style="color:var(--muted);font-size:.8em">8</span> <a href="../didcomm-in-cbor/">DIDComm in CBOR?</a></th><td class="part" style="white-space:nowrap">Experimental</td><td>A <code>didcomm/v2+cbor</code> profile, falling back to JSON for everyone else.</td></tr>
+            <tr><th style="white-space:normal"><span class="mono" style="color:var(--muted);font-size:.8em">9</span> <a href="../didcomm-on-small-devices/">DIDComm on Small Devices</a></th><td class="no" style="white-space:nowrap">Not yet</td><td>Phones, desktops and browsers only.</td></tr>
+            <tr><th style="white-space:normal"><span class="mono" style="color:var(--muted);font-size:.8em">10</span> <a href="../didcomm-without-a-network/">DIDComm Without a Network</a></th><td class="no" style="white-space:nowrap">Not yet</td><td>HTTP and WebSocket only; no file or email transport.</td></tr>
+            <tr><th style="white-space:normal"><span class="mono" style="color:var(--muted);font-size:.8em">11</span> <a href="../streaming-and-broadcast/">Streaming and Broadcast</a></th><td class="no" style="white-space:nowrap">Not yet</td><td>No calls or streams.</td></tr>
+            <tr><th style="white-space:normal"><span class="mono" style="color:var(--muted);font-size:.8em">12</span> <a href="../post-quantum-didcomm/">Post-Quantum DIDComm</a></th><td class="no" style="white-space:nowrap">Not yet</td><td>Classical curves only, as the spec requires today.</td></tr>
+        </tbody>
+      </table>
+      <div class="slide-foot"><span>positioning</span><span>16 / 28</span></div>
+    </section>
+
+    <!-- ACROSS: HISTORY SYNC -->
+    <section>
+      <div class="eyebrow teal"><span class="sec">Across the series ·</span> history sync in practice</div>
+      <div class="slide-body">
+        <h2>What "Catching Up a New Device" looks like when it runs</h2>
+        <div class="grid3">
+          <div class="card"><h3>Retention is a setting</h3><p>Each device is "bounded" (the default) or "unbounded". An unbounded device is the one siblings ask first for old messages.</p></div>
+          <div class="card"><h3>Reconcile, or sync now</h3><p>A periodic pass compares with every known sibling, and a person can trigger one straight after enrolling a device.</p></div>
+          <div class="card"><h3>Backfill on scroll</h3><p>Scrolling past what a device kept asks a specific sibling for the older items.</p></div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>positioning</span><span>17 / 28</span></div>
+    </section>
+
+    <!-- ACROSS: GROUP CHAT -->
+    <section>
+      <div class="eyebrow teal"><span class="sec">Across the series ·</span> group chat in practice</div>
+      <div class="slide-body">
+        <h2>The fan-out shape, with its known gaps</h2>
+        <div class="grid2">
+          <div class="card good"><h3 style="color:var(--teal)">What it does</h3><p style="color:var(--paper)">No group server. Every member keeps their own member list and sends each message to every other member. Any member can add someone after the group is created.</p></div>
+          <div class="card bad"><h3 style="color:var(--bad)">What it doesn't, yet</h3><p style="color:var(--paper)">Removing members, consent before joining, and "seen by" for groups. Exactly the open problems "Group Conversations" lists.</p></div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>positioning</span><span>18 / 28</span></div>
+    </section>
+
+    <!-- ACROSS: NOT TRIED -->
+    <section>
+      <div class="eyebrow gold"><span class="sec">Across the series ·</span> not tried yet</div>
+      <div class="slide-body">
+        <h2>Where the other talks point next</h2>
+        <p class="lede">None of these are commitments. They're the questions the series raises that the experiment hasn't touched yet.</p>
+        <div class="grid3">
+          <div class="card"><h3>Richer messages</h3><p>Replies, reactions, stickers, edits and formatting, and <code>media-sharing/1.0</code> for files.</p></div>
+          <div class="card"><h3>Off the internet</h3><p>Bluetooth when people are close; file and email transports when there's no network at all.</p></div>
+          <div class="card"><h3>Longer term</h3><p>Calls via <code>webrtc/1.0</code>, and post-quantum protection via something like <code>pq-bridge/1.0</code>.</p></div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>positioning</span><span>19 / 28</span></div>
     </section>
 
     <!-- SECTION: WEAKNESSES -->
@@ -290,7 +428,7 @@ code,.mono{font-family:var(--mono)}
         <h1>Weaknesses</h1>
         <p class="sub">The ones we'd tell you about even if you didn't ask. A scorecard that only lists wins isn't a scorecard.</p>
       </div>
-      <div class="slide-foot"><span>positioning</span><span>10 / 18</span></div>
+      <div class="slide-foot"><span>positioning</span><span>20 / 28</span></div>
     </section>
 
     <!-- 10: WEAKNESS — HARDWARE KEYS -->
@@ -304,7 +442,7 @@ code,.mono{font-family:var(--mono)}
         </div>
         <p class="source">github.com/openwallet-foundation/askar; OWASP MASTG on hardware-backed key storage.</p>
       </div>
-      <div class="slide-foot"><span>positioning</span><span>11 / 18</span></div>
+      <div class="slide-foot"><span>positioning</span><span>21 / 28</span></div>
     </section>
 
     <!-- 11: WEAKNESS — CBOR INTEROP COST -->
@@ -315,7 +453,7 @@ code,.mono{font-family:var(--mono)}
         <p class="lede">Every real Aries, Credo, or other DIDComm peer today only understands <code>+json</code>. <code>didcomm/v2+cbor</code> negotiates down to plain JSON automatically when the other side doesn't advertise it —</p>
         <p class="q bad">— which means, in practice, almost every message wyvrn-chat sends to the wider ecosystem today gets none of the benefit described under Strengths.</p>
       </div>
-      <div class="slide-foot"><span>positioning</span><span>12 / 18</span></div>
+      <div class="slide-foot"><span>positioning</span><span>22 / 28</span></div>
     </section>
 
     <!-- 12: WEAKNESS — ROTATION STORM -->
@@ -325,7 +463,7 @@ code,.mono{font-family:var(--mono)}
         <h2>Every roster change is a broadcast.</h2>
         <p class="lede">Enroll a device, revoke one, promote, demote — each mints a new Identity DID and rotates <b style="color:var(--paper)">every contact</b> onto it. A person who churns devices often means real, recurring chatter no single-key architecture pays.</p>
       </div>
-      <div class="slide-foot"><span>positioning — see also: the Identity DID, Device DID deck</span><span>13 / 18</span></div>
+      <div class="slide-foot"><span>positioning — see also: the Identity DID, Device DID deck</span><span>23 / 28</span></div>
     </section>
 
     <!-- 13: WEAKNESS — MATURITY -->
@@ -341,7 +479,7 @@ code,.mono{font-family:var(--mono)}
           <p>A single-team experiment. No iOS build exists yet — needs a real Mac. Its own group-chat notes are a different design from the registry's <code>group-chat/1.0</code>, and haven't been hardened by outside use.</p>
         </div>
       </div>
-      <div class="slide-foot"><span>positioning</span><span>14 / 18</span></div>
+      <div class="slide-foot"><span>positioning</span><span>24 / 28</span></div>
     </section>
 
     <!-- 14: WEAKNESS — LICENSE -->
@@ -351,7 +489,7 @@ code,.mono{font-family:var(--mono)}
         <h2>ACA-Py and Credo-TS: Apache 2.0, no gate.<br>wyvrn-mediator: a real license check at startup.</h2>
         <p class="lede">Not a technical limitation — a plain business-model difference worth naming rather than glossing over. Anyone standing up their own mediator instance needs a valid <code>wyvrn-license</code> first.</p>
       </div>
-      <div class="slide-foot"><span>positioning</span><span>15 / 18</span></div>
+      <div class="slide-foot"><span>positioning</span><span>25 / 28</span></div>
     </section>
 
     <!-- SECTION: WRAPPING UP -->
@@ -360,7 +498,7 @@ code,.mono{font-family:var(--mono)}
         <h1>Wrapping up</h1>
         <p class="sub">Where this leaves us.</p>
       </div>
-      <div class="slide-foot"><span>positioning</span><span>16 / 18</span></div>
+      <div class="slide-foot"><span>positioning</span><span>26 / 28</span></div>
     </section>
 
     <!-- 15: SYNTHESIS -->
@@ -380,7 +518,7 @@ code,.mono{font-family:var(--mono)}
         </div>
         <p class="kicker" style="margin-top:.2rem">Neither list is closed. This is a snapshot, not a verdict.</p>
       </div>
-      <div class="slide-foot"><span>positioning</span><span>17 / 18</span></div>
+      <div class="slide-foot"><span>positioning</span><span>27 / 28</span></div>
     </section>
 
     <!-- 16: CLOSE -->
@@ -391,10 +529,11 @@ code,.mono{font-family:var(--mono)}
         <p class="lede">If your project already solves per-device keys, hardware-backed mobile storage, or a shipped CBOR profile — we'd genuinely like to know. This deck is easier to falsify than to defend.</p>
         <div class="linklist" style="margin-top:1.2rem">
           <a href="https://github.com/wyvrn-cloud/protocols">github.com/wyvrn-cloud/protocols</a>
-          <a href="https://github.com/wyvrn-cloud/wyvrn-chat">github.com/wyvrn-cloud/wyvrn-chat</a>
+          <a href="https://github.com/wyvrn-cloud/chat">github.com/wyvrn-cloud/chat</a>
+          <a href="https://github.com/wyvrn-cloud/didcomm">github.com/wyvrn-cloud/didcomm</a>
         </div>
       </div>
-      <div class="slide-foot"><span>wyvrn-chat</span><span>18 / 18</span></div>
+      <div class="slide-foot"><span>wyvrn-chat</span><span>28 / 28</span></div>
     </section>
 
   </div>
