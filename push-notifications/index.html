@@ -29,7 +29,7 @@
         <h1>The gap</h1>
         <p class="sub">Why a push notification exists at all, and what today's protocol puts in one.</p>
       </div>
-      <div class="slide-foot"><span>how much should a push know</span><span>1 / 21</span></div>
+      <div class="slide-foot"><span>how much should a push know</span><span>1 / 23</span></div>
     </section>
 
     <!-- PICKUP GAP -->
@@ -41,7 +41,7 @@
         <div class="quote">Should push wake-up be standardized alongside message pickup?<cite>An earlier talk in this series &mdash; What a Mediator Actually Does, open questions</cite></div>
         <p class="kicker">An adopted protocol already answers it &mdash; just not inside messagepickup itself.</p>
       </div>
-      <div class="slide-foot"><span>how much should a push know</span><span>2 / 21</span></div>
+      <div class="slide-foot"><span>how much should a push know</span><span>2 / 23</span></div>
       <aside class="notes">Deliberate callback to the mediator talk's closing open question, to connect the series.</aside>
     </section>
 
@@ -61,7 +61,7 @@
         </table>
         <p class="kicker">It lives in the Aries RFCs catalog, not the didcomm.org registry, though it uses a <code>didcomm.org</code> PIURI.</p>
       </div>
-      <div class="slide-foot"><span>how much should a push know</span><span>3 / 21</span></div>
+      <div class="slide-foot"><span>how much should a push know</span><span>3 / 23</span></div>
       <aside class="notes">Verified against the didcomm-mediator-credo reference implementation, not just the RFC text: one FCM API for both platforms.</aside>
     </section>
 
@@ -82,7 +82,7 @@
   ...
 }</code></pre>
       </div>
-      <div class="slide-foot"><span>how much should a push know</span><span>4 / 21</span></div>
+      <div class="slide-foot"><span>how much should a push know</span><span>4 / 23</span></div>
       <aside class="notes">The example is the RFC's own. Its Drawbacks section also notes that @type doesn't say which agent sent the push, so with several mediators the receiver can't tell which one to pick up from.</aside>
     </section>
 
@@ -92,7 +92,7 @@
         <h1>A proposal: a routing push</h1>
         <p class="sub">RFC 0734's notification, encrypted to one key, stripped to the bone.</p>
       </div>
-      <div class="slide-foot"><span>how much should a push know</span><span>5 / 21</span></div>
+      <div class="slide-foot"><span>how much should a push know</span><span>5 / 23</span></div>
     </section>
 
     <!-- WHAT IT ADDS -->
@@ -114,7 +114,7 @@
   }
 }</code></pre>
       </div>
-      <div class="slide-foot"><span>how much should a push know</span><span>6 / 21</span></div>
+      <div class="slide-foot"><span>how much should a push know</span><span>6 / 23</span></div>
       <aside class="notes">Routing 2.0 is defined in the DIDComm spec itself, so this is a proposed minor version of a spec protocol; "2.1" is a working name. The spec already says delivering from the mediator to a recipient's several devices is "out of scope for interoperability", which leaves room for this. message_tags and message_ids are RFC 0734's own field names.</aside>
     </section>
 
@@ -128,7 +128,7 @@
         <div class="step"><h3>Still encrypted</h3><p>FCM carries the envelope but never sees the ids in the clear, unlike RFC 0734's plaintext <code>message_ids</code>.</p></div>
       </div>
       <p class="kicker">An optimization on top of pickup, never a replacement: if the push is lost, ordinary pickup still finds the message.</p>
-      <div class="slide-foot"><span>how much should a push know</span><span>7 / 21</span></div>
+      <div class="slide-foot"><span>how much should a push know</span><span>7 / 23</span></div>
       <aside class="notes">DIDComm v2.1, Message Headers: to is OPTIONAL; id and type are REQUIRED. Key IDs: the kid header MUST be a DID URL. With one message, the plaintext is 218 bytes: a 43-character tag (an A256CBC-HS512 tag is 32 bytes) and a UUID id.</aside>
     </section>
 
@@ -143,7 +143,7 @@
           <div class="card teal"><h3>Short form in the <code>kid</code></h3><p>The <code>kid</code> carries the DID. A <code>did:peer:4</code> short form is a hash; the long form embeds the whole document and grows with the device roster.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>how much should a push know</span><span>8 / 21</span></div>
+      <div class="slide-foot"><span>how much should a push know</span><span>8 / 23</span></div>
       <aside class="notes">Encrypting to every key is the spec's default, and right for ordinary messages: any of Bob's devices can read them. A push goes to one device token, so only that device's key is useful.</aside>
     </section>
 
@@ -164,7 +164,7 @@
         <p class="kicker">Bytes. FCM's limit is 4096 bytes for the whole payload; red cells don't fit. Short form and one key stays the same size whatever the roster.</p>
         <p class="source">DIDComm v2 anoncrypt (ECDH-ES+A256KW, A256CBC-HS512, X25519), general JSON serialization; did:peer:4 with one X25519 and one Ed25519 key per device; one message tag and one UUID id per waiting message</p>
       </div>
-      <div class="slide-foot"><span>how much should a push know</span><span>9 / 21</span></div>
+      <div class="slide-foot"><span>how much should a push know</span><span>9 / 23</span></div>
       <aside class="notes">Computed from the algorithms' fixed lengths: 32-byte ephemeral key, 72-byte wrapped CEK per recipient, 16-byte IV, 32-byte tag, PKCS#7-padded ciphertext. Each extra recipient adds a kid and a wrapped key; with the long form, each kid carries the whole document. Without message_tags, one message is 845 bytes (short form, one key).</aside>
     </section>
 
@@ -185,7 +185,7 @@
         <p class="kicker">Each extra message adds about 107 bytes (a tag and an id) to every row; the rows keep their shape.</p>
         <p class="source">DIDComm v2 anoncrypt (ECDH-ES+A256KW, A256CBC-HS512, X25519), general JSON serialization; did:peer:4 with one X25519 and one Ed25519 key per device; one message tag and one UUID id per waiting message</p>
       </div>
-      <div class="slide-foot"><span>how much should a push know</span><span>10 / 21</span></div>
+      <div class="slide-foot"><span>how much should a push know</span><span>10 / 23</span></div>
       <aside class="notes">Computed from the algorithms' fixed lengths: 32-byte ephemeral key, 72-byte wrapped CEK per recipient, 16-byte IV, 32-byte tag, PKCS#7-padded ciphertext. Each extra recipient adds a kid and a wrapped key; with the long form, each kid carries the whole document. Without message_tags, one message is 845 bytes (short form, one key).</aside>
     </section>
 
@@ -206,8 +206,50 @@
         <p class="kicker">Short form and one key fits up to 28 waiting messages. Past that, the push can name the first few and leave the rest to an ordinary pickup.</p>
         <p class="source">DIDComm v2 anoncrypt (ECDH-ES+A256KW, A256CBC-HS512, X25519), general JSON serialization; did:peer:4 with one X25519 and one Ed25519 key per device; one message tag and one UUID id per waiting message</p>
       </div>
-      <div class="slide-foot"><span>how much should a push know</span><span>11 / 21</span></div>
+      <div class="slide-foot"><span>how much should a push know</span><span>11 / 23</span></div>
       <aside class="notes">Computed from the algorithms' fixed lengths: 32-byte ephemeral key, 72-byte wrapped CEK per recipient, 16-byte IV, 32-byte tag, PKCS#7-padded ciphertext. Each extra recipient adds a kid and a wrapped key; with the long form, each kid carries the whole document. Without message_tags, one message is 845 bytes (short form, one key).</aside>
+    </section>
+
+    <!-- CAPACITY: WITH TAGS -->
+    <section>
+      <div class="eyebrow"><span class="sec">A proposal ·</span> how many fit, with tags</div>
+      <div class="slide-body">
+        <h2>How many messages one push can name</h2>
+        <table class="compare">
+          <thead><tr><th>Most messages under 4096 bytes</th><th>1 device</th><th>3 devices</th><th>10 devices</th></tr></thead>
+          <tbody>
+            <tr><th>Short form, one key</th><td><b>28</b></td><td><b>28</b></td><td><b>28</b></td></tr>
+            <tr><th>Short form, every key</th><td>28</td><td>25</td><td>12</td></tr>
+            <tr><th>Long form, one key</th><td>22</td><td>17</td><td class="over">none</td></tr>
+            <tr><th>Long form, every key</th><td>22</td><td class="over">none</td><td class="over">none</td></tr>
+          </tbody>
+        </table>
+        <p class="kicker">Each message costs a tag and an id. Short form and one key names 28, whatever the roster; long form with every key can't send a three-device push at all.</p>
+        <p class="source">body: <code>message_tags</code> and <code>message_ids</code>; same envelope as the tables before: DIDComm v2 anoncrypt (ECDH-ES+A256KW, A256CBC-HS512, X25519), did:peer:4 with one X25519 and one Ed25519 key per device, UUID ids</p>
+      </div>
+      <div class="slide-foot"><span>how much should a push know</span><span>12 / 23</span></div>
+      <aside class="notes">"none": even a one-message push is over FCM's 4096-byte limit. Counted by growing the push one message at a time until the envelope no longer fits.</aside>
+    </section>
+
+    <!-- CAPACITY: IDS ONLY -->
+    <section>
+      <div class="eyebrow"><span class="sec">A proposal ·</span> how many fit, ids only</div>
+      <div class="slide-body">
+        <h2>Drop the tags and it more than doubles</h2>
+        <table class="compare">
+          <thead><tr><th>Most messages under 4096 bytes</th><th>1 device</th><th>3 devices</th><th>10 devices</th></tr></thead>
+          <tbody>
+            <tr><th>Short form, one key</th><td><b>63</b></td><td><b>63</b></td><td><b>63</b></td></tr>
+            <tr><th>Short form, every key</th><td>63</td><td>55</td><td>28</td></tr>
+            <tr><th>Long form, one key</th><td>49</td><td>38</td><td class="over">none</td></tr>
+            <tr><th>Long form, every key</th><td>49</td><td class="over">none</td><td class="over">none</td></tr>
+          </tbody>
+        </table>
+        <p class="kicker">Ids alone cost about 49 bytes each instead of 107. The ordering of the rows doesn't change: short form and one key is still the only one that ignores the roster.</p>
+        <p class="source">body: <code>message_ids</code> only; same envelope as the tables before: DIDComm v2 anoncrypt (ECDH-ES+A256KW, A256CBC-HS512, X25519), did:peer:4 with one X25519 and one Ed25519 key per device, UUID ids</p>
+      </div>
+      <div class="slide-foot"><span>how much should a push know</span><span>13 / 23</span></div>
+      <aside class="notes">"none": even a one-message push is over FCM's 4096-byte limit. Counted by growing the push one message at a time until the envelope no longer fits.</aside>
     </section>
 
     <!-- SECTION: TWO PATHS -->
@@ -216,7 +258,7 @@
         <h1>Two paths to a message</h1>
         <p class="sub">The app reads the push in the background, or the user taps it and the app goes to look.</p>
       </div>
-      <div class="slide-foot"><span>how much should a push know</span><span>12 / 21</span></div>
+      <div class="slide-foot"><span>how much should a push know</span><span>14 / 23</span></div>
     </section>
 
     <!-- FLOW: PUSH -->
@@ -241,7 +283,7 @@
 </g></svg>
       </div>
       <p class="source">gold dashed: over FCM &middot; teal: DIDComm to the mediator. ④ can only be scoped by <code>recipient_did</code> today: <code>delivery-request</code> has no message-id field in pickup 3.0 or 4.0.</p>
-      <div class="slide-foot"><span>how much should a push know</span><span>13 / 21</span></div>
+      <div class="slide-foot"><span>how much should a push know</span><span>15 / 23</span></div>
       <aside class="notes">③ The app decrypts the push with its registered key and learns the message id; the recipient DID comes from the envelope's kid. ④ It asks the mediator for messages under that DID. ⑤ The mediator sends the full encrypted message, which the app decrypts and can show as a real notification. The ack (messages-received) follows as in the next diagram. This path only works if the app can decrypt in the background — see "Where decryption could happen".</aside>
     </section>
 
@@ -265,7 +307,7 @@
 </g></svg>
       </div>
       <p class="source">all messagepickup/3.0: <code>delivery-request</code> → <code>delivery</code> → <code>messages-received</code></p>
-      <div class="slide-foot"><span>how much should a push know</span><span>14 / 21</span></div>
+      <div class="slide-foot"><span>how much should a push know</span><span>16 / 23</span></div>
       <aside class="notes">This is the path for a generic push, or for a device that never decrypts outside an open app. Nothing about the push is needed beyond "go and look".</aside>
     </section>
 
@@ -278,7 +320,7 @@
         <p class="lede">The ack is what lets either path fail safely. If the app is killed between ④ and ⑤, the messages are still queued, and the next pickup gets them again.</p>
         <p class="kicker">The same holds after a background fetch: until <code>messages-received</code>, the mediator still has the message.</p>
       </div>
-      <div class="slide-foot"><span>how much should a push know</span><span>15 / 21</span></div>
+      <div class="slide-foot"><span>how much should a push know</span><span>17 / 23</span></div>
     </section>
 
     <!-- SECTION: WHERE DECRYPTION COULD HAPPEN -->
@@ -287,7 +329,7 @@
         <h1>Where decryption could happen</h1>
         <p class="sub">The first path needs the app to decrypt in the background. How far should that go?</p>
       </div>
-      <div class="slide-foot"><span>how much should a push know</span><span>16 / 21</span></div>
+      <div class="slide-foot"><span>how much should a push know</span><span>18 / 23</span></div>
     </section>
 
     <!-- THREE TIERS -->
@@ -300,7 +342,7 @@
         <div class="step"><h3>Even after it's killed</h3><p>Decrypt from a wake-up alone, no running process required. Needs a secret that survives &mdash; real engineering, real new risk.</p></div>
       </div>
       <p class="kicker">Nobody has to pick one tier for every user. It's a knob, not a verdict.</p>
-      <div class="slide-foot"><span>how much should a push know</span><span>17 / 21</span></div>
+      <div class="slide-foot"><span>how much should a push know</span><span>19 / 23</span></div>
     </section>
 
     <!-- TIER: IN-PROCESS -->
@@ -314,7 +356,7 @@
           <div class="card teal"><h3>Self-expiring, for free</h3><p>The OS reclaiming the process clears it automatically. True in any language, by construction, not a platform trick.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>how much should a push know</span><span>18 / 21</span></div>
+      <div class="slide-foot"><span>how much should a push know</span><span>20 / 23</span></div>
     </section>
 
     <!-- TIER: PERSISTED -->
@@ -328,7 +370,7 @@
         </div>
         <p class="kicker">A boot counter is public information &mdash; anyone can read it. It can only ever be a <i>binding</i> input (authenticated associated data on the cipher), never the secret itself. Easy mistake; worth naming.</p>
       </div>
-      <div class="slide-foot"><span>how much should a push know</span><span>19 / 21</span></div>
+      <div class="slide-foot"><span>how much should a push know</span><span>21 / 23</span></div>
       <aside class="notes">AES-GCM's AAD: wrong AAD at decrypt time fails the auth tag outright, a structural guarantee rather than a value the app chooses to compare.</aside>
     </section>
 
@@ -344,7 +386,7 @@
           <li class="q">Is there a cleaner way to bind a persisted secret to "this boot, this unlock" than a cipher's own authenticated data?</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>thank you</span><span>20 / 21</span></div>
+      <div class="slide-foot"><span>thank you</span><span>22 / 23</span></div>
       <aside class="notes">A device that never decrypts outside an open app can simply not register a push key, and gets a generic wake-up instead.</aside>
     </section>
 
@@ -363,7 +405,7 @@
         <li><a href="https://firebase.google.com/docs/cloud-messaging/customize-messages/set-message-type">FCM message types</a> <span class="st">4096-byte payload limit</span></li>
         <li><a href="https://identity.foundation/peer-did-method-spec/">did:peer Method Specification</a> <span class="st">numalgo 4, short/long form</span></li>
       </ul>
-      <div class="slide-foot"><span>how much should a push know · checked October 2026</span><span>21 / 21</span></div>
+      <div class="slide-foot"><span>how much should a push know · checked October 2026</span><span>23 / 23</span></div>
     </section>
 
   </div>
