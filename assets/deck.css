@@ -57,6 +57,7 @@ body{margin:0;font-family:var(--body);color:var(--paper)}
 .section-slide h1{font-size:4.1rem;border-left:3px solid var(--gold);padding-left:1.4rem}
 .section-slide .sub{font-size:1.25rem;color:var(--muted);max-width:48ch;padding-left:calc(1.4rem + 3px)}
 .kicker{color:var(--muted);font-size:1.02rem;max-width:52ch}
+.source{font-family:var(--mono);font-size:.7rem;color:var(--muted);opacity:.85;margin:0}
 .slide-body{flex:1;display:flex;flex-direction:column;gap:1.4rem;justify-content:center;min-height:0}
 .slide-foot{
   font-family:var(--mono); font-size:.68rem; color:var(--muted); opacity:.6;
