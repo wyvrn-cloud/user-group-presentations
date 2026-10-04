@@ -18,7 +18,7 @@
           <span class="eyebrow">didcomm user group</span>
         </div>
         <h1>How Much Should<br>a Push Know?</h1>
-        <p class="sub">FCM wake-up, messagepickup/3.0, and a few different places to draw the line between "nice to have" and "never leaves the device."</p>
+        <p class="sub">FCM wake-ups, message pickup, a proposed <code>fcm-message</code>, and a few different places to draw the line between "nice to have" and "never leaves the device."</p>
         <span class="pill gold">draft</span>
       </div>
     </section>
@@ -27,9 +27,9 @@
     <section>
       <div class="slide-body section-slide">
         <h1>The gap</h1>
-        <p class="sub">Why a push notification exists at all, and what it costs to stay safe.</p>
+        <p class="sub">Why a push notification exists at all, and what today's protocol puts in one.</p>
       </div>
-      <div class="slide-foot"><span>how much should a push know</span><span>1 / 13</span></div>
+      <div class="slide-foot"><span>how much should a push know</span><span>1 / 18</span></div>
     </section>
 
     <!-- PICKUP GAP -->
@@ -39,58 +39,192 @@
         <h2>messagepickup/3.0 never wakes anyone up</h2>
         <p class="lede">Every message in that protocol is <b>client-initiated</b>: <code>status-request</code>, <code>delivery-request</code>, <code>messages-received</code>. Nothing in it tells a sleeping client to go ask.</p>
         <div class="quote">Should push wake-up be standardized alongside message pickup?<cite>An earlier talk in this series &mdash; What a Mediator Actually Does, open questions</cite></div>
-        <p class="kicker">Two protocols already answer it &mdash; just not inside messagepickup itself.</p>
+        <p class="kicker">An adopted protocol already answers it &mdash; just not inside messagepickup itself.</p>
       </div>
-      <div class="slide-foot"><span>how much should a push know</span><span>2 / 13</span></div>
+      <div class="slide-foot"><span>how much should a push know</span><span>2 / 18</span></div>
       <aside class="notes">Deliberate callback to the mediator talk's closing open question, to connect the series.</aside>
     </section>
 
-    <!-- TWO PROTOCOLS -->
+    <!-- RFC 0734 -->
     <section>
-      <div class="eyebrow gold"><span class="sec">The gap ·</span> two answers, two scopes</div>
+      <div class="eyebrow gold"><span class="sec">The gap ·</span> the protocol that fills it</div>
       <div class="slide-body">
-        <h2>Two protocols fill it, for two platforms</h2>
+        <h2>push-notifications-fcm/1.0 registers a phone with its mediator</h2>
         <table class="compare">
-          <thead><tr><th>Protocol</th><th>push-notifications/1.0</th><th>push-notifications-fcm/1.0</th></tr></thead>
           <tbody>
-            <tr><th>Publisher</th><td>wyvrn (own design)</td><td>Aries community &mdash; RFC 0734</td></tr>
-            <tr><th>Status</th><td>Proposed, design-only</td><td>Adopted; live in production (Credo)</td></tr>
-            <tr><th>Transport</th><td>Web Push / VAPID</td><td>Firebase Cloud Messaging</td></tr>
-            <tr><th>Reaches</th><td>A closed browser tab / PWA</td><td>A killed native mobile app (Android &amp; iOS via APNs relay)</td></tr>
+            <tr><th>Publisher</th><td>Aries community &mdash; RFC 0734</td></tr>
+            <tr><th>Status</th><td>Adopted; implemented by Credo's mediator</td></tr>
+            <tr><th>Messages</th><td><code>set-device-info</code> · <code>get-device-info</code> · <code>device-info</code>, plus an adopted <code>ack</code> and a <code>problem-report</code></td></tr>
+            <tr><th>Transport</th><td>Firebase Cloud Messaging</td></tr>
+            <tr><th>Reaches</th><td>A killed native mobile app: Android, and iOS through Firebase's relay to APNs</td></tr>
           </tbody>
         </table>
-        <p class="kicker">Neither lives in the didcomm.org registry proper &mdash; RFC 0734 predates it and keeps its own catalog.</p>
+        <p class="kicker">It lives in the Aries RFCs catalog, not the didcomm.org registry, though it uses a <code>didcomm.org</code> PIURI.</p>
       </div>
-      <div class="slide-foot"><span>how much should a push know</span><span>3 / 13</span></div>
-      <aside class="notes">push-notifications-fcm/1.0 verified against the real didcomm-mediator-credo reference implementation, not just the RFC text.</aside>
+      <div class="slide-foot"><span>how much should a push know</span><span>3 / 18</span></div>
+      <aside class="notes">Verified against the didcomm-mediator-credo reference implementation, not just the RFC text: one FCM API for both platforms.</aside>
     </section>
 
-    <!-- EMPTY PAYLOAD -->
+    <!-- WHAT THE PAYLOAD CARRIES -->
     <section>
-      <div class="eyebrow"><span class="sec">The gap ·</span> the price of safety</div>
+      <div class="eyebrow"><span class="sec">The gap ·</span> what goes in the push</div>
       <div class="grid2" style="flex:1">
-        <div class="slide-body" style="gap:1.4rem">
-          <h2>The payload is deliberately empty</h2>
-          <p class="lede">Both protocols send the same generic trigger, forever, regardless of sender or content.</p>
-          <div class="quote">The payload is generic regardless, so even a misconfigured or compromised push-sending path leaks nothing beyond "some client got a wake-up."<cite>push-notifications/1.0 &mdash; Security</cite></div>
+        <div class="slide-body" style="gap:1.2rem">
+          <h2>The RFC leaves the payload mostly open</h2>
+          <p class="lede">It requires <code>@type</code>. It allows <code>message_tags</code> and <code>message_ids</code>, so a push can point at the queued messages behind it.</p>
+          <div class="quote">Guidelines on notification messages are not defined.<cite>Aries RFC 0734 &mdash; Sending Push Notifications</cite></div>
+          <p class="kicker">That leaves two easy choices: a generic wake-up that says nothing, or message ids that travel through Google's infrastructure <b>in plaintext</b>.</p>
         </div>
         <pre class="codeblock"><code>{
-  <span class="k">"message"</span>: {
-    <span class="k">"token"</span>: <span class="s">"&lt;fcm device token&gt;"</span>,
-    <span class="k">"data"</span>: { <span class="k">"reason"</span>: <span class="s">"new-message"</span> }
+  <span class="k">"@type"</span>: <span class="s">"https://didcomm.org/push-notifications-fcm"</span>,
+  <span class="k">"message_tags"</span>: [<span class="s">"&lt;MESSAGE_TAG&gt;"</span>],
+  <span class="k">"message_ids"</span>: [<span class="s">"&lt;MESSAGE_ID&gt;"</span>],
+  ...
+}</code></pre>
+      </div>
+      <div class="slide-foot"><span>how much should a push know</span><span>4 / 18</span></div>
+      <aside class="notes">The example is the RFC's own. Its Drawbacks section also notes that @type doesn't say which agent sent the push, so with several mediators the receiver can't tell which one to pick up from.</aside>
+    </section>
+
+    <!-- SECTION: A PROPOSAL -->
+    <section>
+      <div class="slide-body section-slide">
+        <h1>A proposal: fcm-message</h1>
+        <p class="sub">Specific and encrypted: a pointer to one message, in a push Google can't read.</p>
+      </div>
+      <div class="slide-foot"><span>how much should a push know</span><span>5 / 18</span></div>
+    </section>
+
+    <!-- WHAT 3.1 ADDS -->
+    <section>
+      <div class="eyebrow gold"><span class="sec">A proposal ·</span> coordinate-mediation/3.1</div>
+      <div class="grid2" style="flex:1">
+        <div class="slide-body" style="gap:1.2rem">
+          <h2>One new message, sent by the mediator</h2>
+          <p class="lede">A proposed, backward-compatible minor version of the Production <code>coordinate-mediation/3.0</code>. When the mediator queues a message instead of delivering it live, it may also send <code>fcm-message</code>.</p>
+          <p class="kicker">It isn't sent over DIDComm's usual transport. The whole encrypted envelope rides, base64-encoded, as the <code>data</code> of the FCM push itself. No reply, no retry.</p>
+        </div>
+        <pre class="codeblock"><code>{
+  <span class="k">"id"</span>: <span class="s">"123456780"</span>,
+  <span class="k">"type"</span>: <span class="s">"https://didcomm.org/
+    coordinate-mediation/3.1/fcm-message"</span>,
+  <span class="k">"body"</span>: {
+    <span class="k">"recipient_did"</span>: <span class="s">"did:peer:…"</span>,
+    <span class="k">"message_id"</span>: <span class="s">"9f1c2e3a-…"</span>
   }
 }</code></pre>
       </div>
-      <div class="slide-foot"><span>how much should a push know</span><span>4 / 13</span></div>
+      <div class="slide-foot"><span>how much should a push know</span><span>6 / 18</span></div>
+      <aside class="notes">Status: Proposed. Written as the real didcomm.org PIURI because the intent is to propose it upstream as exactly coordinate-mediation/3.1; until a registry PR merges, treat 3.1 as proposed, not adopted. return_route doesn't apply: there's no synchronous channel to reply on.</aside>
+    </section>
+
+    <!-- THREE GOALS -->
+    <section>
+      <div class="eyebrow"><span class="sec">A proposal ·</span> what it's trying to do</div>
+      <h2 style="margin-bottom:.2rem">Short, encrypted, and about one message</h2>
+      <div class="numrow" style="flex:1;align-items:center">
+        <div class="step"><h3>As short as possible</h3><p>Two fields: which of the recipient's DIDs the message was queued under, and the queued message's id. Nothing about the sender or the content.</p></div>
+        <div class="step"><h3>Encrypted in transit</h3><p>A real authcrypt'd DIDComm message addressed to the recipient. FCM carries it but never sees even the opaque id in the clear, unlike a plaintext <code>message_ids</code>.</p></div>
+        <div class="step"><h3>Points at one message</h3><p>The app learns which queued message triggered this push, so it can go and get <i>that</i> message's body instead of treating the push as generic.</p></div>
+      </div>
+      <p class="kicker">An optimization on top of pickup, never a replacement: if the push is lost, ordinary pickup still finds the message.</p>
+      <div class="slide-foot"><span>how much should a push know</span><span>7 / 18</span></div>
+      <aside class="notes">messagepickup/3.0 already calls a delivery attachment's id "an opaque value" the recipient "should not deduce any information from"; fcm-message uses the same id.</aside>
+    </section>
+
+    <!-- SIZE -->
+    <section>
+      <div class="eyebrow"><span class="sec">A proposal ·</span> staying inside the size budget</div>
+      <div class="slide-body">
+        <h2>An envelope has to fit where a bare id did</h2>
+        <p class="lede">FCM caps a payload at 4096 bytes, notification and data combined. An encrypted envelope is bigger than a bare id, and part of its size depends on how the recipient is addressed.</p>
+        <div class="grid2">
+          <div class="card danger"><h3>The long form grows</h3><p>3.1 addresses the envelope with whatever form of the recipient's DID the mediator has on file. A <code>did:peer:4</code> long form embeds the whole document, so it grows with the identity's device roster.</p></div>
+          <div class="card teal"><h3>The short form doesn't</h3><p>The short form is just a hash: constant size whatever the roster. The proposal lists short-form addressing as a future minor version.</p></div>
+        </div>
+      </div>
+      <div class="slide-foot"><span>how much should a push know</span><span>8 / 18</span></div>
+      <aside class="notes">did:peer method spec, numalgo 4: the short form is the hash of the long-form document; a party that already holds the long form can still resolve a message addressed to the short form.</aside>
+    </section>
+
+    <!-- SECTION: TWO PATHS -->
+    <section>
+      <div class="slide-body section-slide">
+        <h1>Two paths to a message</h1>
+        <p class="sub">The app reads the push in the background, or the user taps it and the app goes to look.</p>
+      </div>
+      <div class="slide-foot"><span>how much should a push know</span><span>9 / 18</span></div>
+    </section>
+
+    <!-- FLOW: PUSH -->
+    <section>
+      <div class="eyebrow gold"><span class="sec">Two paths to a message ·</span> the push carries a pointer</div>
+      <h2 style="margin-bottom:.2rem">The app reads the push, then fetches the message</h2>
+      <div class="diagram" style="flex:1">
+        <svg viewBox="0 0 640 304" width="640" height="304" role="img">
+<defs><marker id="ah-p-f0a83b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#f0a83b"/></marker><marker id="ah-p-34c0cf" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#34c0cf"/></marker></defs>
+<g font-family="IBM Plex Sans" text-anchor="middle">
+<rect x="8" y="8" width="124" height="34" rx="7" fill="#101d2c" stroke="#f0a83b" stroke-width="1.5"/><text x="70" y="30" fill="#e9ece7" font-size="13">Sender</text><line x1="70" y1="42" x2="70" y2="298" stroke="#f0a83b" stroke-opacity=".35" stroke-dasharray="3 4"/>
+<rect x="188" y="8" width="124" height="34" rx="7" fill="#101d2c" stroke="#34c0cf" stroke-width="1.5"/><text x="250" y="30" fill="#e9ece7" font-size="13">Mediator</text><line x1="250" y1="42" x2="250" y2="298" stroke="#34c0cf" stroke-opacity=".35" stroke-dasharray="3 4"/>
+<rect x="358" y="8" width="124" height="34" rx="7" fill="#101d2c" stroke="#8fa3b3" stroke-width="1.5"/><text x="420" y="30" fill="#e9ece7" font-size="13">FCM (Google)</text><line x1="420" y1="42" x2="420" y2="298" stroke="#8fa3b3" stroke-opacity=".35" stroke-dasharray="3 4"/>
+<rect x="508" y="8" width="124" height="34" rx="7" fill="#101d2c" stroke="#f0a83b" stroke-width="1.5"/><text x="570" y="30" fill="#e9ece7" font-size="13">App</text><line x1="570" y1="42" x2="570" y2="298" stroke="#f0a83b" stroke-opacity=".35" stroke-dasharray="3 4"/>
+<line x1="74" y1="74" x2="246" y2="74" stroke="#34c0cf" stroke-width="2" marker-end="url(#ah-p-34c0cf)"/><text x="160.0" y="67" fill="#e9ece7" font-size="12">① message arrives</text>
+<rect x="144.8" y="91" width="210.4" height="24" rx="5" fill="#0b1420" stroke="#34c0cf" stroke-width="1.2"/><text x="250" y="108" fill="#34c0cf" font-size="12">no live connection: queue it</text>
+<line x1="254" y1="144" x2="416" y2="144" stroke="#f0a83b" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#ah-p-f0a83b)"/><text x="335.0" y="137" fill="#e9ece7" font-size="12">② push, data = fcm-message</text>
+<line x1="424" y1="174" x2="566" y2="174" stroke="#f0a83b" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#ah-p-f0a83b)"/><text x="495.0" y="167" fill="#e9ece7" font-size="12">wake-up</text>
+<rect x="519.2" y="193" width="101.6" height="24" rx="5" fill="#0b1420" stroke="#f0a83b" stroke-width="1.2"/><text x="570" y="210" fill="#f0a83b" font-size="12">③ decrypt it</text>
+<line x1="566" y1="246" x2="254" y2="246" stroke="#34c0cf" stroke-width="2" marker-end="url(#ah-p-34c0cf)"/><text x="410.0" y="239" fill="#e9ece7" font-size="12">④ delivery-request</text>
+<line x1="254" y1="286" x2="566" y2="286" stroke="#34c0cf" stroke-width="2" marker-end="url(#ah-p-34c0cf)"/><text x="410.0" y="279" fill="#e9ece7" font-size="12">⑤ delivery: the full message</text>
+</g></svg>
+      </div>
+      <p class="source">gold dashed: over FCM &middot; teal: DIDComm to the mediator. ④ can only be scoped by <code>recipient_did</code> today: <code>delivery-request</code> has no message-id field in pickup 3.0 or 4.0.</p>
+      <div class="slide-foot"><span>how much should a push know</span><span>10 / 18</span></div>
+      <aside class="notes">③ The app decrypts the fcm-message and learns recipient_did and message_id. ④ It asks the mediator for messages under that recipient_did. ⑤ The mediator sends the full encrypted message, which the app decrypts and can show as a real notification. The ack (messages-received) follows as in the next diagram. This path only works if the app can decrypt in the background — see "Where decryption could happen".</aside>
+    </section>
+
+    <!-- FLOW: TAP -->
+    <section>
+      <div class="eyebrow"><span class="sec">Two paths to a message ·</span> the user taps</div>
+      <h2 style="margin-bottom:.2rem">The user opens the app, which picks up and acknowledges</h2>
+      <div class="diagram" style="flex:1">
+        <svg viewBox="0 0 640 284" width="640" height="284" role="img">
+<defs><marker id="ah-t-f0a83b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#f0a83b"/></marker><marker id="ah-t-34c0cf" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#34c0cf"/></marker></defs>
+<g font-family="IBM Plex Sans" text-anchor="middle">
+<rect x="18" y="8" width="124" height="34" rx="7" fill="#101d2c" stroke="#f0a83b" stroke-width="1.5"/><text x="80" y="30" fill="#e9ece7" font-size="13">User</text><line x1="80" y1="42" x2="80" y2="278" stroke="#f0a83b" stroke-opacity=".35" stroke-dasharray="3 4"/>
+<rect x="258" y="8" width="124" height="34" rx="7" fill="#101d2c" stroke="#f0a83b" stroke-width="1.5"/><text x="320" y="30" fill="#e9ece7" font-size="13">App</text><line x1="320" y1="42" x2="320" y2="278" stroke="#f0a83b" stroke-opacity=".35" stroke-dasharray="3 4"/>
+<rect x="498" y="8" width="124" height="34" rx="7" fill="#101d2c" stroke="#34c0cf" stroke-width="1.5"/><text x="560" y="30" fill="#e9ece7" font-size="13">Mediator</text><line x1="560" y1="42" x2="560" y2="278" stroke="#34c0cf" stroke-opacity=".35" stroke-dasharray="3 4"/>
+<line x1="84" y1="74" x2="316" y2="74" stroke="#f0a83b" stroke-width="2" marker-end="url(#ah-t-f0a83b)"/><text x="200.0" y="67" fill="#e9ece7" font-size="12">① taps the notification</text>
+<rect x="272.6" y="93" width="94.8" height="24" rx="5" fill="#0b1420" stroke="#f0a83b" stroke-width="1.2"/><text x="320" y="110" fill="#f0a83b" font-size="12">② app opens</text>
+<line x1="324" y1="146" x2="556" y2="146" stroke="#34c0cf" stroke-width="2" marker-end="url(#ah-t-34c0cf)"/><text x="440.0" y="139" fill="#e9ece7" font-size="12">③ delivery-request</text>
+<line x1="556" y1="186" x2="324" y2="186" stroke="#34c0cf" stroke-width="2" marker-end="url(#ah-t-34c0cf)"/><text x="440.0" y="179" fill="#e9ece7" font-size="12">④ delivery: queued messages</text>
+<line x1="324" y1="226" x2="556" y2="226" stroke="#34c0cf" stroke-width="2" marker-end="url(#ah-t-34c0cf)"/><text x="440.0" y="219" fill="#e9ece7" font-size="12">⑤ messages-received (the ack)</text>
+<rect x="480.0" y="249" width="156.0" height="24" rx="5" fill="#0b1420" stroke="#34c0cf" stroke-width="1.2"/><text x="558.0" y="266" fill="#34c0cf" font-size="12">⑥ now safe to delete</text>
+</g></svg>
+      </div>
+      <p class="source">all messagepickup/3.0: <code>delivery-request</code> → <code>delivery</code> → <code>messages-received</code></p>
+      <div class="slide-foot"><span>how much should a push know</span><span>11 / 18</span></div>
+      <aside class="notes">This is the path for a generic push, or for a device that never decrypts outside an open app. Nothing about the push is needed beyond "go and look".</aside>
+    </section>
+
+    <!-- DELIVERED != DELETED -->
+    <section>
+      <div class="eyebrow danger"><span class="sec">Two paths to a message ·</span> why the ack matters</div>
+      <div class="slide-body">
+        <h2>Delivered isn't the same as safe to delete</h2>
+        <div class="quote">Delivered messages MUST NOT be deleted until delivery is acknowledged by a messages-received message.<cite>messagepickup/3.0 &mdash; Delivery Request</cite></div>
+        <p class="lede">The ack is what lets either path fail safely. If the app is killed between ④ and ⑤, the messages are still queued, and the next pickup gets them again.</p>
+        <p class="kicker">The same holds after a background fetch: until <code>messages-received</code>, the mediator still has the message.</p>
+      </div>
+      <div class="slide-foot"><span>how much should a push know</span><span>12 / 18</span></div>
     </section>
 
     <!-- SECTION: WHERE DECRYPTION COULD HAPPEN -->
     <section>
       <div class="slide-body section-slide">
         <h1>Where decryption could happen</h1>
-        <p class="sub">"Generic forever" is safe but blunt. What changes if a device decrypts for itself?</p>
+        <p class="sub">The first path needs the app to decrypt in the background. How far should that go?</p>
       </div>
-      <div class="slide-foot"><span>how much should a push know</span><span>5 / 13</span></div>
+      <div class="slide-foot"><span>how much should a push know</span><span>13 / 18</span></div>
     </section>
 
     <!-- THREE TIERS -->
@@ -98,12 +232,12 @@
       <div class="eyebrow"><span class="sec">Where decryption could happen ·</span> a spectrum, not a switch</div>
       <h2 style="margin-bottom:.2rem">Three places to draw the line</h2>
       <div class="numrow" style="flex:1;align-items:center">
-        <div class="step"><h3>Never</h3><p>The notification stays generic no matter what. Zero key material ever reaches the push path. The status quo above.</p></div>
+        <div class="step"><h3>Never</h3><p>The notification stays generic no matter what. Zero key material ever reaches the push path. Only the tap path is available.</p></div>
         <div class="step"><h3>While the process is alive</h3><p>Decrypt only if the app hasn't been reclaimed by the OS yet. No new storage &mdash; the secret just lives in RAM, same as everything else running.</p></div>
         <div class="step"><h3>Even after it's killed</h3><p>Decrypt from a wake-up alone, no running process required. Needs a secret that survives &mdash; real engineering, real new risk.</p></div>
       </div>
       <p class="kicker">Nobody has to pick one tier for every user. It's a knob, not a verdict.</p>
-      <div class="slide-foot"><span>how much should a push know</span><span>6 / 13</span></div>
+      <div class="slide-foot"><span>how much should a push know</span><span>14 / 18</span></div>
     </section>
 
     <!-- TIER: IN-PROCESS -->
@@ -117,7 +251,7 @@
           <div class="card teal"><h3>Self-expiring, for free</h3><p>The OS reclaiming the process clears it automatically. True in any language, by construction, not a platform trick.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>how much should a push know</span><span>7 / 13</span></div>
+      <div class="slide-foot"><span>how much should a push know</span><span>15 / 18</span></div>
     </section>
 
     <!-- TIER: PERSISTED -->
@@ -131,58 +265,24 @@
         </div>
         <p class="kicker">A boot counter is public information &mdash; anyone can read it. It can only ever be a <i>binding</i> input (authenticated associated data on the cipher), never the secret itself. Easy mistake; worth naming.</p>
       </div>
-      <div class="slide-foot"><span>how much should a push know</span><span>8 / 13</span></div>
+      <div class="slide-foot"><span>how much should a push know</span><span>16 / 18</span></div>
       <aside class="notes">AES-GCM's AAD: wrong AAD at decrypt time fails the auth tag outright, a structural guarantee rather than a value the app chooses to compare.</aside>
-    </section>
-
-    <!-- KEEPING THE PUSH SMALL -->
-    <section>
-      <div class="eyebrow"><span class="sec">Where decryption could happen ·</span> staying inside the size budget</div>
-      <div class="slide-body">
-        <h2>A full message doesn't always fit in a push</h2>
-        <p class="lede">FCM caps a payload around 4&nbsp;KB. A bare message id fits &mdash; but it's a mediator-chosen identifier handed to Google's own infrastructure outright, with no confidentiality at all.</p>
-        <div class="grid2">
-          <div class="card"><h3>Address it by the short form</h3><p>did:peer:4's long form embeds the whole document and grows with the roster; its short form is just a hash. Addressing the wake-up to the short form keeps size constant regardless of roster size.</p></div>
-          <div class="card"><h3>Encrypt the pointer, not the message</h3><p>A tiny envelope carrying only the message id, real end-to-end encryption, same size either way. The device decrypts it, then fetches just that one message.</p></div>
-        </div>
-      </div>
-      <div class="slide-foot"><span>how much should a push know</span><span>9 / 13</span></div>
-      <aside class="notes">did:peer method spec, numalgo 4: short form is the hash of the long-form document; a party that already holds the long form can still resolve a message addressed to the short form against it.</aside>
-    </section>
-
-    <!-- SECTION: A PROTOCOL LESSON -->
-    <section>
-      <div class="slide-body section-slide">
-        <h1>A protocol lesson, along the way</h1>
-        <p class="sub">Building this surfaced a real gap between a spec's text and an implementation of it.</p>
-      </div>
-      <div class="slide-foot"><span>how much should a push know</span><span>10 / 13</span></div>
-    </section>
-
-    <!-- DELIVERED != DELETED -->
-    <section>
-      <div class="eyebrow danger"><span class="sec">A protocol lesson ·</span> an easy requirement to read past</div>
-      <div class="slide-body">
-        <h2>Delivered isn't the same as safe to delete</h2>
-        <div class="quote">Delivered messages MUST NOT be deleted until delivery is acknowledged by a messages-received message.<cite>messagepickup/3.0 &mdash; Delivery Request</cite></div>
-        <p class="lede">One experiment's mediator deleted on <code>delivery-request</code> instead of on the ack. A crash or a dropped connection in between meant the message was already gone, permanently, with no retry possible.</p>
-        <p class="kicker">Worth checking your own implementation against this line specifically &mdash; it's exactly the kind of requirement that's easy to satisfy in the common case and silently miss in the crash case.</p>
-      </div>
-      <div class="slide-foot"><span>how much should a push know</span><span>11 / 13</span></div>
     </section>
 
     <!-- QUESTIONS -->
     <section>
-      <div class="eyebrow"><span class="sec">A protocol lesson ·</span> for the group</div>
+      <div class="eyebrow">for the group</div>
       <div class="slide-body closing">
         <h1 style="font-size:2.6rem">Open questions</h1>
         <ul style="margin-top:.6rem">
-          <li class="q">Should the tier a device picks be client-side only, or something the mediator should know, to decide whether it even attempts a wake-up?</li>
-          <li class="q">Does encrypting just a message id meaningfully change the privacy profile versus a fully generic payload, if the id was already opaque?</li>
-          <li class="q">Is there a cleaner way to bind a persisted secret to "this boot, this unlock" than piggybacking on a cipher's own authenticated data?</li>
+          <li class="q">Should <code>delivery-request</code> be able to ask for one message by id, so the push path can fetch exactly what <code>fcm-message</code> names?</li>
+          <li class="q">Should a recipient be able to opt out of <code>fcm-message</code> but keep the generic wake-up? Should the mediator know which tier a device picked?</li>
+          <li class="q">Does encrypting an already-opaque id meaningfully change the privacy profile versus RFC 0734's plaintext <code>message_ids</code>?</li>
+          <li class="q">Is there a cleaner way to bind a persisted secret to "this boot, this unlock" than a cipher's own authenticated data?</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>thank you</span><span>12 / 13</span></div>
+      <div class="slide-foot"><span>thank you</span><span>17 / 18</span></div>
+      <aside class="notes">The opt-out and short-form addressing are both listed in the 3.1 proposal's own Future Considerations.</aside>
     </section>
 
     <!-- REFERENCES -->
@@ -191,13 +291,15 @@
       <h2 style="margin-bottom:.4rem">Sources</h2>
       <ul class="refs">
         <li><a href="https://didcomm.org/messagepickup/3.0/">messagepickup/3.0</a> <span class="st">Production</span></li>
+        <li><a href="https://didcomm.org/messagepickup/4.0/">messagepickup/4.0</a> <span class="st">delivery-request fields</span></li>
+        <li><a href="https://didcomm.org/coordinate-mediation/3.0/">coordinate-mediation/3.0</a> <span class="st">Production</span></li>
+        <li><a href="https://github.com/wyvrn-cloud/protocols/blob/master/protocols/coordinate-mediation/3.1/readme.md">coordinate-mediation/3.1 &mdash; fcm-message</a> <span class="st">Proposed</span></li>
         <li><a href="https://github.com/hyperledger/aries-rfcs/tree/main/features/0734-push-notifications-fcm">push-notifications-fcm/1.0 &mdash; Aries RFC 0734</a> <span class="st">Adopted</span></li>
         <li><a href="https://github.com/openwallet-foundation/didcomm-mediator-credo">didcomm-mediator-credo</a> <span class="st">reference implementation</span></li>
-        <li><a href="https://github.com/wyvrn-cloud/protocols/blob/master/protocols/push-notifications/1.0/readme.md">wyvrn-cloud/protocols &mdash; push-notifications/1.0</a> <span class="st">Proposed, design-only</span></li>
+        <li><a href="https://firebase.google.com/docs/cloud-messaging/customize-messages/set-message-type">FCM message types</a> <span class="st">4096-byte payload limit</span></li>
         <li><a href="https://identity.foundation/peer-did-method-spec/">did:peer Method Specification</a> <span class="st">numalgo 4, short/long form</span></li>
-        <li><a href="https://github.com/wyvrn-cloud/protocols/blob/master/protocols/push-notifications-fcm/1.0/readme.md">wyvrn-cloud/protocols &mdash; push-notifications-fcm/1.0 notes</a> <span class="st">an experiment</span></li>
       </ul>
-      <div class="slide-foot"><span>how much should a push know · checked October 2026</span><span>13 / 13</span></div>
+      <div class="slide-foot"><span>how much should a push know · checked October 2026</span><span>18 / 18</span></div>
     </section>
 
   </div>

@@ -28,7 +28,7 @@ experiment, not the subject.
 | 10 | [DIDComm Without a Network](didcomm-without-a-network/) | Draft | Supply chain and offline transports. |
 | 11 | [Beyond Messages: Streaming and Broadcast](streaming-and-broadcast/) | Draft | Mostly open questions; `webrtc/1.0` covers calls. |
 | 12 | [DIDComm and Post-Quantum Crypto](post-quantum-didcomm/) | Draft | Cross-cutting; touches everything above. Compares with `pq-bridge/1.0`. |
-| 13 | [How Much Should a Push Know?](push-notifications/) | Draft | Direct follow-on to 5's own closing open question; compares `push-notifications/1.0` and `push-notifications-fcm/1.0`. |
+| 13 | [How Much Should a Push Know?](push-notifications/) | Draft | Direct follow-on to 5's own closing open question; `push-notifications-fcm/1.0` (RFC 0734) and the proposed `coordinate-mediation/3.1` `fcm-message`. |
 
 Draft decks arrive as their own pull requests, and their links above work
 once each one is merged.
