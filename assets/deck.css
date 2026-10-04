@@ -121,6 +121,8 @@ code,.mono{font-family:var(--mono)}
 .compare thead th{font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--gold)}
 .compare tbody th{font-weight:600;color:var(--paper)}
 .compare td{color:var(--muted)}
+.compare td.over{color:var(--danger)}
+.compare td b{color:var(--teal);font-weight:600}
 .diagram{width:100%;display:flex;align-items:center;justify-content:center;min-height:0}
 .diagram svg{display:block;width:100%;max-width:54rem;height:auto;max-height:100%}
 .stat{font-family:var(--display);font-weight:600;color:var(--gold);font-size:2.6rem;line-height:1}
