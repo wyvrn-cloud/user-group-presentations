@@ -23,7 +23,7 @@ experiment, not the subject.
 | 5 | [What a Mediator Actually Does](what-a-mediator-does/) | Draft | Routing foundations that 6–10 lean on. |
 | 6 | [Sharing and Storing Files](sharing-and-storing-files/) | Draft | `media-sharing/1.0`, then `vaults/1.0` and `swarm/1.0` for storage. |
 | 7 | [DIDComm over Bluetooth](didcomm-over-bluetooth/) | Draft | Local first, mediator as fallback; compares with `mesh/1.0`. |
-| 8 | [DIDComm in CBOR?](didcomm-in-cbor/) | Draft | Encoding size; motivated by 7's small packets. |
+| 8 | [DIDComm in CBOR?](didcomm-in-cbor/) | Draft | Encoding size, with measured JSON vs CBOR sizes per hop; motivated by 7's small packets. Tracks the open didcomm-messaging#463 proposal. |
 | 9 | [DIDComm on Small Devices](didcomm-on-small-devices/) | Draft | IoT; pulls together 5, 7 and 8. |
 | 10 | [DIDComm Without a Network](didcomm-without-a-network/) | Draft | Supply chain and offline transports. |
 | 11 | [Beyond Messages: Streaming and Broadcast](streaming-and-broadcast/) | Draft | Mostly open questions; `webrtc/1.0` covers calls. |
