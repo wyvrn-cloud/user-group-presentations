@@ -156,13 +156,13 @@
         <h2>Every hop has to agree, or negotiate</h2>
         <p class="lede">Declaring a profile is a promise about <b>every publicly visible hop</b> of the inbound route. A CBOR recipient behind a JSON-only mediator can't advertise CBOR end to end.</p>
         <ul class="bullets">
-          <li>Negotiating <b>per hop</b> works: the inner message follows the recipient's <code>accept</code>, each <code>forward</code> follows its mediator's.</li>
+          <li>Negotiating <b>per hop</b> works: the inner message follows the recipient's <code>accept</code>, each <code>forward</code> follows its mediator's. A routing key with no endpoint to ask (a <code>did:key</code>) follows the recipient's.</li>
           <li>The packed inner message rides as an attachment: <code>data.cbor</code> (raw bytes) in a CBOR forward, the standard <code>data.base64</code> in a JSON one, <code>data.json</code> if it's JSON.</li>
           <li>Mixed routes cost bytes: a CBOR message inside a JSON forward is base64'd twice. See the numbers.</li>
         </ul>
       </div>
       <div class="slide-foot"><span>didcomm in cbor</span><span>8 / 26</span></div>
-      <aside class="notes">Spec: Negotiating Compatibility — "When Alice declares that she accepts didcomm/v2, she is making a declaration about more than her own endpoint..." data.cbor is not in #463; the PR only says the attachment's media_type becomes application/didcomm-encrypted+cbor.</aside>
+      <aside class="notes">Spec: Negotiating Compatibility — "When Alice declares that she accepts didcomm/v2, she is making a declaration about more than her own endpoint..." data.cbor is not in #463; the PR only says the attachment's media_type becomes application/didcomm-encrypted+cbor. A did:key routing key has no service, so it can't advertise anything; falling back to JSON there would break the recipient's route-wide promise.</aside>
     </section>
 
     <!-- WHAT TO PIN DOWN -->
