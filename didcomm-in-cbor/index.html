@@ -271,7 +271,7 @@
         <p class="kicker">"Hello world!" is 1,803 bytes of plaintext here, against 305 with short-form DIDs: the <code>from</code> and <code>to</code> DIDs <em>are</em> the message. CBOR can't shrink text.</p>
       </div>
       <div class="slide-foot"><span>didcomm in cbor</span><span>13 / 26</span></div>
-      <aside class="notes">Authcrypt carries the sender's kid as apu. The JSON form also repeats it as skid, inside a base64url'd protected header. The COSE form omits skid: the spec requires receivers to fall back to apu, and with long-form DIDs that saves 816 bytes (4,510 → 3,694).</aside>
+      <aside class="notes">Authcrypt carries the sender's kid as apu. The JSON form also repeats it as skid, inside a base64url'd protected header. The COSE form omits skid, which the spec allows: DIDComm Messaging v2.1, Security → Message Encryption → "ECDH-1PU key wrapping and common protected headers", last paragraph: "authcrypt implementations MUST be able to resolve the sender kid from the apu header if skid is not set" (the 1PU draft, §2.2.1, doesn't require skid). The same section requires apu to contain the skid value, so nothing is lost. With long-form DIDs that saves 816 bytes (4,510 → 3,694).</aside>
     </section>
 
     <!-- SAVINGS BY PAYLOAD -->
@@ -414,12 +414,13 @@
         <h2>After CBOR, the bytes are identifiers</h2>
         <div class="grid3">
           <div class="card gold"><h3>DIDs</h3><p>Kids, <code>apu</code>, <code>from</code>/<code>to</code>, <code>next</code>: all text in both encodings. A long-form all-CBOR forward is still 6,625 bytes; short form, 1,386.</p></div>
-          <div class="card"><h3>Repeated headers</h3><p>COSE repeats the shared key-agreement headers in every recipient. Dropping the duplicate <code>skid</code> saved 816 bytes per long-form authcrypt message.</p></div>
+          <div class="card"><h3>Repeated headers</h3><p>COSE repeats the shared key-agreement headers in every recipient. Dropping the duplicate <code>skid</code> (it repeats <code>apu</code>) saved 816 bytes per long-form authcrypt message.</p></div>
           <div class="card"><h3>Attachments</h3><p>Binary attachments are still base64 text in a CBOR plaintext: a 10 KiB photo costs 13.3 KiB either way.</p></div>
         </div>
+        <div class="quote">A final note about <code>skid</code> header: since the 1PU draft does not require this header, authcrypt implementations MUST be able to resolve the sender kid from the <code>apu</code> header if <code>skid</code> is not set.<cite><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#ecdh-1pu-key-wrapping-and-common-protected-headers">DIDComm Messaging v2.1 — ECDH-1PU key wrapping and common protected headers</a></cite></div>
       </div>
       <div class="slide-foot"><span>didcomm in cbor</span><span>20 / 26</span></div>
-      <aside class="notes">JWE puts the shared epk/apu/apv once in its protected header; COSE's per-recipient layering repeats them for each recipient (each device of a multi-device DID).</aside>
+      <aside class="notes">Spec location for skid: v2.1, Security → Message Encryption → "ECDH-1PU key wrapping and common protected headers", final paragraph. #463's COSE authcrypt header list (ephemeral key, party u identity, party v identity, algorithm) has no skid either. Caveat: "Message Layer Addressing Consistency" says the plaintext from MUST match skid; with skid absent that means the sender kid taken from apu, which is what wyvrn checks. JWE puts the shared epk/apu/apv once in its protected header; COSE's per-recipient layering repeats them for each recipient (each device of a multi-device DID).</aside>
     </section>
 
     <!-- SECTION: IS IT WORTH IT? -->
@@ -494,7 +495,7 @@
       <h2 style="margin-bottom:.4rem">Sources</h2>
       <ul class="refs">
         <li><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#additional-encodings">DIDComm Messaging v2.1 — Additional Encodings</a> · <a href="https://github.com/decentralized-identity/didcomm-messaging/pull/463">didcomm-messaging#463 — WIP: CBOR encoding</a> <span class="st">open</span></li>
-        <li><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#didcomm-encrypted-messages">Encrypted messages</a> · <a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#message-encryption">Message encryption</a> · <a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#negotiating-compatibility">Profiles</a></li>
+        <li><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#didcomm-encrypted-messages">Encrypted messages</a> · <a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#message-encryption">Message encryption</a> · <a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#ecdh-1pu-key-wrapping-and-common-protected-headers">ECDH-1PU common headers</a> <span class="st">skid optional</span> · <a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#negotiating-compatibility">Profiles</a></li>
         <li><a href="https://www.rfc-editor.org/rfc/rfc8949.html">RFC 8949 — CBOR</a> <span class="st">obsoletes RFC 7049</span></li>
         <li><a href="https://www.rfc-editor.org/rfc/rfc9052.html">RFC 9052 — COSE structures</a> · <a href="https://www.rfc-editor.org/rfc/rfc9053.html">RFC 9053 — COSE algorithms</a></li>
         <li><a href="https://www.rfc-editor.org/rfc/rfc8392.html">RFC 8392 — CBOR Web Token (CWT)</a> · <a href="https://www.rfc-editor.org/rfc/rfc9596.html">RFC 9596 — COSE "typ" header</a></li>
