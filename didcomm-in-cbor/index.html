@@ -41,9 +41,8 @@
           <span class="eyebrow">didcomm user group</span>
         </div>
         <h1>DIDComm<br>in CBOR?</h1>
-        <p class="sub">The spec considered a binary encoding more than once and chose JSON. A proposal is now open. What a CBOR profile looks like, what it measurably buys, and what it costs.</p>
-        <span class="pill gold">draft</span>
-      </div>
+        <p class="sub">The spec considered a binary encoding more than once and chose JSON. A proposal has been open since August 2025. What a CBOR profile looks like, what it measurably buys, and what it costs.</p>
+              </div>
     </section>
 
     <!-- SECTION: THE CASE FOR CBOR -->
@@ -124,7 +123,7 @@
         </div>
       </div>
       <div class="slide-foot"><span>didcomm in cbor</span><span>6 / 26</span></div>
-      <aside class="notes">Spec: Security, Sender Authenticated Encryption ("the JWA of ECDH-1PU MUST be used"). Checked against the IANA COSE and JOSE registries: no ECDH-1PU registration. PR #463 cites "draft-madden-cose-ecdh-1pu", but no such COSE algorithm is registered. The experiment: shared secret Ze‖Zs, HKDF-SHA-256 over COSE_KDF_Context with AlgorithmID A256KW (-5), and the A256CBC-HS512 tag in SuppPubInfo.other. A256CBC-HS512 and XC20P have no COSE codepoints either, so they're text labels too.</aside>
+      <aside class="notes">Spec: Security, Sender Authenticated Encryption ("the JWA of ECDH-1PU MUST be used"). Checked against the IANA COSE and JOSE registries: no ECDH-1PU registration. PR #463 cites "draft-madden-cose-ecdh-1pu", but no such draft exists in the IETF datatracker (checked October 2026); the only ECDH-1PU draft is the JOSE one. COSE-HPKE (draft-ietf-cose-hpke-27) is in IESG evaluation as of October 2026 and may become an RFC soon; it still covers only HPKE base and PSK modes, so it doesn't change the authcrypt gap. The experiment: shared secret Ze‖Zs, HKDF-SHA-256 over COSE_KDF_Context with AlgorithmID A256KW (-5), and the A256CBC-HS512 tag in SuppPubInfo.other. A256CBC-HS512 and XC20P have no COSE codepoints either, so they're text labels too.</aside>
     </section>
 
     <!-- SIGNALLING -->
@@ -146,7 +145,7 @@
 }</code></pre>
       </div>
       <div class="slide-foot"><span>didcomm in cbor</span><span>7 / 26</span></div>
-      <aside class="notes">PR #463 ("WIP: CBOR encoding", opened August 2025) is still open. Its "Encoding Detection" section gives the first-byte rule, which meets the spec's own requirement for "a deterministic and reliable method for indicating the alternative encoding". A COSE_Encrypt is CBOR tag 96 (bytes d8 60); a COSE_Sign1 is tag 18 (d2).</aside>
+      <aside class="notes">PR #463 ("WIP: CBOR encoding", opened August 2025) is still open; its last commit was September 2025. Its "Encoding Detection" section gives the first-byte rule, which meets the spec's own requirement for "a deterministic and reliable method for indicating the alternative encoding". A COSE_Encrypt is CBOR tag 96 (bytes d8 60); a COSE_Sign1 is tag 18 (d2).</aside>
     </section>
 
     <!-- ROUTES -->
@@ -169,6 +168,7 @@
     <section>
       <div class="eyebrow gold"><span class="sec">The hard parts ·</span> what a CBOR profile has to pin down</div>
       <div class="slide-body">
+        <h2>What #463 settles, and what it leaves open</h2>
         <table class="compare">
           <thead><tr><th>Question</th><th>#463 says</th><th>The experiment does</th></tr></thead>
           <tbody>
@@ -481,7 +481,7 @@
         <h1 style="font-size:2.6rem">Open questions</h1>
         <ul style="margin-top:.6rem">
           <li class="q">Is #463 worth finishing now, or only once someone needs it?</li>
-          <li class="q">How should authcrypt work in COSE: text labels for ECDH-1PU, or a registration?</li>
+          <li class="q">How should authcrypt work in COSE: text labels for ECDH-1PU, or a registration? (#463 cites a COSE ECDH-1PU draft that was never published.)</li>
           <li class="q">Should #463 define <code>data.binary</code> for raw attachment bytes, with <code>media_type</code> saying what they are?</li>
           <li class="q">Long-form DIDs cost more bytes than the choice of encoding. Should they ever be on the wire?</li>
         </ul>
