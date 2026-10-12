@@ -15,6 +15,7 @@
   .sw{display:inline-block;width:.8rem;height:.8rem;border-radius:2px}
   .sw.json,.bar.json{background:#c98424}
   .sw.cbor,.bar.cbor{background:#239aa8}
+.sw.mix,.bar.mix{background:#7f93a3}
   .hbars{display:grid;grid-template-columns:max-content 1fr;gap:.55rem 1rem;align-items:center}
   .hbars .lab{font-size:.88rem;color:var(--paper);text-align:right}
   .hbars .lab .d{display:block;font-family:var(--mono);font-size:.7rem;color:var(--muted)}
@@ -51,7 +52,7 @@
         <h1>The case for CBOR</h1>
         <p class="sub">Why it came up, and where JSON spends its bytes.</p>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>1 / 26</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>1 / 28</span></div>
     </section>
 
     <!-- THE SPEC'S OWN HISTORY -->
@@ -62,7 +63,7 @@
         <div class="quote">At multiple points in the creation of this spec the community discussed switching to CBOR as a primary encoding format to replace JSON. Two reasons prevented that switch: The maturity of the JSON related standards as compared to CBOR related standards, and the cost of switching so late in spec development.<cite><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#additional-encodings">DIDComm Messaging v2.1 — Future Work, Additional Encodings</a></cite></div>
         <div class="quote">Future encodings might introduce binary serializations. Each innovation like this MUST specify a deterministic and reliable method for indicating the alternative encoding used.<cite>same section</cite></div>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>2 / 26</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>2 / 28</span></div>
     </section>
 
     <!-- WHERE BYTES GO -->
@@ -78,7 +79,7 @@
         </div>
         <p class="kicker">Plus JSON key names like <code>"protected"</code> and <code>"recipients"</code> repeated in every message. CBOR carries raw bytes and can use small integer keys.</p>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>3 / 26</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>3 / 28</span></div>
       <aside class="notes">4/3 per base64url layer is exact up to padding; two nested layers give 16/9 ≈ 1.78. The "What it measures" section has real numbers: signed + anoncrypt is where JSON pays the double layer, and CBOR saves 48–58% there.</aside>
     </section>
 
@@ -97,7 +98,7 @@
         </tbody>
       </table>
       <p class="kicker" style="margin-top:.6rem">Algorithms for COSE are defined in <a href="https://www.rfc-editor.org/rfc/rfc9053.html">RFC 9053</a> and listed in the <a href="https://www.iana.org/assignments/cose/cose.xhtml">IANA COSE registry</a>, including ECDH-ES and ECDH-SS key agreement with key wrap.</p>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>4 / 26</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>4 / 28</span></div>
       <aside class="notes">The spec's note cites CBOR RFC 7049, since obsoleted by RFC 8949.</aside>
     </section>
 
@@ -107,7 +108,7 @@
         <h1>The hard parts</h1>
         <p class="sub">Authcrypt, signalling, and every hop agreeing.</p>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>5 / 26</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>5 / 28</span></div>
     </section>
 
     <!-- THE HARD PART -->
@@ -122,7 +123,7 @@
           <div class="card teal"><h3>One way to do it</h3><p>Keep ECDH-1PU and give it a <b>text</b> COSE <code>alg</code> label, which RFC 9052 allows. Derive keys with COSE's HKDF context and bind the content tag into it, as JOSE does. The wyvrn experiment does this.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>6 / 26</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>6 / 28</span></div>
       <aside class="notes">Spec: Security, Sender Authenticated Encryption ("the JWA of ECDH-1PU MUST be used"). Checked against the IANA COSE and JOSE registries: no ECDH-1PU registration. PR #463 cites "draft-madden-cose-ecdh-1pu", but no such draft exists in the IETF datatracker (checked October 2026); the only ECDH-1PU draft is the JOSE one. COSE-HPKE (draft-ietf-cose-hpke-27) is in IESG evaluation as of October 2026 and may become an RFC soon; it still covers only HPKE base and PSK modes, so it doesn't change the authcrypt gap. The experiment: shared secret Ze‖Zs, HKDF-SHA-256 over COSE_KDF_Context with AlgorithmID A256KW (-5), and the A256CBC-HS512 tag in SuppPubInfo.other. A256CBC-HS512 and XC20P have no COSE codepoints either, so they're text labels too.</aside>
     </section>
 
@@ -144,7 +145,7 @@
   ]
 }</code></pre>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>7 / 26</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>7 / 28</span></div>
       <aside class="notes">PR #463 ("WIP: CBOR encoding", opened August 2025) is still open; its last commit was September 2025. Its "Encoding Detection" section gives the first-byte rule, which meets the spec's own requirement for "a deterministic and reliable method for indicating the alternative encoding". A COSE_Encrypt is CBOR tag 96 (bytes d8 60); a COSE_Sign1 is tag 18 (d2).</aside>
     </section>
 
@@ -160,7 +161,7 @@
           <li>Mixed routes cost bytes: a CBOR message inside a JSON forward is base64'd twice. See the numbers.</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>8 / 26</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>8 / 28</span></div>
       <aside class="notes">Spec: Negotiating Compatibility — "When Alice declares that she accepts didcomm/v2, she is making a declaration about more than her own endpoint..." data.binary is not in #463; the PR only says the attachment's media_type becomes application/didcomm-encrypted+cbor. A did:key routing key has no service, so it can't advertise anything; falling back to JSON there would break the recipient's route-wide promise.</aside>
     </section>
 
@@ -182,7 +183,7 @@
           </tbody>
         </table>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>9 / 26</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>9 / 28</span></div>
       <aside class="notes">Integer labels for plaintext headers would save a little more (header names are short), but would break the "same structure as JSON" property #463 relies on.</aside>
     </section>
 
@@ -192,7 +193,7 @@
         <h1>What it measures</h1>
         <p class="sub">Real packed messages, JSON and CBOR, at every layer a mediated message passes through.</p>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>10 / 26</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>10 / 28</span></div>
     </section>
 
     <!-- HOW IT WAS MEASURED -->
@@ -208,7 +209,7 @@
         </div>
         <p class="kicker">Envelopes: XC20P anoncrypt, A256CBC-HS512 authcrypt, EdDSA signatures, X25519 keys. Reproduce with <code>cargo run -p didcomm-quickstart --example message_sizes</code>.</p>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>11 / 26</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>11 / 28</span></div>
       <aside class="notes">wyvrn-didcomm, crates/didcomm-quickstart/examples/message_sizes.rs. Sizes are deterministic to the byte except gzip on random ciphertext. Plaintext includes the headers pack() adds (id, from, to, created_time).</aside>
     </section>
 
@@ -239,7 +240,7 @@
 </div>
         <p class="kicker">The plaintext barely changes: it's mostly text either way. Each encryption layer is where JSON's base64url and repeated header names add up, and signing nests two of them.</p>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>12 / 26</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>12 / 28</span></div>
       <aside class="notes">Signed + anoncrypt: a JWS whose payload is base64url, inside a JWE whose ciphertext is base64url again. In CBOR, a COSE_Sign1 inside a COSE_Encrypt, both carrying raw bytes.</aside>
     </section>
 
@@ -270,7 +271,7 @@
 </div>
         <p class="kicker">"Hello world!" is 1,803 bytes of plaintext here, against 305 with short-form DIDs: the <code>from</code> and <code>to</code> DIDs <em>are</em> the message. CBOR can't shrink text.</p>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>13 / 26</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>13 / 28</span></div>
       <aside class="notes">Authcrypt carries the sender's kid as apu. The JSON form also repeats it as skid, inside a base64url'd protected header. The COSE form omits skid, which the spec allows: DIDComm Messaging v2.1, Security → Message Encryption → "ECDH-1PU key wrapping and common protected headers", last paragraph: "authcrypt implementations MUST be able to resolve the sender kid from the apu header if skid is not set" (the 1PU draft, §2.2.1, doesn't require skid). The same section requires apu to contain the skid value, so nothing is lost. With long-form DIDs that saves 816 bytes (4,510 → 3,694).</aside>
     </section>
 
@@ -292,7 +293,7 @@
 </tbody></table>
         <p class="kicker">A binary attachment gains the most: CBOR carries it as raw <code>data.binary</code>, so neither the attachment nor the ciphertext around it is base64'd. Text-heavy messages save less.</p>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>14 / 26</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>14 / 28</span></div>
       <aside class="notes">Bytes, JSON → CBOR. The 10 KiB attachment is 13,654 characters of base64 in a JSON plaintext and 10,240 raw bytes (data.binary) in a CBOR one. Carrying it as base64 text in CBOR, as an earlier version of the experiment did, cost about 3.4 KB more per message: −25 to −29% instead of −41 to −44%.</aside>
     </section>
 
@@ -310,7 +311,7 @@
 </tbody></table>
         <p class="kicker">The wrapper alone is 6,003 bytes in JSON and 2,933 in CBOR. With short-form DIDs: 1,569 vs 683.</p>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>15 / 26</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>15 / 28</span></div>
       <aside class="notes">"Forward wrapper adds" = forward size minus the inner message it carries: the mediator's kid, the forward plaintext (to, next, ids), and in JSON the base64url of everything inside. Same table with short-form DIDs: 2,849 bytes all-JSON vs 1,388 all-CBOR.</aside>
     </section>
 
@@ -343,7 +344,7 @@
           <li>CBOR at both hops: <b>−46%</b> (12,347 → 6,627).</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>16 / 26</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>16 / 28</span></div>
       <aside class="notes">Short-form DIDs: 2,849 → 1,388 bytes (−51%).</aside>
     </section>
 
@@ -360,7 +361,63 @@
 </tbody></table>
         <p class="kicker">Smaller identifiers make the encoding a bigger share of the message, so the relative saving grows: <b>−51%</b> end to end.</p>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>17 / 26</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>17 / 28</span></div>
+    </section>
+
+    <!-- MULTI-HOP CHART -->
+    <section>
+      <div class="eyebrow danger"><span class="sec">What it measures ·</span> multi-hop forward wrapping</div>
+      <h2>Every JSON hop base64s everything inside it</h2>
+      <div class="slide-body" style="gap:.7rem">
+        <p class="chart-note">Alice → <i>k</i> mediators → Bob, authcrypted short text, long-form <code>did:peer:4</code>. Each forward follows its mediator's <code>accept</code>.</p>
+        <div class="legend"><span><i class="sw json"></i>All JSON</span><span><i class="sw mix"></i>Mixed, worst case</span><span><i class="sw cbor"></i>All CBOR</span><span class="unit">bytes Alice sends</span></div>
+        <div class="hbars">
+          <div class="lab">1 hop</div><div class="track">
+            <div class="bar json" style="width:3.21%" data-tip="1 hop, all JSON: 12,347 B"><span class="v">12,347</span></div>
+            <div class="bar mix" style="width:2.72%" data-tip="1 hop, worst mixed route: 10,462 B"><span class="v">10,462</span></div>
+            <div class="bar cbor" style="width:1.72%" data-tip="1 hop, all CBOR: 6,627 B (−46%)"><span class="v">6,627 · −46%</span></div>
+          </div>
+          <div class="lab">2 hops</div><div class="track">
+            <div class="bar json" style="width:5.28%" data-tip="2 hops, all JSON: 20,351 B"><span class="v">20,351</span></div>
+            <div class="bar mix" style="width:5.28%" data-tip="2 hops, worst mixed route: 20,336 B"><span class="v">20,336</span></div>
+            <div class="bar cbor" style="width:2.48%" data-tip="2 hops, all CBOR: 9,560 B (−53%)"><span class="v">9,560 · −53%</span></div>
+          </div>
+          <div class="lab">5 hops</div><div class="track">
+            <div class="bar json" style="width:16.67%" data-tip="5 hops, all JSON: 64,224 B"><span class="v">64,224</span></div>
+            <div class="bar mix" style="width:16.67%" data-tip="5 hops, worst mixed route: 64,211 B"><span class="v">64,211</span></div>
+            <div class="bar cbor" style="width:4.77%" data-tip="5 hops, all CBOR: 18,359 B (−71%)"><span class="v">18,359 · −71%</span></div>
+          </div>
+          <div class="lab">10 hops</div><div class="track">
+            <div class="bar json" style="width:80.00%" data-tip="10 hops, all JSON: 308,128 B"><span class="v">308,128</span></div>
+            <div class="bar mix" style="width:80.00%" data-tip="10 hops, worst mixed route: 308,122 B"><span class="v">308,122</span></div>
+            <div class="bar cbor" style="width:8.57%" data-tip="10 hops, all CBOR: 33,024 B (−89%)"><span class="v">33,024 · −89%</span></div>
+          </div>
+        </div>
+        <p class="kicker">JSON compounds: each hop adds its own headers, then base64s the lot (×4/3). CBOR adds a flat 2,933 bytes per hop. At 10 hops: 308 KB against 33 KB, for a 6 KB message.</p>
+      </div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>18 / 28</span></div>
+      <aside class="notes">Bob's endpoint is mediator 1's DID, mediator 1's is mediator 2's, and so on (spec: Using a DID as an endpoint); the outermost mediator has a URL. The inner message is the same 6,344-byte JSON authcrypt as the one-hop slides, and the 1-hop row matches them. A JSON forward embeds a JSON inner as data.json, then base64url's the whole plaintext as ciphertext; that's the ×4/3 that compounds. Ten hops is far beyond any real route; the point is the shape of the curve, not the number.</aside>
+    </section>
+
+    <!-- MULTI-HOP TABLE -->
+    <section>
+      <div class="eyebrow"><span class="sec">What it measures ·</span> multi-hop, the numbers</div>
+      <h2>Mixing never makes it worse than all JSON</h2>
+      <div class="slide-body" style="gap:.6rem">
+        <table class="compare num"><thead><tr><th>DIDs</th><th>Mediators</th><th>All JSON</th><th>All CBOR</th><th>Mixed, worst case</th></tr></thead><tbody>
+          <tr><th rowspan="4">Long-form DIDs</th><td>1 hop</td><td>12,347</td><td>6,627 <b>−46%</b></td><td>10,462</td></tr>
+          <tr><td>2 hops</td><td>20,351</td><td>9,560 <b>−53%</b></td><td>20,336</td></tr>
+          <tr><td>5 hops</td><td>64,224</td><td>18,359 <b>−71%</b></td><td>64,211</td></tr>
+          <tr><td>10 hops</td><td>308,128</td><td>33,024 <b>−89%</b></td><td>308,122</td></tr>
+          <tr><th rowspan="4">Short-form DIDs</th><td>1 hop</td><td>2,849</td><td>1,388 <b>−51%</b></td><td>2,401</td></tr>
+          <tr><td>2 hops</td><td>4,941</td><td>2,071 <b>−58%</b></td><td>4,586</td></tr>
+          <tr><td>5 hops</td><td>16,407</td><td>4,120 <b>−75%</b></td><td>16,053</td></tr>
+          <tr><td>10 hops</td><td>80,151</td><td>7,535 <b>−91%</b></td><td>79,797</td></tr>
+        </tbody></table>
+        <p class="kicker">The worst mixed route is all JSON but one CBOR hop just inside the outermost, and it's still a few bytes smaller than all JSON: a CBOR hop never base64s what it carries.</p>
+      </div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>19 / 28</span></div>
+      <aside class="notes">Bytes Alice sends to the outermost mediator. "Mixed, worst case": every combination of encodings for Bob and each mediator (2^(k+1) routes) packed for real, largest kept; all-JSON and all-CBOR excluded. Worst patterns, outermost first: 1 hop JSON forward around a CBOR inner (10,462); 2, 5 and 10 hops: JSON outermost, CBOR next, JSON everywhere else including Bob. Sizes are deterministic: two runs gave identical bytes. Measured with a forward_hops example written for this slide, using the same pack and routing code as message_sizes; it is not in the wyvrn-didcomm repo yet.</aside>
     </section>
 
     <!-- DELIVERY -->
@@ -386,7 +443,7 @@
 </div>
         <p class="kicker">The delivery wraps the stored message again, so JSON pays the base64 tax twice on the way down too. On a phone, this is the number that matters.</p>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>18 / 26</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>20 / 28</span></div>
     </section>
 
     <!-- GZIP -->
@@ -403,7 +460,7 @@
 </tbody></table>
         <p class="kicker">gzip recovers part of base64's 33% (its alphabet only carries 6 bits a character), but ciphertext itself doesn't compress, so plain CBOR is smaller than gzipped JSON. Compressing CBOR only helps where long DIDs repeat.</p>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>19 / 26</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>21 / 28</span></div>
       <aside class="notes">gzip -9 (flate2 best). Long-form DIDs compress well in JSON because the same DID text repeats; that's the main reason JSON+gzip gets close on the forward rows.</aside>
     </section>
 
@@ -419,7 +476,7 @@
         </div>
         <div class="quote">A final note about <code>skid</code> header: since the 1PU draft does not require this header, authcrypt implementations MUST be able to resolve the sender kid from the <code>apu</code> header if <code>skid</code> is not set.<cite><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#ecdh-1pu-key-wrapping-and-common-protected-headers">DIDComm Messaging v2.1 — ECDH-1PU key wrapping and common protected headers</a></cite></div>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>20 / 26</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>22 / 28</span></div>
       <aside class="notes">Spec location for skid: v2.1, Security → Message Encryption → "ECDH-1PU key wrapping and common protected headers", final paragraph. #463's COSE authcrypt header list (ephemeral key, party u identity, party v identity, algorithm) has no skid either. Caveat: "Message Layer Addressing Consistency" says the plaintext from MUST match skid; with skid absent that means the sender kid taken from apu, which is what wyvrn checks. JWE puts the shared epk/apu/apv once in its protected header; COSE's per-recipient layering repeats them for each recipient (each device of a multi-device DID).</aside>
     </section>
 
@@ -429,7 +486,7 @@
         <h1>Is it worth it?</h1>
         <p class="sub">The costs, and where it pays off.</p>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>21 / 26</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>23 / 28</span></div>
     </section>
 
     <!-- COSTS -->
@@ -444,7 +501,7 @@
           <div class="card danger"><h3>Compression exists</h3><p>gzip recovers part of the base64 tax, but not all of it: measured, gzipped JSON is still bigger than plain CBOR almost everywhere.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>22 / 26</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>24 / 28</span></div>
     </section>
 
     <!-- WHEN IT PAYS -->
@@ -458,7 +515,7 @@
           <div class="card teal"><h3>QR codes</h3><p>Out-of-band invitations are size-limited by what a camera can read.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>23 / 26</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>25 / 28</span></div>
     </section>
 
     <!-- EXPERIMENT -->
@@ -470,7 +527,7 @@
         <p class="kicker">A different route in the registry: <a href="https://didcomm.org/mesh/1.0/"><code>mesh/1.0</code></a> doesn't CBOR-encode the standard envelope at all. It defines its own binary packet format and a compact session-key envelope for BLE and LoRa, with JSON kept for debugging and the internet.</p>
         <p class="kicker">Next step for the group: shared reference messages and test vectors for each encoding, so other implementations can check their sizes and their bytes.</p>
       </div>
-      <div class="slide-foot"><span>didcomm in cbor</span><span>24 / 26</span></div>
+      <div class="slide-foot"><span>didcomm in cbor</span><span>26 / 28</span></div>
       <aside class="notes">Keep this framed as an experiment. Numbers are from the "What it measures" section: long-form did:peer:4, authcrypted short text, Alice → mediator → Bob.</aside>
     </section>
 
@@ -486,7 +543,7 @@
           <li class="q">Long-form DIDs cost more bytes than the choice of encoding. Should they ever be on the wire?</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>thank you</span><span>25 / 26</span></div>
+      <div class="slide-foot"><span>thank you</span><span>27 / 28</span></div>
     </section>
 
     <!-- REFERENCES -->
@@ -505,7 +562,7 @@
         <li><a href="https://datatracker.ietf.org/doc/draft-ietf-cose-hpke/">draft-ietf-cose-hpke</a> <span class="st">draft</span> · <a href="https://www.rfc-editor.org/rfc/rfc9180.html">RFC 9180 — HPKE</a></li>
         <li><a href="https://didcomm.org/mesh/1.0/">mesh/1.0</a> <span class="st">Proposed</span></li>
       </ul>
-      <div class="slide-foot"><span>didcomm in cbor · checked October 2026</span><span>26 / 26</span></div>
+      <div class="slide-foot"><span>didcomm in cbor · checked October 2026</span><span>28 / 28</span></div>
     </section>
 
   </div>
