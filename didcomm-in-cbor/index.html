@@ -9,13 +9,14 @@
 <style>
   /* Measured-size charts: paired horizontal bars, values at the bar tip. Series
      colors are the deck's gold/teal one step darker, validated for this surface. */
-  .legend{display:flex;gap:1.4rem;align-items:center;font-size:.8rem;color:var(--muted);margin-bottom:.5rem}
+  .legend{display:flex;flex-wrap:wrap;gap:.4rem 1.4rem;align-items:center;font-size:.8rem;color:var(--muted);margin-bottom:.5rem}
   .legend span{display:flex;align-items:center;gap:.45rem}
   .legend .unit{margin-left:auto;font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;text-transform:uppercase}
   .sw{display:inline-block;width:.8rem;height:.8rem;border-radius:2px}
   .sw.json,.bar.json{background:#c98424}
   .sw.cbor,.bar.cbor{background:#239aa8}
 .sw.mix,.bar.mix{background:#7f93a3}
+.sw.alt,.bar.alt{background:#9b7fd1}
   .hbars{display:grid;grid-template-columns:max-content 1fr;gap:.55rem 1rem;align-items:center}
   .hbars .lab{font-size:.88rem;color:var(--paper);text-align:right}
   .hbars .lab .d{display:block;font-family:var(--mono);font-size:.7rem;color:var(--muted)}
@@ -370,30 +371,34 @@
       <h2>Every JSON hop base64s everything inside it</h2>
       <div class="slide-body" style="gap:.7rem">
         <p class="chart-note">Alice → <i>k</i> mediators → Bob, authcrypted short text, long-form <code>did:peer:4</code>. Each forward follows its mediator's <code>accept</code>.</p>
-        <div class="legend"><span><i class="sw json"></i>All JSON</span><span><i class="sw mix"></i>Mixed, worst case</span><span><i class="sw cbor"></i>All CBOR</span><span class="unit">bytes Alice sends</span></div>
+        <div class="legend"><span><i class="sw json"></i>All JSON</span><span><i class="sw mix"></i>Mixed, worst case</span><span><i class="sw alt"></i>Alternating J → C → …</span><span><i class="sw cbor"></i>All CBOR</span><span class="unit">bytes Alice sends</span></div>
         <div class="hbars">
           <div class="lab">1 hop</div><div class="track">
-            <div class="bar json" style="width:3.21%" data-tip="1 hop, all JSON: 12,347 B"><span class="v">12,347</span></div>
-            <div class="bar mix" style="width:2.72%" data-tip="1 hop, worst mixed route: 10,462 B"><span class="v">10,462</span></div>
-            <div class="bar cbor" style="width:1.72%" data-tip="1 hop, all CBOR: 6,627 B (−46%)"><span class="v">6,627 · −46%</span></div>
+            <div class="bar json" style="width:2.73%" data-tip="1 hop, all JSON: 12,347 B"><span class="v">12,347</span></div>
+            <div class="bar mix" style="width:2.31%" data-tip="1 hop, worst mixed route: 10,462 B"><span class="v">10,462</span></div>
+            <div class="bar alt" style="width:2.31%" data-tip="1 hop, alternating JSON → CBOR → …: 10,462 B (−15%)"><span class="v">10,462 · −15%</span></div>
+            <div class="bar cbor" style="width:1.46%" data-tip="1 hop, all CBOR: 6,627 B (−46%)"><span class="v">6,627 · −46%</span></div>
           </div>
           <div class="lab">2 hops</div><div class="track">
-            <div class="bar json" style="width:5.28%" data-tip="2 hops, all JSON: 20,351 B"><span class="v">20,351</span></div>
-            <div class="bar mix" style="width:5.28%" data-tip="2 hops, worst mixed route: 20,336 B"><span class="v">20,336</span></div>
-            <div class="bar cbor" style="width:2.48%" data-tip="2 hops, all CBOR: 9,560 B (−53%)"><span class="v">9,560 · −53%</span></div>
+            <div class="bar json" style="width:4.49%" data-tip="2 hops, all JSON: 20,351 B"><span class="v">20,351</span></div>
+            <div class="bar mix" style="width:4.49%" data-tip="2 hops, worst mixed route: 20,336 B"><span class="v">20,336</span></div>
+            <div class="bar alt" style="width:4.49%" data-tip="2 hops, alternating JSON → CBOR → …: 20,336 B (−0.1%)"><span class="v">20,336 · −0.1%</span></div>
+            <div class="bar cbor" style="width:2.11%" data-tip="2 hops, all CBOR: 9,560 B (−53%)"><span class="v">9,560 · −53%</span></div>
           </div>
           <div class="lab">5 hops</div><div class="track">
-            <div class="bar json" style="width:16.67%" data-tip="5 hops, all JSON: 64,224 B"><span class="v">64,224</span></div>
-            <div class="bar mix" style="width:16.67%" data-tip="5 hops, worst mixed route: 64,211 B"><span class="v">64,211</span></div>
-            <div class="bar cbor" style="width:4.77%" data-tip="5 hops, all CBOR: 18,359 B (−71%)"><span class="v">18,359 · −71%</span></div>
+            <div class="bar json" style="width:14.17%" data-tip="5 hops, all JSON: 64,224 B"><span class="v">64,224</span></div>
+            <div class="bar mix" style="width:14.17%" data-tip="5 hops, worst mixed route: 64,211 B"><span class="v">64,211</span></div>
+            <div class="bar alt" style="width:12.85%" data-tip="5 hops, alternating JSON → CBOR → …: 58,228 B (−9%)"><span class="v">58,228 · −9%</span></div>
+            <div class="bar cbor" style="width:4.05%" data-tip="5 hops, all CBOR: 18,359 B (−71%)"><span class="v">18,359 · −71%</span></div>
           </div>
           <div class="lab">10 hops</div><div class="track">
-            <div class="bar json" style="width:80.00%" data-tip="10 hops, all JSON: 308,128 B"><span class="v">308,128</span></div>
-            <div class="bar mix" style="width:80.00%" data-tip="10 hops, worst mixed route: 308,122 B"><span class="v">308,122</span></div>
-            <div class="bar cbor" style="width:8.57%" data-tip="10 hops, all CBOR: 33,024 B (−89%)"><span class="v">33,024 · −89%</span></div>
+            <div class="bar json" style="width:68.00%" data-tip="10 hops, all JSON: 308,128 B"><span class="v">308,128</span></div>
+            <div class="bar mix" style="width:68.00%" data-tip="10 hops, worst mixed route: 308,122 B"><span class="v">308,122</span></div>
+            <div class="bar alt" style="width:67.93%" data-tip="10 hops, alternating JSON → CBOR → …: 307,838 B (−0.1%)"><span class="v">307,838 · −0.1%</span></div>
+            <div class="bar cbor" style="width:7.28%" data-tip="10 hops, all CBOR: 33,024 B (−89%)"><span class="v">33,024 · −89%</span></div>
           </div>
         </div>
-        <p class="kicker">JSON compounds: each hop adds its own headers, then base64s the lot (×4/3). CBOR adds a flat 2,933 bytes per hop. At 10 hops: 308 KB against 33 KB, for a 6 KB message.</p>
+        <p class="kicker">JSON compounds: each hop adds its own headers, then base64s the lot. CBOR adds a flat 2,933 bytes per hop. Alternating barely helps: a JSON hop base64s a CBOR message twice.</p>
       </div>
       <div class="slide-foot"><span>didcomm in cbor</span><span>18 / 28</span></div>
       <aside class="notes">Bob's endpoint is mediator 1's DID, mediator 1's is mediator 2's, and so on (spec: Using a DID as an endpoint); the outermost mediator has a URL. The inner message is the same 6,344-byte JSON authcrypt as the one-hop slides, and the 1-hop row matches them. A JSON forward embeds a JSON inner as data.json, then base64url's the whole plaintext as ciphertext; that's the ×4/3 that compounds. Ten hops is far beyond any real route; the point is the shape of the curve, not the number.</aside>
@@ -404,20 +409,20 @@
       <div class="eyebrow"><span class="sec">What it measures ·</span> multi-hop, the numbers</div>
       <h2>Mixing never makes it worse than all JSON</h2>
       <div class="slide-body" style="gap:.6rem">
-        <table class="compare num"><thead><tr><th>DIDs</th><th>Mediators</th><th>All JSON</th><th>All CBOR</th><th>Mixed, worst case</th></tr></thead><tbody>
-          <tr><th rowspan="4">Long-form DIDs</th><td>1 hop</td><td>12,347</td><td>6,627 <b>−46%</b></td><td>10,462</td></tr>
-          <tr><td>2 hops</td><td>20,351</td><td>9,560 <b>−53%</b></td><td>20,336</td></tr>
-          <tr><td>5 hops</td><td>64,224</td><td>18,359 <b>−71%</b></td><td>64,211</td></tr>
-          <tr><td>10 hops</td><td>308,128</td><td>33,024 <b>−89%</b></td><td>308,122</td></tr>
-          <tr><th rowspan="4">Short-form DIDs</th><td>1 hop</td><td>2,849</td><td>1,388 <b>−51%</b></td><td>2,401</td></tr>
-          <tr><td>2 hops</td><td>4,941</td><td>2,071 <b>−58%</b></td><td>4,586</td></tr>
-          <tr><td>5 hops</td><td>16,407</td><td>4,120 <b>−75%</b></td><td>16,053</td></tr>
-          <tr><td>10 hops</td><td>80,151</td><td>7,535 <b>−91%</b></td><td>79,797</td></tr>
+        <table class="compare num"><thead><tr><th>DIDs</th><th>Mediators</th><th>All JSON</th><th>All CBOR</th><th>Alternating J → C → …</th><th>Mixed, worst case</th></tr></thead><tbody>
+          <tr><th rowspan="4">Long-form DIDs</th><td>1 hop</td><td>12,347</td><td>6,627 <b>−46%</b></td><td>10,462 <b>−15%</b></td><td>10,462</td></tr>
+          <tr><td>2 hops</td><td>20,351</td><td>9,560 <b>−53%</b></td><td>20,336 <b>−0.1%</b></td><td>20,336</td></tr>
+          <tr><td>5 hops</td><td>64,224</td><td>18,359 <b>−71%</b></td><td>58,228 <b>−9%</b></td><td>64,211</td></tr>
+          <tr><td>10 hops</td><td>308,128</td><td>33,024 <b>−89%</b></td><td>307,838 <b>−0.1%</b></td><td>308,122</td></tr>
+          <tr><th rowspan="4">Short-form DIDs</th><td>1 hop</td><td>2,849</td><td>1,388 <b>−51%</b></td><td>2,401 <b>−16%</b></td><td>2,401</td></tr>
+          <tr><td>2 hops</td><td>4,941</td><td>2,071 <b>−58%</b></td><td>4,586 <b>−7%</b></td><td>4,586</td></tr>
+          <tr><td>5 hops</td><td>16,407</td><td>4,120 <b>−75%</b></td><td>14,006 <b>−15%</b></td><td>16,053</td></tr>
+          <tr><td>10 hops</td><td>80,151</td><td>7,535 <b>−91%</b></td><td>72,507 <b>−10%</b></td><td>79,797</td></tr>
         </tbody></table>
-        <p class="kicker">The worst mixed route is all JSON but one CBOR hop just inside the outermost, and it's still a few bytes smaller than all JSON: a CBOR hop never base64s what it carries.</p>
+        <p class="kicker">Alternating saves between 0.1% and 16%: each JSON hop wraps a CBOR message as <code>data.base64</code>, then base64s its own ciphertext, so two hops cost what two JSON hops do. The worst mix is all JSON but one CBOR hop, and even that is a few bytes under all JSON.</p>
       </div>
       <div class="slide-foot"><span>didcomm in cbor</span><span>19 / 28</span></div>
-      <aside class="notes">Bytes Alice sends to the outermost mediator. "Mixed, worst case": every combination of encodings for Bob and each mediator (2^(k+1) routes) packed for real, largest kept; all-JSON and all-CBOR excluded. Worst patterns, outermost first: 1 hop JSON forward around a CBOR inner (10,462); 2, 5 and 10 hops: JSON outermost, CBOR next, JSON everywhere else including Bob. Sizes are deterministic: two runs gave identical bytes. Measured with a forward_hops example written for this slide, using the same pack and routing code as message_sizes; it is not in the wyvrn-didcomm repo yet.</aside>
+      <aside class="notes">Bytes Alice sends to the outermost mediator. "Mixed, worst case": every combination of encodings for Bob and each mediator (2^(k+1) routes) packed for real, largest kept; all-JSON and all-CBOR excluded. Worst patterns, outermost first: 1 hop JSON forward around a CBOR inner (10,462); 2, 5 and 10 hops: JSON outermost, CBOR next, JSON everywhere else including Bob. "Alternating J → C → …": the forward Alice sends the outermost mediator is JSON, the next hop CBOR, and so on down to Bob. The reverse, CBOR first, does better but still compounds: long form 9,249 / 13,367 / 48,116 / 212,108 bytes for 1 / 2 / 5 / 10 hops; short form 1,934 / 3,055 / 11,117 / 51,337. Sizes are deterministic: two runs gave identical bytes. Measured with a forward_hops example written for this slide, using the same pack and routing code as message_sizes; it is not in the wyvrn-didcomm repo yet.</aside>
     </section>
 
     <!-- DELIVERY -->
