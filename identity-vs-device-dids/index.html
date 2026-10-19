@@ -347,9 +347,9 @@ code,.mono{font-family:var(--mono)}
       <div class="numrow" style="flex:1;align-items:center">
         <div class="step"><h3>Laptop prepares</h3><p>Generates its own Device DID + its own <code>keyAgreement</code> keypair, offline. Never receives anyone else's private key.</p></div>
         <div class="step"><h3>QR scan</h3><p>Real <code>out-of-band/2.0</code> invitation from the phone's Device DID. No key material in it — just a route.</p></div>
-        <div class="step"><h3>enroll-request</h3><p>Laptop sends its new public key over that route. Physical possession of the QR is the whole trust basis — same as Signal, WhatsApp.</p></div>
+        <div class="step"><h3>enroll-request</h3><p>Laptop sends its new public key over that route. The QR only gets it <i>considered</i>: one use, minutes to live, and the phone's user accepts or denies.</p></div>
         <div class="step"><h3>enroll-response</h3><p>Phone mints a <b style="color:var(--gold)">new</b> Identity DID document, signs <code>from_prior</code>, replies with the full roster.</p></div>
-        <div class="step"><h3>Fan-out</h3><p>Phone rotates every <i>other</i> sibling and every contact onto the new DID. Both devices now independently receive as the identity.</p></div>
+        <div class="step"><h3>Fan-out</h3><p>Phone sends every <i>other</i> sibling the change as a <b>signed</b> message, and every contact a <code>from_prior</code>. Both devices now receive as the identity.</p></div>
       </div>
       <div class="slide-foot"><span>identity did · device did — walkthrough</span><span>12 / 19</span></div>
     </section>
@@ -361,6 +361,7 @@ code,.mono{font-family:var(--mono)}
       <div class="grid2" style="flex:1">
         <pre class="codeblock"><code>{
   <span class="k">"type"</span>: <span class="s">".../device-enroll-request"</span>,
+  <span class="k">"pthid"</span>: <span class="s">"&lt;invitation id&gt;"</span>,
   <span class="k">"body"</span>: {
     <span class="k">"device_id"</span>: <span class="s">"laptop"</span>,
     <span class="k">"device_did"</span>: <span class="s">"did:peer:4...laptop"</span>,
@@ -378,7 +379,7 @@ code,.mono{font-family:var(--mono)}
   }
 }</code></pre>
       </div>
-      <p class="kicker">No field in either message is ever a private key. <span class="mono">rotation_seq</span> exists purely so an out-of-order fan-out can't resurrect a state a newer rotation already superseded.</p>
+      <p class="kicker">No field in either message is ever a private key. <span class="mono">rotation_seq</span> applies changes in order: one that arrives early is held until the ones before it arrive, so a late fan-out can't undo a newer one.</p>
       <div class="slide-foot"><span>identity did · device did — messages</span><span>13 / 19</span></div>
     </section>
 
@@ -390,12 +391,13 @@ code,.mono{font-family:var(--mono)}
         <div class="grid3" style="grid-template-columns:repeat(4,1fr)">
           <div class="card"><h3>Enroll</h3><p>New <code>keyAgreement</code> entry added to a fresh document.</p></div>
           <div class="card"><h3>Revoke</h3><p>Departing device's entries dropped — cut off the instant the new document ships.</p></div>
-          <div class="card"><h3>Promote</h3><p>Device supplies its own <code>authentication</code> public key; a trusted sibling adds it.</p></div>
+          <div class="card"><h3>Promote</h3><p>Device sends its own <code>authentication</code> public key, with proof it holds it. A trusted sibling's user accepts or denies.</p></div>
           <div class="card"><h3>Demote</h3><p>Any trusted device can drop another's <code>authentication</code> entry, unilaterally.</p></div>
         </div>
         <p class="kicker">Every case: mint a new document, sign <code>from_prior</code> with an <code>authentication</code> key the <i>old</i> document already lists, fan it out. No private key ever moves between devices, in any of the four.</p>
       </div>
       <div class="slide-foot"><span>identity did · device did — rotation</span><span>14 / 19</span></div>
+      <aside class="notes">Promotion is the one change that waits for a person: granting trust is a one-way door, so the trusted device's user accepts or denies (device-promote-response). The request carries a JWT signed with the new key, so a device can only ask to have its own key listed. A fifth case in the current notes: device-remint, for moving a device to a new Device DID. Same keys needs no rotation; new keys is a rotation like the others.</aside>
     </section>
 
     <!-- SECTION 4: TRADE-OFFS AND OPEN QUESTIONS -->
@@ -427,6 +429,7 @@ code,.mono{font-family:var(--mono)}
           <ul style="margin-top:.9rem">
             <li class="card"><p style="color:var(--paper)">A revoked device is cut off from <b>both</b> content and rotation authority the instant the new document publishes.</p></li>
             <li class="card"><p style="color:var(--paper)">A compromised <i>untrusted</i> device can read content — but can never forge a rotation. It has no <code>authentication</code> key to sign with.</p></li>
+            <li class="card"><p style="color:var(--paper)">Only a <b>signed</b> roster change counts. Sender authentication shows which device sent it, not that a trusted one authorized it.</p></li>
           </ul>
         </div>
         <div>

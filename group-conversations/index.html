@@ -29,7 +29,7 @@
         <h1>The starting point</h1>
         <p class="sub">DIDComm is pairwise; three shapes a group could take, and two that already exist.</p>
       </div>
-      <div class="slide-foot"><span>group conversations</span><span>1 / 17</span></div>
+      <div class="slide-foot"><span>group conversations</span><span>1 / 18</span></div>
     </section>
 
     <!-- PAIRWISE BY CONSTRUCTION -->
@@ -40,7 +40,7 @@
         <div class="quote">A message being sent to multiple DIDs MUST be encrypted for each DID independently.<cite><a href="https://identity.foundation/didcomm-messaging/spec/v2.1/#message-encryption">DIDComm Messaging v2.1 — Message Encryption</a></cite></div>
         <p class="lede">One DID can have many keys (that's how multi-device works), but the core spec has no notion of a <b>group</b> as a recipient. Groups are left to protocols built on top, and the didcomm.org registry already has two quite different ones.</p>
       </div>
-      <div class="slide-foot"><span>group conversations</span><span>2 / 17</span></div>
+      <div class="slide-foot"><span>group conversations</span><span>2 / 18</span></div>
     </section>
 
     <!-- THREE SHAPES -->
@@ -52,7 +52,7 @@
         <div class="card"><h3>A relay member</h3><p>One party (a member or a service) receives and re-sends to everyone. Fewer sends from phones; one party sees who talks to whom.</p><p style="margin-top:.6rem"><span class="pill gold">group-chat/1.0</span></p></div>
         <div class="card gold"><h3>A shared group key</h3><p>Encrypt once for the group, e.g. with an MLS tree. Cheap sends; membership changes need careful coordination.</p><p style="margin-top:.6rem"><span class="pill gold">rooms/1.0</span></p></div>
       </div>
-      <div class="slide-foot"><span>group conversations</span><span>3 / 17</span></div>
+      <div class="slide-foot"><span>group conversations</span><span>3 / 18</span></div>
     </section>
 
     <!-- REGISTRY -->
@@ -66,7 +66,7 @@
         </div>
         <p class="kicker">Neither is the fully serverless, every-member-talks-to-every-member shape. That's the gap the fan-out approach explores.</p>
       </div>
-      <div class="slide-foot"><span>group conversations</span><span>4 / 17</span></div>
+      <div class="slide-foot"><span>group conversations</span><span>4 / 18</span></div>
       <aside class="notes">Sources: didcomm.org registry, site/content/protocols/group-chat/1.0 and rooms/1.0. Statuses as listed in the registry at time of writing.</aside>
     </section>
 
@@ -76,7 +76,7 @@
         <h1>Fan-out</h1>
         <p class="sub">The simplest shape: every member messages every other member.</p>
       </div>
-      <div class="slide-foot"><span>group conversations</span><span>5 / 17</span></div>
+      <div class="slide-foot"><span>group conversations</span><span>5 / 18</span></div>
     </section>
 
     <!-- FAN-OUT DIAGRAM -->
@@ -100,8 +100,8 @@
           <text x="310" y="278" text-anchor="middle" fill="#8fa3b3" font-family="IBM Plex Mono" font-size="12">each line is a normal authcrypt message, through each recipient's own mediator</text>
         </svg>
       </div>
-      <p class="kicker">Message content can reuse an existing protocol such as <code>basicmessage/2.0</code>, with one extra body field saying which group it belongs to.</p>
-      <div class="slide-foot"><span>group conversations</span><span>6 / 17</span></div>
+      <p class="kicker">Message content can reuse an existing protocol such as <code>basicmessage/2.0</code>, with the group's id in <code>pthid</code>, DIDComm's own parent-thread header.</p>
+      <div class="slide-foot"><span>group conversations</span><span>6 / 18</span></div>
       <aside class="notes">This is the shape explored in the group-chat notes in wyvrn-cloud/protocols, an experiment rather than a standard.</aside>
     </section>
 
@@ -116,10 +116,29 @@
             <li><code>member-added</code>: sent to existing members so their lists stay in step.</li>
             <li>No group server and no shared state: each member's view is <i>their own record</i> of who they've been told is in.</li>
           </ul>
-          <div class="card danger"><h3>The hard parts</h3><p>Who may add members? Is there consent to join? How does someone leave, or get removed? What if two members' lists disagree? A minimal design can leave all of these open, but a real deployment can't.</p></div>
+          <div class="card danger"><h3>The hard parts</h3><p>Who may add members? Is there consent to join? How does someone leave, or get removed? What if two members' lists disagree? A minimal design can leave all of these open, but a real deployment can't. The notes' second version answers most of them.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>group conversations</span><span>7 / 17</span></div>
+      <div class="slide-foot"><span>group conversations</span><span>7 / 18</span></div>
+    </section>
+
+    <!-- CONVERGING -->
+    <section>
+      <div class="eyebrow gold"><span class="sec">Fan-out ·</span> converging without a server</div>
+      <div class="slide-body">
+        <h2>One admin, and rules every member applies the same way</h2>
+        <div class="grid2">
+          <div class="card teal"><h3>Who may do what</h3><p>The creator is the admin, and the only one who removes members, renames the group or hands the role on. A setting says whether any member or only the admin may add. Anyone may leave. If the admin leaves without handing over, the longest-standing member takes over: a rule, not an election.</p></div>
+          <ul class="bullets">
+            <li>A member list someone sends <b>adds, never removes</b>. Only a removal or a leave takes a member out.</li>
+            <li>A removal beats a stale list that still names the removed member.</li>
+            <li>For anything only the admin changes, the latest <code>created_time</code> wins.</li>
+          </ul>
+        </div>
+        <p class="kicker">No consensus step, so some gaps are accepted: a member offline during a removal keeps sending to the removed member until it hears. Consent is still open: receiving an invite is joining.</p>
+      </div>
+      <div class="slide-foot"><span>group conversations</span><span>8 / 18</span></div>
+      <aside class="notes">From the group-chat/2.0 notes in wyvrn-cloud/protocols (Proposed, an experiment): "Authority", "Reconciling membership" and "Accepted inconsistencies". Every membership message carries the sender's full list; the receiver merges rather than replaces, keeps the earliest added_time per member, and keeps a removed set that only an explicit re-add from someone allowed to can override. Succession picks the earliest added_time, ties broken by the smaller DID, which every member holds as the same value. A vanished admin never sends a leave, so succession never fires; then a new group is the only way out without a server.</aside>
     </section>
 
     <!-- ORDERING -->
@@ -142,7 +161,7 @@
     <span class="k">"last"</span>: <span class="ty">4</span>, <span class="k">"gaps"</span>: [<span class="g">2</span>,<span class="g">3</span>] }
 ]</code></pre>
       </div>
-      <div class="slide-foot"><span>group conversations</span><span>8 / 17</span></div>
+      <div class="slide-foot"><span>group conversations</span><span>9 / 18</span></div>
       <aside class="notes">Spec: extensions/advanced_sequencing. Example taken from its auction scenario. "Protocol definitions MUST declare whether they use any of these headers."</aside>
     </section>
 
@@ -152,11 +171,11 @@
       <div class="slide-body">
         <h2>Existing threading covers more than it seems</h2>
         <div class="grid2">
-          <div class="card"><h3><code>thid</code></h3><p>A natural fit for "this group conversation", so every member files the message in the same place.</p></div>
-          <div class="card"><h3><code>pthid</code></h3><p>For side interactions spawned from the group, like a poll or a file transfer. With more than two parties, the spec requires each party to learn the parent from the first child message <i>they</i> see.</p></div>
+          <div class="card"><h3><code>pthid</code></h3><p>The group's id: every message is a child of the group's thread, so every member files it in the same place. With more than two parties, the spec requires each party to learn the parent from the first child message <i>they</i> see.</p></div>
+          <div class="card"><h3><code>thid</code></h3><p>Left free for threads <i>inside</i> the group: a side conversation grown from a reply, or an interaction like a poll.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>group conversations</span><span>9 / 17</span></div>
+      <div class="slide-foot"><span>group conversations</span><span>10 / 18</span></div>
       <aside class="notes">Spec: Threading, Parent Threads — "in protocols involving more than two parties ... each party in a child protocol MUST learn the identity of the parent thread via the first child protocol message they see."</aside>
     </section>
 
@@ -166,7 +185,7 @@
         <h1>A shared key</h1>
         <p class="sub">The other end of the spectrum, and how the two compare.</p>
       </div>
-      <div class="slide-foot"><span>group conversations</span><span>10 / 17</span></div>
+      <div class="slide-foot"><span>group conversations</span><span>11 / 18</span></div>
     </section>
 
     <!-- SHARED KEY -->
@@ -180,7 +199,7 @@
           <div class="card danger"><h3>What it asks for</h3><p>Membership changes must be applied in the same order by everyone, so something has to order them. In <code>rooms/1.0</code> that's the Host, acting as the MLS delivery service.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>group conversations</span><span>11 / 17</span></div>
+      <div class="slide-foot"><span>group conversations</span><span>12 / 18</span></div>
     </section>
 
     <!-- COMPARISON -->
@@ -198,7 +217,7 @@
         </tbody>
       </table>
       <p class="kicker" style="margin-top:.6rem">Fan-out is probably fine for small groups; a shared key starts paying off as groups grow.</p>
-      <div class="slide-foot"><span>group conversations</span><span>12 / 17</span></div>
+      <div class="slide-foot"><span>group conversations</span><span>13 / 18</span></div>
     </section>
 
     <!-- SECTION: WHAT'S LEFT -->
@@ -207,7 +226,7 @@
         <h1>What's left</h1>
         <p class="sub">The parts a real group protocol still needs.</p>
       </div>
-      <div class="slide-foot"><span>group conversations</span><span>13 / 17</span></div>
+      <div class="slide-foot"><span>group conversations</span><span>14 / 18</span></div>
     </section>
 
     <!-- OPEN PROBLEMS -->
@@ -217,9 +236,9 @@
         <h2>The parts a real group protocol needs</h2>
         <div class="grid2">
           <ul class="bullets">
-            <li>Leaving and removal, and what the removed member can still see.</li>
+            <li>Removal with no group key: nothing re-keys, so what already reached a removed member stays readable.</li>
             <li>Consent: accepting or declining an invite, not auto-joining.</li>
-            <li>Roles: can any member add anyone?</li>
+            <li>Roles beyond one admin: moderators, or more than one admin.</li>
           </ul>
           <ul class="bullets">
             <li>Read receipts: "seen by 3 of 5" is not the pairwise <code>receipts/1.0</code>.</li>
@@ -228,7 +247,7 @@
           </ul>
         </div>
       </div>
-      <div class="slide-foot"><span>group conversations</span><span>14 / 17</span></div>
+      <div class="slide-foot"><span>group conversations</span><span>15 / 18</span></div>
     </section>
 
     <!-- MULTI-DEVICE INTERACTION -->
@@ -239,7 +258,7 @@
         <p class="lede">With per-device keys, a message to a 5-person group where everyone has 3 devices is <b>4 envelopes</b> (one per other member's DID) with <b>3 key wraps</b> in each. Content is encrypted once per envelope; only the small content key is wrapped per device.</p>
         <p class="kicker">The spec calls this "multiplexed encryption": encrypt the content once, then wrap the ephemeral content key for each recipient key.</p>
       </div>
-      <div class="slide-foot"><span>group conversations</span><span>15 / 17</span></div>
+      <div class="slide-foot"><span>group conversations</span><span>16 / 18</span></div>
       <aside class="notes">Spec: Routing, DID Document Keys — "DIDComm encrypts the main message content only once, using an ephemeral content encryption key, and then encrypts the relatively tiny ephemeral key once per recipient key." Holds when all of a recipient's keys are the same type.</aside>
     </section>
 
@@ -254,7 +273,7 @@
           <li class="q">How well does an MLS Host fit offline-first, mediator-routed delivery?</li>
         </ul>
       </div>
-      <div class="slide-foot"><span>thank you</span><span>16 / 17</span></div>
+      <div class="slide-foot"><span>thank you</span><span>17 / 18</span></div>
     </section>
 
     <!-- REFERENCES -->
@@ -269,9 +288,9 @@
         <li><a href="https://didcomm.org/rooms/1.0/">rooms/1.0</a> <span class="st">Demonstrated</span></li>
         <li><a href="https://didcomm.org/basicmessage/2.0/">basicmessage/2.0</a> <span class="st">Production</span> · <a href="https://didcomm.org/receipts/1.0/">receipts/1.0</a></li>
         <li><a href="https://www.rfc-editor.org/rfc/rfc9420.html">RFC 9420 — The Messaging Layer Security (MLS) Protocol</a></li>
-        <li><a href="https://github.com/wyvrn-cloud/protocols/blob/master/protocols/group-chat/1.0/readme.md">wyvrn-cloud/protocols — group-chat notes</a> <span class="st">an experiment</span></li>
+        <li><a href="https://github.com/wyvrn-cloud/protocols/blob/master/protocols/group-chat/2.0/readme.md">wyvrn-cloud/protocols — group-chat notes</a> <span class="st">an experiment</span></li>
       </ul>
-      <div class="slide-foot"><span>group conversations · checked September 2026</span><span>17 / 17</span></div>
+      <div class="slide-foot"><span>group conversations · checked October 2026</span><span>18 / 18</span></div>
     </section>
 
   </div>

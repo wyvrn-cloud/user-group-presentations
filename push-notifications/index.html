@@ -284,7 +284,7 @@
       </div>
       <p class="source">gold dashed: over FCM &middot; teal: DIDComm to the mediator. ④ can only be scoped by <code>recipient_did</code> today: <code>delivery-request</code> has no message-id field in pickup 3.0 or 4.0.</p>
       <div class="slide-foot"><span>how much should a push know</span><span>15 / 23</span></div>
-      <aside class="notes">③ The app decrypts the push with its registered key and learns the message id; the recipient DID comes from the envelope's kid. ④ It asks the mediator for messages under that DID. ⑤ The mediator sends the full encrypted message, which the app decrypts and can show as a real notification. The ack (messages-received) follows as in the next diagram. This path only works if the app can decrypt in the background — see "Where decryption could happen".</aside>
+      <aside class="notes">③ The app decrypts the push with its registered key and learns the message id; the recipient DID comes from the envelope's kid. ④ It asks the mediator for messages under that DID. ⑤ The mediator sends the full encrypted message, which the app decrypts and can show as a real notification. The ack (messages-received) follows as in the next diagram. This path only works if the app can decrypt in the background — see "Where decryption could happen". The same background path also works with a generic push and no pointer: the app collects everything waiting and names who wrote. That is what the wyvrn experiment does today; the encrypted pointer is not implemented there yet.</aside>
     </section>
 
     <!-- FLOW: TAP -->
@@ -341,7 +341,7 @@
         <div class="step"><h3>While the process is alive</h3><p>Decrypt only if the app hasn't been reclaimed by the OS yet. No new storage &mdash; the secret just lives in RAM, same as everything else running.</p></div>
         <div class="step"><h3>Even after it's killed</h3><p>Decrypt from a wake-up alone, no running process required. Needs a secret that survives &mdash; real engineering, real new risk.</p></div>
       </div>
-      <p class="kicker">Nobody has to pick one tier for every user. It's a knob, not a verdict.</p>
+      <p class="kicker">Nobody has to pick one tier for every user. It's a knob, not a verdict. One more line worth drawing whatever the tier: a locked phone is told there is a message, and nothing more.</p>
       <div class="slide-foot"><span>how much should a push know</span><span>19 / 23</span></div>
     </section>
 
