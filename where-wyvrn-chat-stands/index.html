@@ -286,7 +286,7 @@ code,.mono{font-family:var(--mono)}
         </div>
         <p class="lede">The spec already recommends it: encrypt to <b>every</b> <code>keyAgreement</code> key, so a recipient "can decrypt his messages on any device he controls, without sharing keys". The experiment's <span class="t">multi-device/1.0</span> notes put that into practice: one <code>keyAgreement</code> per device, a Device DID per device for coordination, and no private key ever leaving the device that generated it.</p>
       </div>
-      <div class="slide-foot"><span>positioning — see also: the Identity DID, Device DID deck</span><span>10 / 28</span></div>
+      <div class="slide-foot"><span>positioning — see also: the DIDComm for People deck</span><span>10 / 28</span></div>
     </section>
 
     <!-- 6: STRENGTH — CBOR -->
@@ -352,7 +352,7 @@ code,.mono{font-family:var(--mono)}
       <table class="matrix" style="margin-top:.3rem;font-size:.85rem">
         <thead><tr><th>Talk</th><th>In wyvrn today</th><th>What that means</th></tr></thead>
         <tbody>
-            <tr><th style="white-space:normal"><span class="mono" style="color:var(--muted);font-size:.8em">1</span> <a href="../identity-vs-device-dids/">Identity DID, Device DID</a></th><td class="yes" style="white-space:nowrap">Working</td><td>Per-device keys; enroll, revoke, promote and demote devices, each a signed rotation of the Identity DID. A device can also move to a new Device DID.</td></tr>
+            <tr><th style="white-space:normal"><span class="mono" style="color:var(--muted);font-size:.8em">1</span> <a href="../identity-vs-device-dids/">DIDComm for People</a></th><td class="yes" style="white-space:nowrap">Working</td><td>Per-device keys; enroll, revoke, promote and demote devices, each a signed rotation of the Identity DID. A device can also move to a new Device DID.</td></tr>
             <tr><th style="white-space:normal"><span class="mono" style="color:var(--muted);font-size:.8em">2</span> <a href="../catching-up-a-new-device/">Catching Up a New Device</a></th><td class="yes" style="white-space:nowrap">Working</td><td>Reconciliation, backfill on scroll, per-device retention, and searching your other devices from a conversation.</td></tr>
             <tr><th style="white-space:normal"><span class="mono" style="color:var(--muted);font-size:.8em">3</span> <a href="../group-conversations/">Group Conversations</a></th><td class="yes" style="white-space:nowrap">Working</td><td>Fan-out groups with an admin: removal, leaving, who may add, mentions and threads. No consent before joining yet.</td></tr>
             <tr><th style="white-space:normal"><span class="mono" style="color:var(--muted);font-size:.8em">4</span> <a href="../rich-messages/">Rich Messages</a></th><td class="yes" style="white-space:nowrap">Working</td><td>Replies, reactions, edits, deletes, pins, threads, Markdown, custom emoji, stickers, GIFs and link previews.</td></tr>
@@ -465,7 +465,7 @@ code,.mono{font-family:var(--mono)}
         <h2>Every roster change is a broadcast.</h2>
         <p class="lede">Enroll a device, revoke one, promote, demote — each mints a new Identity DID and rotates <b style="color:var(--paper)">every contact</b> onto it. A person who churns devices often means real, recurring chatter no single-key architecture pays.</p>
       </div>
-      <div class="slide-foot"><span>positioning — see also: the Identity DID, Device DID deck</span><span>23 / 28</span></div>
+      <div class="slide-foot"><span>positioning — see also: the DIDComm for People deck</span><span>23 / 28</span></div>
     </section>
 
     <!-- 13: WEAKNESS — MATURITY -->

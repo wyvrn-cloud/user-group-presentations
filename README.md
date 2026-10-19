@@ -16,7 +16,7 @@ experiment, not the subject.
 
 | # | Deck | Status | Why this position |
 |---|------|--------|-------------------|
-| 1 | [Identity DID, Device DID](identity-vs-device-dids/) | Listed | Per-device keys for one identity. |
+| 1 | [DIDComm for People](identity-vs-device-dids/) | Listed | Identity DID, Device DID: per-device keys for one identity. |
 | 2 | [Catching Up a New Device](catching-up-a-new-device/) | Draft | Direct follow-on: what a newly enrolled device sees. |
 | 3 | [Group Conversations on a Pairwise Protocol](group-conversations/) | Draft | Builds on the roster and fan-out ideas from 1–2; compares `group-chat/1.0` and `rooms/1.0`. |
 | 4 | [Rich Messages](rich-messages/) | Draft | Replies, reactions, edits, formatting: what `basicmessage/2.0` leaves out. |
