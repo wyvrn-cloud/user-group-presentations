@@ -107,10 +107,10 @@
           <div class="card"><h3>Two topologies</h3><p>Peer-to-peer mesh for small calls (2–8); an SFU for larger ones (10–100+).</p></div>
           <div class="card"><h3>End-to-end through an SFU</h3><p><a href="https://www.rfc-editor.org/rfc/rfc9605.html">SFrame (RFC 9605)</a> keeps media encrypted even when a server forwards it.</p></div>
         </div>
-        <p class="kicker">So for real-time media, the open question is less "how" and more "does this fit your use case". Non-media streams are still open.</p>
+        <p class="kicker">So for real-time media, the open question is less "how" and more "does this fit your use case". One implementation found two gaps for small calls: the caller's network details go out before the call is taken, and nothing says who is in a call.</p>
       </div>
       <div class="slide-foot"><span>streaming and broadcast</span><span>7 / 16</span></div>
-      <aside class="notes">Source: didcomm.org registry, site/content/protocols/webrtc/1.0. It also defines out-of-band join links.</aside>
+      <aside class="notes">Source: didcomm.org registry, site/content/protocols/webrtc/1.0. It also defines out-of-band join links. The gaps, from its own "Basic Two-Party Call (Mesh)" flow: the caller sends propose, then offer (SDP) and trickled ice candidates without waiting for the callee, so unless the policy is relay-only the callee learns the caller's addresses before deciding; and mesh mode has no roster message (SFU mode has participant-joined / participant-left). The wyvrn experiment's voice calls added an accept step before any offer and a participants message (its webrtc-negotiation/1.0), and fall back to webrtc/1.0 for agents that only speak that. Non-media streams are still open.</aside>
     </section>
 
     <!-- APPROACH B -->
@@ -231,7 +231,7 @@
         <li><a href="https://didcomm.org/webrtc/1.0/">webrtc/1.0</a> <span class="st">Proposed</span></li>
         <li><a href="https://www.rfc-editor.org/rfc/rfc9605.html">RFC 9605 — Secure Frame (SFrame)</a></li>
       </ul>
-      <div class="slide-foot"><span>streaming and broadcast · checked September 2026</span><span>16 / 16</span></div>
+      <div class="slide-foot"><span>streaming and broadcast · checked October 2026</span><span>16 / 16</span></div>
     </section>
 
   </div>
