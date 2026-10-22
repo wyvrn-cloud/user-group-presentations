@@ -29,6 +29,7 @@ experiment, not the subject.
 | 11 | [Beyond Messages: Streaming and Broadcast](streaming-and-broadcast/) | Draft | Mostly open questions; `webrtc/1.0` covers calls. |
 | 12 | [DIDComm and Post-Quantum Crypto](post-quantum-didcomm/) | Draft | Cross-cutting; touches everything above. Compares with `pq-bridge/1.0`. |
 | 13 | [How Much Should a Push Know?](push-notifications/) | Draft | Direct follow-on to 5's own closing open question; `push-notifications-fcm/1.0` (RFC 0734) and a proposed encrypted `push` message for the routing protocol. |
+| 14 | [A DID You Can Give Out](public-addresses/) | Draft | Hosted `did:webvh`: a short, stable public address for an agent that can't host a file, and `did-hosting/1.0` for reserving and publishing one. Builds on 1. |
 
 Draft decks arrive as their own pull requests, and their links above work
 once each one is merged.
