@@ -585,26 +585,26 @@
       <div class="slide-foot"><span>public addresses</span><span>21 / 24</span></div>
     </section>
 
-    <!-- TRADE-OFFS -->
+    <!-- IMPROVEMENTS -->
     <section>
       <div class="eyebrow danger"><span class="sec">An implementation ·</span> what it doesn't do yet</div>
       <div class="slide-body">
-        <h2>The gaps, plainly</h2>
-        <div class="grid2" style="align-items:start">
-          <ul class="bullets">
-            <li><b>The host can withhold.</b> It can serve an old version and no one can tell. No witnesses or watchers yet.</li>
-            <li><b>No pre-rotation.</b> <code>nextKeyHashes</code> isn't used.</li>
-            <li><b>The host learns who resolves</b>, by IP address. An app may resolve through a proxy.</li>
-          </ul>
-          <ul class="bullets">
-            <li><b>No rate limits</b> in the host itself.</li>
-            <li><b>No recovery.</b> Lose every trusted device and the DID can never be updated again; an offline recovery key in <code>updateKeys</code> would be a way back.</li>
-            <li><b>Moving hosts</b> is possible with <code>portable</code>, but what the old host serves afterwards isn't defined.</li>
-          </ul>
-        </div>
-        <p class="kicker">Everything published is public, including the link between this name and the identity behind it. An app should make sure the person knows before publishing.</p>
+        <h2>Improvements that haven't been implemented</h2>
+        <table class="compare">
+          <thead><tr><th>Improvement</th><th>What it would fix</th></tr></thead>
+          <tbody>
+            <tr><th>Witnesses and watchers</th><td>A host serving an old version of the log, which today nobody would notice.</td></tr>
+            <tr><th>Pre-rotation (<code>nextKeyHashes</code>)</th><td>A stolen signing key writing keys of its own into the next entry.</td></tr>
+            <tr><th>An offline recovery key in <code>updateKeys</code></th><td>Losing every trusted device, which today leaves the DID frozen for good.</td></tr>
+            <tr><th>A rule for moving hosts</th><td><code>portable</code> makes a move possible; what the old host serves afterwards isn't defined.</td></tr>
+            <tr><th>Rate limits in the host</th><td>Floods and name-grabbing. Today a rate limit has to sit in front of it.</td></tr>
+            <tr><th>Resolving through a proxy</th><td>The host learning, by IP address, who looks an address up.</td></tr>
+          </tbody>
+        </table>
+        <p class="kicker">One thing no improvement changes: everything published is public, including the link between this name and the identity behind it. An app should make sure the person knows before publishing.</p>
       </div>
       <div class="slide-foot"><span>public addresses</span><span>22 / 24</span></div>
+      <aside class="notes">The first three are did:webvh features the implementation doesn't use yet (DID Witnesses and DID Watchers; Key Pre-Rotation), or, for recovery, one the protocol notes suggest (a key kept offline and listed in updateKeys). Moving hosts and rate limits are listed in the host's README and the protocol's Future Considerations. Resolving through a proxy is something the protocol allows an app to do ("An app MAY resolve through a proxy"); the chat app doesn't yet.</aside>
     </section>
 
     <!-- QUESTIONS -->
