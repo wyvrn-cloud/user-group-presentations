@@ -2,7 +2,7 @@
 <html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>A DID You Can Give Out</title>
+<title>Public Addresses with did:web/vh</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@6.0.2/dist/reveal.css">
 <link rel="stylesheet" href="../assets/deck.css">
@@ -17,7 +17,7 @@
           <svg viewBox="0 0 48 48" fill="none"><circle cx="20" cy="18" r="13" stroke="#f0a83b" stroke-width="4"/><circle cx="28" cy="30" r="13" stroke="#34c0cf" stroke-width="4"/></svg>
           <span class="eyebrow">didcomm user group</span>
         </div>
-        <h1>A DID You<br>Can Give Out</h1>
+        <h1>Public Addresses<br>with did:web/vh</h1>
         <p class="sub">A short, stable <code>did:webvh</code> for an agent that can't host a file, and a protocol for reserving a name and publishing to it, without giving the host any say over what the DID says.</p>
         <span class="pill gold">draft</span>
       </div>
@@ -29,22 +29,22 @@
         <h1>The problem</h1>
         <p class="sub">A good DID for a relationship is a poor one to hand out.</p>
       </div>
-      <div class="slide-foot"><span>a did you can give out</span><span>1 / 24</span></div>
+      <div class="slide-foot"><span>public addresses</span><span>1 / 24</span></div>
     </section>
 
     <!-- HARD TO HAND OUT -->
     <section>
       <div class="eyebrow"><span class="sec">The problem ·</span> hard to hand out</div>
       <div class="slide-body">
-        <h2>A <code>did:peer:4</code> is the wrong shape for a profile</h2>
+        <h2><code>did:peer</code> DIDs are incredibly long, and aren't user-friendly things to share</h2>
         <div class="grid3">
           <div class="card"><h3>Long</h3><p>The long form carries the whole document: 806 characters for one device's keys in our measurements. Not something to say aloud, print, or send in a text.</p></div>
           <div class="card"><h3>Changes</h3><p>It's a hash of its document, so every key change is a new DID. Add a phone and everyone you gave the old one to has a stale address.</p></div>
           <div class="card"><h3>Private by design</h3><p>It works between two parties who already met. Someone you haven't met has nowhere to look it up.</p></div>
         </div>
-        <p class="kicker">People and services that are public on purpose need a second DID: short, stable, and resolvable by anyone.</p>
+        <p class="kicker">People and services that are public on purpose need a second DID: short, stable, and sharable by anyone.</p>
       </div>
-      <div class="slide-foot"><span>a did you can give out</span><span>2 / 24</span></div>
+      <div class="slide-foot"><span>public addresses</span><span>2 / 24</span></div>
       <aside class="notes">806 and 57 characters are the long and short forms measured for the "DIDComm in CBOR?" deck. For why every roster change rotates a did:peer:4, see "DIDComm for People".</aside>
     </section>
 
@@ -60,16 +60,16 @@
         </div>
         <p class="kicker">So: let an agent that can't host a file have one hosted, without giving the host any say over what the file says.</p>
       </div>
-      <div class="slide-foot"><span>a did you can give out</span><span>3 / 24</span></div>
+      <div class="slide-foot"><span>public addresses</span><span>3 / 24</span></div>
     </section>
 
     <!-- SECTION: DID:WEBVH -->
     <section>
       <div class="slide-body section-slide">
-        <h1><code style="font-size:.85em">did:webvh</code> in one slide</h1>
-        <p class="sub">The parts of the method this approach leans on.</p>
+        <h1><code style="font-size:.85em">did:webvh</code>, briefly</h1>
+        <p class="sub">The parts of the method this approach leans on, and how a name maps onto it.</p>
       </div>
-      <div class="slide-foot"><span>a did you can give out</span><span>4 / 24</span></div>
+      <div class="slide-foot"><span>public addresses</span><span>4 / 24</span></div>
     </section>
 
     <!-- WEBVH RECAP -->
@@ -90,37 +90,13 @@
           </ul>
         </div>
       </div>
-      <div class="slide-foot"><span>a did you can give out</span><span>5 / 24</span></div>
+      <div class="slide-foot"><span>public addresses</span><span>5 / 24</span></div>
       <aside class="notes">did:webvh v1.0 (DIF): the DID Log, SCID generation and verification, Publishing a Parallel did:web DID, the #whois LinkedVP service at /whois.vp, DID Portability, Key Pre-Rotation, DID Witnesses and DID Watchers. The verification of all of it is didwebvh-rs in the implementation discussed later.</aside>
-    </section>
-
-    <!-- SECTION: HOSTING -->
-    <section>
-      <div class="slide-body section-slide">
-        <h1>A host that can't change anything</h1>
-        <p class="sub">The holder writes and signs; the host checks, stores and serves.</p>
-      </div>
-      <div class="slide-foot"><span>a did you can give out</span><span>6 / 24</span></div>
-    </section>
-
-    <!-- ROLES -->
-    <section>
-      <div class="eyebrow gold"><span class="sec">A host that can't change anything ·</span> who does what</div>
-      <div class="slide-body">
-        <h2>Three roles, and only one holds keys</h2>
-        <div class="grid3">
-          <div class="card gold"><h3>Holder</h3><p>Writes its own <code>did:webvh</code> log and signs every entry. The DID's controller in every sense the method means.</p></div>
-          <div class="card teal"><h3>Host</h3><p>Checks each entry, stores it, serves it over HTTPS with the parallel <code>did:web</code>. Holds none of the holder's keys.</p></div>
-          <div class="card"><h3>Admin</h3><p>Decides who may claim a name that's been set aside. Never writes, signs or uploads anybody's log.</p></div>
-        </div>
-        <p class="kicker">The worst a host can do is stop serving a DID, or keep serving an old version. It can't change where the DID points or read what is sent to it.</p>
-      </div>
-      <div class="slide-foot"><span>a did you can give out</span><span>7 / 24</span></div>
     </section>
 
     <!-- NAMES -->
     <section>
-      <div class="eyebrow"><span class="sec">A host that can't change anything ·</span> names</div>
+      <div class="eyebrow"><span class="sec"><code>did:webvh</code> ·</span> names</div>
       <div class="slide-body">
         <h2>A name is a path at the host</h2>
         <table class="compare">
@@ -136,14 +112,38 @@
           <div class="card"><h3>First come, except reserved</h3><p>A reserved name, or any name under a reserved namespace like <code>official</code>, can be claimed only by the holder an admin assigns it to.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>a did you can give out</span><span>8 / 24</span></div>
+      <div class="slide-foot"><span>public addresses</span><span>6 / 24</span></div>
+    </section>
+
+    <!-- SECTION: HOSTING -->
+    <section>
+      <div class="slide-body section-slide">
+        <h1>A host that can't change anything</h1>
+        <p class="sub">The holder writes and signs; the host checks, stores and serves.</p>
+      </div>
+      <div class="slide-foot"><span>public addresses</span><span>7 / 24</span></div>
+    </section>
+
+    <!-- ROLES -->
+    <section>
+      <div class="eyebrow gold"><span class="sec">A host that can't change anything ·</span> who does what</div>
+      <div class="slide-body">
+        <h2>Three roles, and only one holds keys</h2>
+        <div class="grid3">
+          <div class="card gold"><h3>Holder</h3><p>Writes its own <code>did:webvh</code> log and signs every entry. The DID's controller in every sense the method means.</p></div>
+          <div class="card teal"><h3>Host</h3><p>Checks each entry, stores it, serves it over HTTPS with the parallel <code>did:web</code>. Holds none of the holder's keys.</p></div>
+          <div class="card"><h3>Admin</h3><p>Decides who may claim a name that's been set aside. Never writes, signs or uploads anybody's log.</p></div>
+        </div>
+        <p class="kicker">The worst a host can do is stop serving a DID, or keep serving an old version. It can't change where the DID points or read what is sent to it.</p>
+      </div>
+      <div class="slide-foot"><span>public addresses</span><span>8 / 24</span></div>
     </section>
 
     <!-- WALKTHROUGH -->
     <section>
       <div class="eyebrow gold"><span class="sec">A host that can't change anything ·</span> getting one</div>
       <h2 style="margin-bottom:.2rem">Alice gets a public address</h2>
-      <div class="numrow" style="flex:1;align-items:center">
+      <div class="numrow vertical" style="flex:1;justify-content:center">
         <div class="step"><h3>Reserve</h3><p><code>reserve</code> <code>alice</code>. The host holds it briefly, and says the <code>did:web</code> it will be.</p></div>
         <div class="step"><h3>Name it</h3><p>Her <code>did:peer:4</code> adds the <code>did:web</code> to its <code>alsoKnownAs</code>: a new DID, rotated to contacts as usual.</p></div>
         <div class="step"><h3>Write</h3><p>The first log entry: the same keys and endpoint as her <code>did:peer:4</code>, naming both.</p></div>
@@ -151,14 +151,14 @@
         <div class="step"><h3>Say who</h3><p><code>publish-whois</code>: her profile, as a signed presentation.</p></div>
       </div>
       <p class="kicker">Later she adds a tablet: either device appends an entry, and the address doesn't change. Nobody she gave it to has to be told.</p>
-      <div class="slide-foot"><span>a did you can give out</span><span>9 / 24</span></div>
+      <div class="slide-foot"><span>public addresses</span><span>9 / 24</span></div>
       <aside class="notes">Why the did:web goes into the did:peer:4 and not the did:webvh: the did:webvh's SCID is a hash of the log's first entry, which itself names the did:peer:4. The did:web is the one name known before the log exists. Reserving first matters for the same reason: the name has to be held before the identity names it.</aside>
     </section>
 
     <!-- THE CIRCLE -->
     <section>
       <div class="eyebrow"><span class="sec">A host that can't change anything ·</span> three DIDs, one party</div>
-      <h2 style="margin-bottom:.2rem">Each names the next, and the circle closes</h2>
+      <h2 style="margin-bottom:.2rem">Each <code>alsoKnownAs</code> points at each other to solidify trust</h2>
       <div class="diagram" style="flex:1">
         <svg viewBox="0 0 640 270" width="640" height="270" role="img" aria-label="did:peer:4 names did:web, which names did:webvh, which names did:peer:4">
           <defs>
@@ -184,7 +184,7 @@
         </svg>
       </div>
       <p class="source">A pair is accepted only if each names the other back; a <code>did:web</code> that points at a <code>did:webvh</code> which doesn't name it back gains nothing.</p>
-      <div class="slide-foot"><span>a did you can give out</span><span>10 / 24</span></div>
+      <div class="slide-foot"><span>public addresses</span><span>10 / 24</span></div>
       <aside class="notes">A message from the did:peer:4 is from the address's holder if the did:peer:4's own document lists the did:web in alsoKnownAs and shares a keyAgreement key with the did:webvh document. The did:webvh document also lists the did:web back, as every hosted DID must. Arrows show "names in alsoKnownAs"; the did:webvh also names the did:web back.</aside>
     </section>
 
@@ -194,11 +194,12 @@
         <h1>The protocol</h1>
         <p class="sub"><code>did-hosting/1.0</code>: reserving, publishing, and what a host checks.</p>
       </div>
-      <div class="slide-foot"><span>a did you can give out</span><span>11 / 24</span></div>
+      <div class="slide-foot"><span>public addresses</span><span>11 / 24</span></div>
     </section>
 
-    <!-- MESSAGES -->
+    <!-- MESSAGES (a vertical stack: the overview, then one example per message) -->
     <section>
+      <section>
       <div class="eyebrow gold"><span class="sec">The protocol ·</span> the messages</div>
       <div class="grid2" style="flex:1">
         <div class="slide-body" style="gap:1rem">
@@ -210,7 +211,7 @@
               <tr><th>Admin</th><td><code>assign</code>, <code>free</code></td></tr>
             </tbody>
           </table>
-          <p class="kicker">Every message must be authcrypted, and every attachment carries a detached signature (<code>data.jws</code>) by the DID's own <code>authentication</code> key.</p>
+          <p class="kicker">Every message must be authcrypted, and every attachment carries a detached signature (<code>data.jws</code>) by the DID's own <code>authentication</code> key. Press ↓ for an example of each.</p>
         </div>
         <pre class="codeblock"><code>{
   <span class="k">"type"</span>: <span class="s">".../did-hosting/1.0/publish"</span>,
@@ -228,8 +229,226 @@
   }]
 }</code></pre>
       </div>
-      <div class="slide-foot"><span>a did you can give out</span><span>12 / 24</span></div>
+      <div class="slide-foot"><span>public addresses</span><span>12 / 24</span></div>
       <aside class="notes">Plus a standard report-problem/2.0 problem-report with codes like name-taken, name-reserved, not-held, log-invalid, conflict, key-in-use. "after" is the versionId of the last hosted entry the new entries follow; absent on a first publication, where the attachment is the whole log. Over HTTP a message that isn't authcrypted is answered 403: there is nobody to send a problem-report to.</aside>
+      </section>
+      <!-- MESSAGE: RESERVE -->
+      <section>
+        <div class="eyebrow gold"><span class="sec">The protocol ·</span> reserve</div>
+        <h2 style="margin-bottom:.2rem"><code>reserve</code> <span style="font-family:var(--body);font-size:.7em;color:var(--muted);font-weight:500">holder → host</span></h2>
+        <div class="grid2" style="flex:1;align-items:center">
+          <pre class="codeblock"><code>{
+  <span class="k">"type"</span>: <span class="s">".../did-hosting/1.0/reserve"</span>,
+  <span class="k">"body"</span>: {
+    <span class="k">"name"</span>: <span class="hl"><span class="s">"alice"</span></span>
+  }
+}</code></pre>
+          <div style="display:flex;flex-direction:column;gap:.8rem">
+            <p class="lede" style="font-size:1.05rem">Asks for a name to be held.</p>
+            <ul class="bullets"><li>The hold is for the <b>key</b> the message was authcrypted with: the <code>publish</code> must come from the same one.</li><li>A sender has at most one hold; a new <code>reserve</code> replaces it.</li></ul>
+          </div>
+        </div>
+        <div class="slide-foot"><span>public addresses · the messages</span><span>12.1</span></div>
+        <aside class="notes">Refused with name-invalid, name-taken, name-reserved or key-in-use (the sender already holds another name).</aside>
+      </section>
+      <!-- MESSAGE: RESERVATION -->
+      <section>
+        <div class="eyebrow gold"><span class="sec">The protocol ·</span> reservation</div>
+        <h2 style="margin-bottom:.2rem"><code>reservation</code> <span style="font-family:var(--body);font-size:.7em;color:var(--muted);font-weight:500">host → holder</span></h2>
+        <div class="grid2" style="flex:1;align-items:center">
+          <pre class="codeblock"><code>{
+  <span class="k">"type"</span>: <span class="s">".../did-hosting/1.0/reservation"</span>,
+  <span class="k">"thid"</span>: <span class="s">"&lt;reserve id&gt;"</span>,
+  <span class="k">"body"</span>: {
+    <span class="k">"name"</span>: <span class="s">"alice"</span>,
+    <span class="k">"host"</span>: <span class="s">"id.example"</span>,
+    <span class="k">"did_web"</span>: <span class="hl"><span class="s">"did:web:id.example:alice"</span></span>,
+    <span class="k">"expires_time"</span>: <span class="hl"><span class="ty">1791727200</span></span>
+  }
+}</code></pre>
+          <div style="display:flex;flex-direction:column;gap:.8rem">
+            <p class="lede" style="font-size:1.05rem">The name is held, for a short while.</p>
+            <ul class="bullets"><li><code>did_web</code> is the one name known now: the identity adds it to its <code>alsoKnownAs</code> next.</li><li>There is no <code>did:webvh</code> yet: it doesn't exist until the log is written.</li><li>Publish before <code>expires_time</code>, or the name goes back.</li></ul>
+          </div>
+        </div>
+        <div class="slide-foot"><span>public addresses · the messages</span><span>12.2</span></div>
+        <aside class="notes">wyvrn's host holds a name for 600 seconds (hold_seconds).</aside>
+      </section>
+      <!-- MESSAGE: PUBLISH -->
+      <section>
+        <div class="eyebrow gold"><span class="sec">The protocol ·</span> publish</div>
+        <h2 style="margin-bottom:.2rem"><code>publish</code> <span style="font-family:var(--body);font-size:.7em;color:var(--muted);font-weight:500">holder → host</span></h2>
+        <div class="grid2" style="flex:1;align-items:center">
+          <pre class="codeblock"><code>{
+  <span class="k">"type"</span>: <span class="s">".../did-hosting/1.0/publish"</span>,
+  <span class="k">"body"</span>: {
+    <span class="k">"name"</span>: <span class="s">"alice"</span>,
+    <span class="k">"after"</span>: <span class="hl"><span class="s">"3-QmQq6K…"</span></span>
+  },
+  <span class="k">"attachments"</span>: [{
+    <span class="k">"id"</span>: <span class="s">"log"</span>,
+    <span class="k">"media_type"</span>: <span class="s">"text/jsonl"</span>,
+    <span class="k">"data"</span>: {
+      <span class="k">"base64"</span>: <span class="hl"><span class="s">"eyJ2ZXJzaW9uSWQ…"</span></span>,
+      <span class="k">"jws"</span>: <span class="hl">{ <span class="g">…</span> }</span>
+    }
+  }]
+}</code></pre>
+          <div style="display:flex;flex-direction:column;gap:.8rem">
+            <p class="lede" style="font-size:1.05rem">Publishes a DID, or adds to one.</p>
+            <ul class="bullets"><li><code>after</code>: the last hosted entry this follows. Absent the first time, when the attachment is the whole log.</li><li>The attachment is the new log entries, one per line, oldest first.</li><li><code>jws</code>: a detached signature by an <code>authentication</code> key of the newest document.</li></ul>
+          </div>
+        </div>
+        <div class="slide-foot"><span>public addresses · the messages</span><span>12.3</span></div>
+        <aside class="notes">A stale "after" gets a problem-report with conflict, carrying the real last versionId; the device rebuilds its entry on top and tries again.</aside>
+      </section>
+      <!-- MESSAGE: PUBLISHED -->
+      <section>
+        <div class="eyebrow gold"><span class="sec">The protocol ·</span> published</div>
+        <h2 style="margin-bottom:.2rem"><code>published</code> <span style="font-family:var(--body);font-size:.7em;color:var(--muted);font-weight:500">host → holder</span></h2>
+        <div class="grid2" style="flex:1;align-items:center">
+          <pre class="codeblock"><code>{
+  <span class="k">"type"</span>: <span class="s">".../did-hosting/1.0/published"</span>,
+  <span class="k">"thid"</span>: <span class="s">"&lt;publish id&gt;"</span>,
+  <span class="k">"body"</span>: {
+    <span class="k">"name"</span>: <span class="s">"alice"</span>,
+    <span class="k">"did"</span>: <span class="hl"><span class="s">"did:webvh:QmfGEU…:id.example:alice"</span></span>,
+    <span class="k">"did_web"</span>: <span class="s">"did:web:id.example:alice"</span>,
+    <span class="k">"version_id"</span>: <span class="hl"><span class="s">"1-QmQq6Kg4…"</span></span>
+  }
+}</code></pre>
+          <div style="display:flex;flex-direction:column;gap:.8rem">
+            <p class="lede" style="font-size:1.05rem">The DID now exists, and is served.</p>
+            <ul class="bullets"><li><code>did</code>: the first time the holder sees its <code>did:webvh</code> confirmed by the host.</li><li><code>version_id</code>: what the next <code>publish</code> puts in <code>after</code>.</li></ul>
+          </div>
+        </div>
+        <div class="slide-foot"><span>public addresses · the messages</span><span>12.4</span></div>
+      </section>
+      <!-- MESSAGE: PUBLISH-WHOIS -->
+      <section>
+        <div class="eyebrow gold"><span class="sec">The protocol ·</span> publish-whois</div>
+        <h2 style="margin-bottom:.2rem"><code>publish-whois</code> <span style="font-family:var(--body);font-size:.7em;color:var(--muted);font-weight:500">holder → host</span></h2>
+        <div class="grid2" style="flex:1;align-items:center">
+          <pre class="codeblock"><code>{
+  <span class="k">"type"</span>: <span class="s">".../did-hosting/1.0/publish-whois"</span>,
+  <span class="k">"body"</span>: { <span class="k">"name"</span>: <span class="s">"alice"</span> },
+  <span class="k">"attachments"</span>: [{
+    <span class="k">"id"</span>: <span class="s">"whois"</span>,
+    <span class="k">"media_type"</span>: <span class="hl"><span class="s">"application/vp"</span></span>,
+    <span class="k">"data"</span>: {
+      <span class="k">"base64"</span>: <span class="s">"eyJAY29udGV4dCI6…"</span>,
+      <span class="k">"jws"</span>: <span class="hl">{ <span class="g">…</span> }</span>
+    }
+  }]
+}</code></pre>
+          <div style="display:flex;flex-direction:column;gap:.8rem">
+            <p class="lede" style="font-size:1.05rem">Sets, or removes, the profile beside the log.</p>
+            <ul class="bullets"><li>The attachment is a signed Verifiable Presentation: the profile credential the DID issues about itself.</li><li>The host checks the <code>jws</code>, that the presentation's holder is the hosted DID, its proof, and that a credential is about that DID.</li><li>No attachment removes the whois.</li></ul>
+          </div>
+        </div>
+        <div class="slide-foot"><span>public addresses · the messages</span><span>12.5</span></div>
+      </section>
+      <!-- MESSAGE: STATUS-REQUEST -->
+      <section>
+        <div class="eyebrow gold"><span class="sec">The protocol ·</span> status-request</div>
+        <h2 style="margin-bottom:.2rem"><code>status-request</code> <span style="font-family:var(--body);font-size:.7em;color:var(--muted);font-weight:500">anyone → host</span></h2>
+        <div class="grid2" style="flex:1;align-items:center">
+          <pre class="codeblock"><code>{
+  <span class="k">"type"</span>: <span class="s">".../did-hosting/1.0/status-request"</span>,
+  <span class="k">"body"</span>: {
+    <span class="k">"name"</span>: <span class="hl"><span class="s">"alice"</span></span>
+  }
+}</code></pre>
+          <div style="display:flex;flex-direction:column;gap:.8rem">
+            <p class="lede" style="font-size:1.05rem">Asks what state a name is in.</p>
+            <ul class="bullets"><li><code>name</code> is optional: without it, the host answers for the name the sender holds.</li><li>A holder's new device sends one once. That is what shows its key is the holder's, so it can't claim a second name.</li></ul>
+          </div>
+        </div>
+        <div class="slide-foot"><span>public addresses · the messages</span><span>12.6</span></div>
+      </section>
+      <!-- MESSAGE: STATUS -->
+      <section>
+        <div class="eyebrow gold"><span class="sec">The protocol ·</span> status</div>
+        <h2 style="margin-bottom:.2rem"><code>status</code> <span style="font-family:var(--body);font-size:.7em;color:var(--muted);font-weight:500">host → anyone</span></h2>
+        <div class="grid2" style="flex:1;align-items:center">
+          <pre class="codeblock"><code>{
+  <span class="k">"type"</span>: <span class="s">".../did-hosting/1.0/status"</span>,
+  <span class="k">"thid"</span>: <span class="s">"&lt;status-request id&gt;"</span>,
+  <span class="k">"body"</span>: {
+    <span class="k">"name"</span>: <span class="s">"alice"</span>,
+    <span class="k">"state"</span>: <span class="hl"><span class="s">"published"</span></span>,
+    <span class="k">"did"</span>: <span class="s">"did:webvh:QmfGEU…:id.example:alice"</span>,
+    <span class="k">"version_id"</span>: <span class="s">"1-QmQq6Kg4…"</span>,
+    <span class="k">"whois"</span>: <span class="ty">true</span>,
+    <span class="k">"yours"</span>: <span class="hl"><span class="ty">false</span></span>
+  }
+}</code></pre>
+          <div style="display:flex;flex-direction:column;gap:.8rem">
+            <p class="lede" style="font-size:1.05rem">Where a name stands.</p>
+            <ul class="bullets"><li><code>state</code>: free, reserved, held, published, stale or deactivated.</li><li><code>yours</code>: whether the sender is the holder, or the one it's held for or assigned to.</li><li>It never tells anyone but an admin who a reserved name is assigned to, or who holds a hold.</li></ul>
+          </div>
+        </div>
+        <div class="slide-foot"><span>public addresses · the messages</span><span>12.7</span></div>
+      </section>
+      <!-- MESSAGE: ASSIGN -->
+      <section>
+        <div class="eyebrow gold"><span class="sec">The protocol ·</span> assign</div>
+        <h2 style="margin-bottom:.2rem"><code>assign</code> <span style="font-family:var(--body);font-size:.7em;color:var(--muted);font-weight:500">admin → host</span></h2>
+        <div class="grid2" style="flex:1;align-items:center">
+          <pre class="codeblock"><code>{
+  <span class="k">"type"</span>: <span class="s">".../did-hosting/1.0/assign"</span>,
+  <span class="k">"body"</span>: {
+    <span class="k">"name"</span>: <span class="hl"><span class="s">"official:announcements"</span></span>,
+    <span class="k">"holder"</span>: <span class="hl"><span class="s">"did:peer:4zQmd8Cp…"</span></span>
+  }
+}</code></pre>
+          <div style="display:flex;flex-direction:column;gap:.8rem">
+            <p class="lede" style="font-size:1.05rem">Says who may claim a reserved name.</p>
+            <ul class="bullets"><li><code>name</code> can be a namespace, <code>official:*</code>, to reserve every name under it.</li><li><code>holder</code> <code>null</code> reserves the name for nobody.</li><li>The assigned holder then reserves and publishes like anyone. An admin never writes the DID.</li></ul>
+          </div>
+        </div>
+        <div class="slide-foot"><span>public addresses · the messages</span><span>12.8</span></div>
+      </section>
+      <!-- MESSAGE: FREE -->
+      <section>
+        <div class="eyebrow gold"><span class="sec">The protocol ·</span> free</div>
+        <h2 style="margin-bottom:.2rem"><code>free</code> <span style="font-family:var(--body);font-size:.7em;color:var(--muted);font-weight:500">admin → host</span></h2>
+        <div class="grid2" style="flex:1;align-items:center">
+          <pre class="codeblock"><code>{
+  <span class="k">"type"</span>: <span class="s">".../did-hosting/1.0/free"</span>,
+  <span class="k">"body"</span>: {
+    <span class="k">"name"</span>: <span class="hl"><span class="s">"alice"</span></span>,
+    <span class="k">"comment"</span>: <span class="s">"Holder unreachable since 2025-10."</span>
+  }
+}</code></pre>
+          <div style="display:flex;flex-direction:column;gap:.8rem">
+            <p class="lede" style="font-size:1.05rem">Ends a DID's hosting, and releases the name.</p>
+            <ul class="bullets"><li>The host stops serving the log, the <code>did.json</code> and the whois.</li><li>The name goes back to free, or reserved if it's on the host's list.</li><li>Anyone who kept the old <code>did:webvh</code> must treat a new holder as someone else.</li></ul>
+          </div>
+        </div>
+        <div class="slide-foot"><span>public addresses · the messages</span><span>12.9</span></div>
+      </section>
+      <!-- MESSAGE: PROBLEM-REPORT -->
+      <section>
+        <div class="eyebrow gold"><span class="sec">The protocol ·</span> problem-report</div>
+        <h2 style="margin-bottom:.2rem"><code>problem-report</code> <span style="font-family:var(--body);font-size:.7em;color:var(--muted);font-weight:500">host → sender</span></h2>
+        <div class="grid2" style="flex:1;align-items:center">
+          <pre class="codeblock"><code>{
+  <span class="k">"type"</span>: <span class="s">"https://didcomm.org/report-problem/2.0/problem-report"</span>,
+  <span class="k">"pthid"</span>: <span class="s">"&lt;publish id&gt;"</span>,
+  <span class="k">"body"</span>: {
+    <span class="k">"code"</span>: <span class="hl"><span class="s">"e.p.msg.conflict"</span></span>,
+    <span class="k">"comment"</span>: <span class="s">"The log has moved on: its last entry is {1}."</span>,
+    <span class="k">"args"</span>: [<span class="hl"><span class="s">"3-QmQq6K…"</span></span>]
+  }
+}</code></pre>
+          <div style="display:flex;flex-direction:column;gap:.8rem">
+            <p class="lede" style="font-size:1.05rem">Every refusal, in the standard form.</p>
+            <ul class="bullets"><li>A standard <code>report-problem/2.0</code>, its <code>pthid</code> the message it refuses.</li><li>Codes include <code>name-taken</code>, <code>name-reserved</code>, <code>not-held</code>, <code>log-invalid</code>, <code>conflict</code>, <code>key-in-use</code> and <code>too-large</code>.</li><li>A message that isn't authcrypted gets nothing: over HTTP, a 403.</li></ul>
+          </div>
+        </div>
+        <div class="slide-foot"><span>public addresses · the messages</span><span>12.10</span></div>
+      </section>
     </section>
 
     <!-- CHECKS -->
@@ -252,7 +471,7 @@
         </div>
         <p class="kicker">A host should also require <code>portable: true</code> in the first entry, so the holder can leave with its history.</p>
       </div>
-      <div class="slide-foot"><span>a did you can give out</span><span>13 / 24</span></div>
+      <div class="slide-foot"><span>public addresses</span><span>13 / 24</span></div>
     </section>
 
     <!-- WHO A SENDER IS -->
@@ -267,37 +486,37 @@
           <div class="card"><h3>Two devices at once</h3><p>Both append; the first wins. The second's <code>after</code> is stale, so it gets <code>conflict</code>, rebuilds on top, and publishes again.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>a did you can give out</span><span>14 / 24</span></div>
+      <div class="slide-foot"><span>public addresses</span><span>14 / 24</span></div>
       <aside class="notes">"Shown to be, not merely listed": a document can list someone else's public key, and that must not use the key up. A key counts once its owner acts as the holder with it (a publish or publish-whois authenticated with it or signed by it, or a status-request naming the name) while the name's document lists it. This makes each name cost a new identity; it doesn't stop someone making new keys.</aside>
     </section>
 
     <!-- SECTION: READING ONE -->
     <section>
       <div class="slide-body section-slide">
-        <h1>Reading one</h1>
+        <h1>Resolving more than just a DID</h1>
         <p class="sub">From a short <code>did:web</code> to a verified DID and a profile, before sending anything.</p>
       </div>
-      <div class="slide-foot"><span>a did you can give out</span><span>15 / 24</span></div>
+      <div class="slide-foot"><span>public addresses</span><span>15 / 24</span></div>
     </section>
 
     <!-- RESOLVING -->
     <section>
-      <div class="eyebrow"><span class="sec">Reading one ·</span> resolving</div>
+      <div class="eyebrow"><span class="sec">Resolving more than just a DID ·</span> resolving</div>
       <div class="slide-body">
         <h2>Move from the <code>did:web</code> to the <code>did:webvh</code> at once</h2>
         <div class="numrow">
           <div class="step"><h3>Resolve the <code>did:web</code></h3><p>If its <code>alsoKnownAs</code> names a <code>did:webvh</code>, resolve and verify that log.</p></div>
-          <div class="step"><h3>Check it names you back</h3><p>Accept the pair only if the <code>did:webvh</code> lists the <code>did:web</code>. Otherwise the <code>did:web</code> stands alone.</p></div>
+          <div class="step"><h3>Check for cross-referencing</h3><p>Accept the pair only if the <code>did:webvh</code> lists the <code>did:web</code>. Otherwise the <code>did:web</code> stands alone.</p></div>
           <div class="step"><h3>Keep the <code>did:webvh</code></h3><p>Know the party by it from then on.</p></div>
         </div>
         <div class="card danger"><h3>A reassigned name is someone else</h3><p>If a name is freed and claimed afresh, the same <code>did:web</code> now leads to a <code>did:webvh</code> with a different SCID. An app must treat that as a different party, and say so.</p></div>
       </div>
-      <div class="slide-foot"><span>a did you can give out</span><span>16 / 24</span></div>
+      <div class="slide-foot"><span>public addresses</span><span>16 / 24</span></div>
     </section>
 
     <!-- WHOIS -->
     <section>
-      <div class="eyebrow gold"><span class="sec">Reading one ·</span> who they say they are</div>
+      <div class="eyebrow gold"><span class="sec">Resolving more than just a DID ·</span> who they say they are</div>
       <div class="slide-body">
         <h2>A profile the DID signs, and two ways to trust it more</h2>
         <div class="grid3">
@@ -307,54 +526,55 @@
         </div>
         <p class="kicker">An app should always show the host and the name beside a profile: <code>alice</code> is just whoever asked first.</p>
       </div>
-      <div class="slide-foot"><span>a did you can give out</span><span>17 / 24</span></div>
+      <div class="slide-foot"><span>public addresses</span><span>17 / 24</span></div>
       <aside class="notes">Pictures: the profile picture should be a data: URL so showing it fetches nothing (the wyvrn host allows 64 KB); larger pictures may be https: URLs but must carry a sha256, and shouldn't be fetched until someone opens the profile, since fetching tells the picture's host who's looking. The one non-schema.org term is wyvrn's background, kept under a "wyvrn" @nest. Linked domains follow DIF Well Known DID Configuration, eddsa-jcs-2022 proofs, checked against the document's assertionMethod keys.</aside>
     </section>
 
     <!-- SECTION: THE EXPERIMENT -->
     <section>
       <div class="slide-body section-slide">
-        <h1>One experiment</h1>
+        <h1>An implementation</h1>
         <p class="sub">What's built, how the pieces share code, and what it doesn't do yet.</p>
       </div>
-      <div class="slide-foot"><span>a did you can give out</span><span>18 / 24</span></div>
+      <div class="slide-foot"><span>public addresses</span><span>18 / 24</span></div>
     </section>
 
     <!-- WHAT'S BUILT -->
     <section>
-      <div class="eyebrow"><span class="sec">One experiment ·</span> what's built</div>
+      <div class="eyebrow"><span class="sec">An implementation ·</span> what's built, and where</div>
       <div class="slide-body">
         <h2>A host, a shared reader, and an app on both ends</h2>
-        <div class="grid3">
-          <div class="card"><h3>The host</h3><p><code>wyvrn-did-host</code>: names, holds, the seven checks, the parallel <code>did:web</code> and whois, admin commands, staleness. <code>didwebvh-rs</code> verifies the logs.</p></div>
-          <div class="card teal"><h3>One reader, two places</h3><p><code>wyvrn-hosted-did</code> decides what a hosted DID comes to from bytes it's handed; the caller fetches. The host's tests and the app (as WebAssembly, or natively) run the same code.</p></div>
-          <div class="card gold"><h3>The app</h3><p>Gets an address from Settings, keeps it in step as devices change, looks an address up before adding a contact, links a website.</p></div>
+        <div class="grid2">
+          <div class="card"><h3>The host</h3><p><a href="https://github.com/wyvrn-cloud/services/tree/master/services/did-host"><code>services/did-host</code></a> (<code>wyvrn-did-host</code>): names, holds, the seven checks, the parallel <code>did:web</code> and whois, admin commands, staleness.</p></div>
+          <div class="card teal"><h3>One reader, two places</h3><p><a href="https://github.com/wyvrn-cloud/services/tree/master/crates/wyvrn-hosted-did"><code>crates/wyvrn-hosted-did</code></a> decides what a hosted DID comes to from bytes it's handed; the caller fetches. The host's tests run it, and so does the app, as <a href="https://github.com/wyvrn-cloud/services/tree/master/crates/wyvrn-hosted-did-wasm"><code>wyvrn-hosted-did-wasm</code></a> on the web.</p></div>
+          <div class="card gold"><h3>The app</h3><p><a href="https://github.com/wyvrn-cloud/chat/tree/master/src/services/hostedDid"><code>src/services/hostedDid</code></a> and <a href="https://github.com/wyvrn-cloud/chat/blob/master/src-tauri/src/hosted_did.rs"><code>hosted_did.rs</code></a> in wyvrn-chat: getting an address, keeping it in step, looking one up, linking a website.</p></div>
+          <div class="card"><h3>Verifying the log</h3><p>DIF's own <a href="https://github.com/decentralized-identity/didwebvh-rs"><code>didwebvh-rs</code></a> (0.8), in the host, the reader, and wyvrn-didcomm's <a href="https://github.com/wyvrn-cloud/didcomm/tree/master/crates/didcomm-resolver-webvh"><code>didcomm-resolver-webvh</code></a>.</p></div>
         </div>
         <p class="kicker">Marked experimental and not live: run on a phone against a host on a test machine.</p>
       </div>
-      <div class="slide-foot"><span>a did you can give out</span><span>19 / 24</span></div>
-      <aside class="notes">The host is in wyvrn-cloud/services (services/did-host); the reader is crates/wyvrn-hosted-did, with a wasm build for the web app; the holder and reader sides are in wyvrn-cloud/chat. The protocol, did-hosting/1.0, is on the did-hosting branch of wyvrn-cloud/protocols, not yet merged. Run on a phone: getting an address, being looked up by someone else, the lookup card, a link opening the app, giving the address up. Linking a website was not run there.</aside>
+      <div class="slide-foot"><span>public addresses</span><span>19 / 24</span></div>
+      <aside class="notes">The protocol, did-hosting/1.0, is on the did-hosting branch of wyvrn-cloud/protocols, not yet merged. didcomm-resolver-webvh does its own fetching on wasm, since didwebvh-rs's network feature doesn't build there; the log is still verified by didwebvh-rs. Run on a phone: getting an address, being looked up by someone else, the lookup card, a link opening the app, giving the address up. Linking a website was not run there.</aside>
     </section>
 
     <!-- KEEPING IN STEP -->
     <section>
-      <div class="eyebrow gold"><span class="sec">One experiment ·</span> with several devices</div>
+      <div class="eyebrow gold"><span class="sec">An implementation ·</span> with several devices</div>
       <div class="slide-body">
         <h2>Nothing about the address lives on one device</h2>
         <div class="grid3">
-          <div class="card"><h3>It rides on the identity</h3><p>That there's an address is in the Identity DID's <code>alsoKnownAs</code>, which every device already holds. Nothing else is stored.</p></div>
+          <div class="card"><h3>Named by the identity</h3><p>The Identity DID's <code>alsoKnownAs</code> names the address. Every device already holds that DID, so every device knows the address without keeping a record of its own.</p></div>
           <div class="card"><h3>Every trusted device can write</h3><p>The log's <code>updateKeys</code> are the document's <code>authentication</code> keys: each trusted device's own. Trusting a device lets it write; revoking it stops it.</p></div>
           <div class="card"><h3>It follows every roster change</h3><p>After a device is added, removed or trusted, each trusted device fetches the log and appends if needed. The first wins; the rest find it written.</p></div>
         </div>
         <p class="kicker">So no single device's loss strands the address, as long as one trusted device remains.</p>
       </div>
-      <div class="slide-foot"><span>a did you can give out</span><span>20 / 24</span></div>
+      <div class="slide-foot"><span>public addresses</span><span>20 / 24</span></div>
       <aside class="notes">This ties to "DIDComm for People": the address's document is the Identity DID's own under the address's name, so every rotation of the Identity DID is followed by a log entry. The app reads the writers from the document, never from the device roster: the roster is patched at a different moment than the identity rotates, and a list taken from it in between once had a newly trusted device write itself out of the log.</aside>
     </section>
 
     <!-- QUIET AND ENDING -->
     <section>
-      <div class="eyebrow"><span class="sec">One experiment ·</span> quiet holders, and the end</div>
+      <div class="eyebrow"><span class="sec">An implementation ·</span> quiet holders, and the end</div>
       <div class="slide-body">
         <h2>Silence means nothing, so the host asks</h2>
         <div class="grid2">
@@ -362,12 +582,12 @@
           <div class="card"><h3>Ended</h3><p>A holder ends its DID the <code>did:webvh</code> way: an entry with <code>deactivated: true</code>. The host keeps serving the log, so the end is itself verifiable.</p></div>
         </div>
       </div>
-      <div class="slide-foot"><span>a did you can give out</span><span>21 / 24</span></div>
+      <div class="slide-foot"><span>public addresses</span><span>21 / 24</span></div>
     </section>
 
     <!-- TRADE-OFFS -->
     <section>
-      <div class="eyebrow danger"><span class="sec">One experiment ·</span> what it doesn't do yet</div>
+      <div class="eyebrow danger"><span class="sec">An implementation ·</span> what it doesn't do yet</div>
       <div class="slide-body">
         <h2>The gaps, plainly</h2>
         <div class="grid2" style="align-items:start">
@@ -384,7 +604,7 @@
         </div>
         <p class="kicker">Everything published is public, including the link between this name and the identity behind it. An app should make sure the person knows before publishing.</p>
       </div>
-      <div class="slide-foot"><span>a did you can give out</span><span>22 / 24</span></div>
+      <div class="slide-foot"><span>public addresses</span><span>22 / 24</span></div>
     </section>
 
     <!-- QUESTIONS -->
@@ -414,7 +634,7 @@
         <li><a href="https://github.com/wyvrn-cloud/protocols/blob/did-hosting/protocols/did-hosting/1.0/readme.md">wyvrn-cloud/protocols — did-hosting/1.0</a> <span class="st">Proposed, an experiment</span></li>
         <li><a href="https://github.com/wyvrn-cloud/services/tree/master/services/did-host">wyvrn-did-host</a> · <a href="https://github.com/wyvrn-cloud/services/tree/master/crates/wyvrn-hosted-did">wyvrn-hosted-did</a> · <a href="https://github.com/wyvrn-cloud/chat">wyvrn-chat</a> <span class="st">an experiment</span></li>
       </ul>
-      <div class="slide-foot"><span>a did you can give out · checked October 2026</span><span>24 / 24</span></div>
+      <div class="slide-foot"><span>public addresses · checked October 2026</span><span>24 / 24</span></div>
     </section>
 
   </div>
